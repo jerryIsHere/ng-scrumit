@@ -1,0 +1,12 @@
+.example-spacer {
+    flex: 1 1 auto;
+  }
+  head{
+    height:100%;
+    width: 100%;
+  }
+  body{
+    height:100%;
+    width:100%;
+    position: absolute;
+  }
