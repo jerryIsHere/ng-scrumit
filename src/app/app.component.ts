@@ -74,11 +74,63 @@ export class AppComponent {
     return s;
   }
 
-  currentProjectId = null;
-  currentSprintId = null;
-  currentPersonId = null;
-  currentStoryId = null;
-  currentTaskId = null;
+  _currentProjectId = null;
+  get currentProjectId(): number {
+    return this._currentProjectId;
+  }
+  set currentProjectId(id: number) {
+    if (this._currentProjectId != id) {
+      this.api.persons = new Array<any>();
+      this.api.sprints = new Array<any>();
+      this.api.stories = new Array<any>();
+      this.api.tasks = new Array<any>();
+      this.api.issues = new Array<any>();
+    }
+    this._currentProjectId = id;
+  }
+
+  _currentSprintId = null;
+  get currentSprintId(): number {
+    return this._currentSprintId;
+  }
+  set currentSprintId(id: number) {
+    if (this._currentSprintId != id) {
+      this.api.stories = new Array<any>();
+      this.api.tasks = new Array<any>();
+      this.api.issues = new Array<any>();
+    }
+    this._currentSprintId = id;
+  }
+
+  _currentPersonId = null;
+  get currentPersonId(): number {
+    return this._currentPersonId;
+  }
+  set currentPersonId(id: number) {
+    this._currentPersonId = id;
+  }
+
+  _currentStoryId = null;
+  get currentStoryId(): number {
+
+    return this._currentStoryId;
+  }
+  set currentStoryId(id: number) {
+    if (this._currentStoryId != id) {
+      this.api.tasks = new Array<any>();
+      this.api.issues = new Array<any>();
+    }
+    this._currentStoryId = id;
+  }
+
+  _currentTaskId = null;
+  get currentTaskId(): number {
+    return this._currentTaskId;
+  }
+  set currentTaskId(id: number) {
+    this._currentTaskId = id;
+  }
+
 
   sideNavToggle = false;
   _view: string[] = new Array("root");
@@ -128,6 +180,11 @@ export class AppComponent {
       this.currentSprintId = null;
       this.currentStoryId = null;
       this.currentTaskId = null;
+
+      this.api.persons = null;
+      this.api.sprints = null;
+      this.api.stories = null;
+      this.api.tasks = null;
     }
   }
 
@@ -322,12 +379,12 @@ export class AppComponent {
       this.doneDragList.sort((a, b) => a.order - b.order)
     })
   }
-  filter(objs, id) {
-    if (typeof id == 'number') {
-      return objs.filter(o => o.id == id)
+  filter(objs, key, values) {
+    if (typeof values == 'number') {
+      return objs.filter(o => o[key] == values)
     }
-    if (Array.isArray(id)) {
-      return objs.filter(o => id.includes(o.id))
+    if (Array.isArray(values)) {
+      return objs.filter(o => values.includes(o[key]))
     }
     return []
 

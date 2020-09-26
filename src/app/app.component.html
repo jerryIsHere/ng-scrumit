@@ -84,24 +84,26 @@
         <form formGroupName="projectForm">
           <mat-form-field>
             <mat-label>ID: </mat-label>
-            <input type="text" formControlName="id" matInput [value]="filter(api.projects, currentProjectId)[0].id">
+            <input type="text" formControlName="id" matInput
+              [value]="filter(api.projects, 'id',currentProjectId)[0].id">
           </mat-form-field>
           <br>
           <mat-form-field>
             <mat-label>Name: </mat-label>
-            <input type="text" formControlName="name" matInput [value]="filter(api.projects, currentProjectId)[0].name">
+            <input type="text" formControlName="name" matInput
+              [value]="filter(api.projects, 'id',currentProjectId)[0].name">
           </mat-form-field>
           <br>
           <mat-form-field>
             <mat-label>Description: </mat-label>
             <input type="text" formControlName="description" matInput
-              [value]="filter(api.projects, currentProjectId)[0].description">
+              [value]="filter(api.projects, 'id',currentProjectId)[0].description">
           </mat-form-field>
           <br>
           <mat-form-field>
             <mat-label>Creation: </mat-label>
             <input type="text" matInput formControlName="creation"
-              [value]="filter(api.projects, currentProjectId)[0].creationDate">
+              [value]="filter(api.projects, 'id',currentProjectId)[0].creationDate">
           </mat-form-field>
         </form>
         <button mat-fab color="accent" style="right:5%; bottom: 10%; top: auto; position: fixed;"
@@ -180,7 +182,7 @@
                   <mat-icon [matBadge]="task.person.length" matBadgeSize="small" matBadgeColor="warn">person</mat-icon>
                 </mat-panel-description>
               </mat-expansion-panel-header>
-              <p *ngFor="let person of filter(api.persons,task.person)">{{person.firstName+ " " +person.lastName}}
+              <p *ngFor="let person of filter(api.persons,'id',task.person)">{{person.firstName+ " " +person.lastName}}
               </p>
             </mat-expansion-panel>
           </mat-accordion>
@@ -195,7 +197,7 @@
                 </mat-panel-description>
 
               </mat-expansion-panel-header>
-              <p *ngFor="let person of filter(api.persons,task.person)">{{person.firstName+ " " +person.lastName}}
+              <p *ngFor="let person of filter(api.persons,'id',task.person)">{{person.firstName+ " " +person.lastName}}
               </p>
             </mat-expansion-panel>
           </mat-accordion>
@@ -209,7 +211,7 @@
                   <mat-icon [matBadge]="task.person.length" matBadgeSize="small" matBadgeColor="warn">person</mat-icon>
                 </mat-panel-description>
               </mat-expansion-panel-header>
-              <p *ngFor="let person of filter(api.persons,task.person)">{{person.firstName+ " " +person.lastName}}
+              <p *ngFor="let person of filter(api.persons,'id',task.person)">{{person.firstName+ " " +person.lastName}}
               </p>
             </mat-expansion-panel>
           </mat-accordion>
@@ -218,11 +220,15 @@
         <div cdkDropList>
           <button mat-fab color="pink" style="left:40%; bottom: 15%; top: auto; position: fixed;" cdkDrag
             cdkDragBoundary=".example-boundary" matTooltip="from previous sprint" (cdkDragReleased)="release($event,2)">
-            <mat-icon>assignment_late</mat-icon>
+            <mat-icon [matBadge]="filter(inProgressDragList,'status',2).length">assignment_late</mat-icon>
           </button>
           <button mat-fab color="lightblue" style="left:40%; bottom: 5%; top: auto; position: fixed;" cdkDrag
             cdkDragBoundary=".example-boundary" matTooltip="move to next sprint" (cdkDragReleased)="release($event,3)">
-            <mat-icon>assignment_returned</mat-icon>
+            <mat-icon [matBadge]="filter(inProgressDragList,'status',3).length">assignment_returned</mat-icon>
+          </button>
+          <button mat-fab color="lightblue" style="left:60%; bottom: 5%; top: auto; position: fixed;" cdkDrag
+            cdkDragBoundary=".example-boundary" matTooltip="move to next sprint" (cdkDragReleased)="release($event,1)">
+            
           </button>
         </div>
       </div>
