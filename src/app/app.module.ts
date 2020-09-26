@@ -19,6 +19,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatBadgeModule } from '@angular/material/badge';
 
 @NgModule({
   declarations: [
@@ -41,6 +44,9 @@ import { MatInputModule } from '@angular/material/input';
     DragDropModule,
     MatFormFieldModule,
     MatInputModule,
+    NgxChartsModule,
+    MatExpansionModule,
+    MatBadgeModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
