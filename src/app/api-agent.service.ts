@@ -232,14 +232,14 @@ export class ApiAgentService {
       return issues
     })
   }
-  currentProject = (() => {
+  get currentProject() {
     try {
       return this.projects.filter(project => project.id == this._currentProjectId)[0]
     }
     catch (err) {
       return null;
     }
-  })();
+  };
   private _currentProjectId = null;
   private get currentProjectId(): number {
     return this._currentProjectId;
@@ -254,14 +254,14 @@ export class ApiAgentService {
     }
     this._currentProjectId = id;
   }
-  currentSprint = (() => {
+  get currentSprint() {
     try {
       return this.sprints.filter(sprint => sprint.id == this._currentSprintId)[0]
     }
     catch (err) {
       return null;
     }
-  })();
+  }
   private _currentSprintId = null;
   private get currentSprintId(): number {
     return this._currentSprintId;
@@ -274,14 +274,14 @@ export class ApiAgentService {
     }
     this._currentSprintId = id;
   }
-  currentPerson = (() => {
+  get currentPerson() {
     try {
       return this.persons.filter(person => person.id == this._currentPersonId)[0]
     }
     catch (err) {
       return null;
     }
-  })();
+  }
   _currentPersonId = null;
   private get currentPersonId(): number {
     return this._currentPersonId;
@@ -289,14 +289,14 @@ export class ApiAgentService {
   private set currentPersonId(id: number) {
     this._currentPersonId = id;
   }
-  currentStory = (() => {
+  get currentStory() {
     try {
-      return this.persons.filter(story => story.id == this._currentStoryId)[0]
+      return this.stories.filter(story => story.id == this._currentStoryId)[0]
     }
     catch (err) {
       return null;
     }
-  })();
+  }
   private _currentStoryId = null;
   private get currentStoryId(): number {
 
@@ -309,14 +309,14 @@ export class ApiAgentService {
     }
     this._currentStoryId = id;
   }
-  currentTask = (() => {
+  get currentTask() {
     try {
-      return this.persons.filter(story => story.id == this._currentTaskId)[0]
+      return this.tasks.filter(story => story.id == this._currentTaskId)[0]
     }
     catch (err) {
       return null;
     }
-  })();
+  }
   private _currentTaskId = null;
   private get currentTaskId(): number {
     return this._currentTaskId;
