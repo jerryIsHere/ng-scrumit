@@ -65,7 +65,7 @@
             <button mat-fab color="pink" style="left:40%; bottom: 15%; top: auto; position: fixed;" cdkDrag
                 cdkDragBoundary=".example-boundary" matTooltip="from previous sprint"
                 (cdkDragReleased)="release($event,2)">
-                <mat-icon [matBadge]="(inProgressDragList | filter : 'status': 2 ).length">assignment_late</mat-icon>
+                <mat-icon [matBadge]="(inProgressDragList | filter : 'status': 2)?.length">assignment_late</mat-icon>
             </button>
             <button mat-fab color="lightblue" style="left:40%; bottom: 5%; top: auto; position: fixed;" cdkDrag
                 cdkDragBoundary=".example-boundary" matTooltip="move to next sprint"

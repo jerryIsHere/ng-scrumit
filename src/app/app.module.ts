@@ -21,14 +21,19 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatBadgeModule } from '@angular/material/badge';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
-import { NgxEchartsModule } from 'ngx-echarts';
+
 import { ChartComponent } from './chart/chart.component';
 import { BoardComponent } from './board/board.component';
 import { PersonFormComponent } from './person-form/person-form.component';
 import { UserstoryFormComponent } from './userstory-form/userstory-form.component';
 import { ProjectOverviewComponent } from './project-overview/project-overview.component';
+
 import { FilterPipe } from './filter.pipe';
+
+import { NgxEchartsModule } from 'ngx-echarts';
+import * as echarts from 'echarts';
 
 @NgModule({
   declarations: [
@@ -38,7 +43,7 @@ import { FilterPipe } from './filter.pipe';
     PersonFormComponent,
     UserstoryFormComponent,
     ProjectOverviewComponent,
-    FilterPipe
+    FilterPipe,
   ],
   imports: [
     BrowserModule,
@@ -59,7 +64,10 @@ import { FilterPipe } from './filter.pipe';
     MatInputModule,
     MatExpansionModule,
     MatBadgeModule,
-    NgxEchartsModule
+    NgxEchartsModule.forRoot({
+      echarts,
+    }),
+    MatButtonToggleModule
   ],
   providers: [],
   bootstrap: [AppComponent]

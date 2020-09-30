@@ -9,9 +9,6 @@ var dummy_relation = {
     "sprint": {
       1: [1], 2: []
     },
-    "issue": {
-      1: [1, 2, 3], 2: []
-    }
   },
   "sprint": {
     "story": {
@@ -41,9 +38,9 @@ var dummy_relation = {
 var dummy = {
   'projects': [
     {
-      "creationDate": 1600863833000, "description": "trr", "name": "test project 2", "id": 2, "duration": 0, "cost": 600
+      "creationDate": 1600863833000, "description": "trr", "name": "test project 2", "id": 2, "duration": 0, "cost": 200
     }, {
-      "creationDate": 1600662795000, "description": "testing", "name": "test project arrr", "id": 1, "duration": 70, "cost": 600
+      "creationDate": 1600662795000, "description": "testing", "name": "test project arrr", "id": 1, "duration": 70, "cost": 200
     }
   ],
   'persons': [
@@ -71,19 +68,19 @@ var dummy = {
     }
   ],
   'tasks': [
-    { "creationDate": 1600669342000, "order": 1, "duration": 8, "description": "test-a1", "status": 0, "id": 1, "person": [] },
-    { "creationDate": 1600671987000, "order": 2, "duration": 8, "description": "test-b", "status": 0, "id": 2, "person": [] },
-    { "creationDate": 1600671141000, "order": 3, "duration": 8, "description": "test  by kenny", "status": 1, "id": 3, "person": [2] },
-    { "creationDate": 1600692238000, "order": 4, "duration": 8, "description": "Test", "status": 1, "id": 4, "person": [2] },
-    { "creationDate": 1600866624000, "order": 5, "duration": 8, "description": "New task...", "status": 2, "id": 5, "person": [3, 4] },
-    { "creationDate": 1600663046000, "order": 6, "duration": 8, "description": "New task...", "status": 3, "id": 6, "person": [3,] },
-    { "creationDate": 1600663046000, "order": 7, "duration": 8, "description": "New task...", "status": 4, "id": 7, "person": [2] },
-    { "creationDate": 1600663046000, "order": 8, "duration": 8, "description": "New task...", "status": 4, "id": 8, "person": [4] },
+    { "creationDate": 1600669342000, "commencement": 50, "order": 1, "duration": 8, "description": "test-a1", "status": 0, "id": 1, "person": [] },
+    { "creationDate": 1600671987000, "commencement": 50, "order": 2, "duration": 8, "description": "test-b", "status": 0, "id": 2, "person": [] },
+    { "creationDate": 1600671141000, "commencement": 40, "order": 3, "duration": 8, "description": "test  by kenny", "status": 1, "id": 3, "person": [2] },
+    { "creationDate": 1600692238000, "commencement": 40, "order": 4, "duration": 8, "description": "Test", "status": 1, "id": 4, "person": [2] },
+    { "creationDate": 1600866624000, "commencement": 30, "order": 5, "duration": 8, "description": "New task...", "status": 2, "id": 5, "person": [3, 4] },
+    { "creationDate": 1600663046000, "commencement": 55, "order": 6, "duration": 8, "description": "New task...", "status": 3, "id": 6, "person": [3,] },
+    { "creationDate": 1600663046000, "commencement": 15, "order": 7, "duration": 8, "description": "New task...", "status": 4, "id": 7, "person": [2] },
+    { "creationDate": 1600663046000, "commencement": 10, "order": 8, "duration": 8, "description": "New task...", "status": 4, "id": 8, "person": [4] },
   ],
   'issues': [
-    { "creationDate": 1600671987000, "hourElapsed": 60, "duration": 0, "cost": 800, "description": "assigne more developer", "category": ["resign", "recruit"], "id": 3 },
-    { "creationDate": 1600669342000, "hourElapsed": 60, "duration": 10, "cost": 0, "description": "extend deadline", "category": ["unexpected error"], "id": 2 },
-    { "creationDate": 1600671987000, "hourElapsed": 30, "duration": 0, "cost": 400, "description": "assigne more developer", "category": ["resign", "recruit"], "id": 1 },
+    { "creationDate": 1600671987000, "commencement": 45, "duration": 10, "cost": 800, "description": "assigne more developer", "category": ["resign", "recruit"], "id": 3 },
+    { "creationDate": 1600669342000, "commencement": 60, "duration": 10, "cost": 0, "description": "extend deadline", "category": ["unexpected error"], "id": 2 },
+    { "creationDate": 1600671987000, "commencement": 35, "duration": 0, "cost": 400, "description": "assigne more developer", "category": ["resign", "recruit"], "id": 1 },
   ]
 
 }
@@ -97,7 +94,7 @@ export class ApiAgentService {
   sprints: Array<any> = null;
   stories: Array<any> = null;
   tasks: Array<any> = null;
-  issues: Array<any> = null;
+  //issues: Array<any> = null;
   constructor(private http: HttpClient,) {
 
   }
@@ -221,15 +218,27 @@ export class ApiAgentService {
 
   }
 
-  getProjectIssueRequest = (pjid) => {
-    return Promise.resolve(dummy["issues"].filter(data => (dummy_relation["project"]["issue"][pjid] as Array<number>).includes(data.id)))
+  getProjectTaskRequest = (pjid) => {
+    let tasks = []
+    for (let spid of dummy_relation.project.sprint[pjid]) {
+      for (let stid of dummy_relation.sprint.story[spid]) {
+        for (let tkid of dummy_relation.story.task[stid]) {
+          let task = dummy.tasks.filter(task => task.id == tkid)[0]
+          task["issues"] = []
+          for (let isid of dummy_relation.task.issue[tkid])
+            task["issues"].push(dummy.issues.filter(issue => issue.id == isid)[0])
+          tasks.push(task)
+        }
+      }
+    }
+    return Promise.resolve(tasks)
 
   }
-  getProjectIssue = (pjid: number = this._currentProjectId): Promise<any> => {
+  getProjectTask = (pjid: number = this._currentProjectId): Promise<any> => {
     this.currentProjectId = pjid;
-    return this.getProjectIssueRequest(pjid).then(issues => {
-      this.issues = issues as Array<any>;
-      return issues
+    return this.getProjectTaskRequest(pjid).then(tasks => {
+      this.tasks = tasks as Array<any>;
+      return tasks
     })
   }
   get currentProject() {
@@ -250,7 +259,7 @@ export class ApiAgentService {
       this.sprints = null;
       this.stories = null;
       this.tasks = null;
-      this.issues = null;
+
     }
     this._currentProjectId = id;
   }
@@ -270,7 +279,6 @@ export class ApiAgentService {
     if (this._currentSprintId != id) {
       this.stories = null;
       this.tasks = null;
-      this.issues = null;
     }
     this._currentSprintId = id;
   }
@@ -305,7 +313,6 @@ export class ApiAgentService {
   private set currentStoryId(id: number) {
     if (this._currentStoryId != id) {
       this.tasks = null;
-      this.issues = null;
     }
     this._currentStoryId = id;
   }

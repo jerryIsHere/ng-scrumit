@@ -46,7 +46,7 @@ export class AppComponent {
       case 'person':
         return this.api.persons != null;
       case 'chart':
-        return this.costLineChart != null;
+        return true;
       case 'branch2sprint':
         return true
       case 'sprint':
@@ -168,85 +168,7 @@ export class AppComponent {
     })
   }
 
-  getChart(pjid: number) {
-    this.costLineChart = null;
-    this.view = 'chart'
 
-    let slope = {};
-    this.api.getProject(pjid).then(project => {
-      let data = [{
-        name: "initial expectation",
-        series: [
-          {
-            name: 0,
-            value: 0,
-          },
-          {
-            name: project.duration,
-            value: project.duration * project.cost
-          }
-        ]
-      }]
-      slope[0] = project.cost
-      this.api.getProjectIssue(pjid).then(issues => {
-        let overTime = 0
-        let titleDict: { [description: string]: number } = {};
-
-        for (let issue of issues) {
-          overTime = overTime + issue.duration
-        }
-        slope[project.duration + overTime] = 0;
-        for (let issue of issues) {
-          let title = issue.description
-          let i = 0;
-          while (titleDict.hasOwnProperty(title)) {
-            i++;
-            title = issue.description + ' (' + i + ')';
-          }
-          titleDict[title] = issue.id;
-          data.push({
-            name: title,
-            series: [
-              {
-                name: issue.hourElapsed,
-                value: 0
-              },
-              {
-                name: project.duration + overTime,
-                value: (project.duration + overTime) * issue.cost
-              }
-            ]
-          })
-          if (slope.hasOwnProperty(issue.hourElapsed)) {
-            slope[issue.hourElapsed] = slope[issue.hourElapsed] + issue.cost
-          }
-          else {
-            slope[issue.hourElapsed] = issue.cost
-          }
-        }
-        let total = {
-          name: "forcast",
-          series: []
-        }
-
-        let cummulativeSlope = 0;
-        let cummulativeCost = 0;
-        for (let time in slope) {
-          cummulativeCost = cummulativeSlope * parseInt(time)
-          cummulativeSlope = cummulativeSlope + slope[time]
-          total.series.push({ name: parseInt(time), value: cummulativeCost })
-
-        }
-        this.costLineChartTitleId = titleDict;
-        data.push(total);
-        this.costLineChart = data;
-
-
-
-      })
-    })
-
-  }
   getProjectSprint(pjid: number) {
 
     this.api.getProjectSprint(pjid).then(data => {
@@ -267,7 +189,11 @@ export class AppComponent {
     })
   }
 
-
+  getChart(pjid: number) {
+    this.api.getProject(pjid).then(project => {
+      this.view = 'chart'
+    })
+  }
 
   // projectForm = new FormGroup({
   //   id: new FormControl(),
@@ -276,8 +202,6 @@ export class AppComponent {
   //   creation: new FormControl()
   // });
 
-  costLineChart
-  costLineChartTitleId
 
 
 

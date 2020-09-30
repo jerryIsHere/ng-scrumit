@@ -8,13 +8,12 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
   encapsulation: ViewEncapsulation.None
 })
 export class BoardComponent implements OnInit {
-  @Input()
-  sprintId: number;
+
   constructor(public api: ApiAgentService) {
 
   }
   ngOnInit() {
-    this.getSprintTask(this.sprintId);
+    this.getSprintTask();
   }
   storyBoardStyle(story) {
 
@@ -83,23 +82,23 @@ export class BoardComponent implements OnInit {
   inProgressDragList = []
   doneDragList = []
 
-  getSprintTask(spid: number) {
+  getSprintTask() {
     this.openDragList = []
     this.inProgressDragList = []
     this.doneDragList = []
     if (!this.api.persons || this.api.persons.length == 0) {
       this.api.getProjectPerson().then(data => {
-        this.commitGetTask(spid);
+        this.commitGetTask();
       })
     }
     else {
-      this.commitGetTask(spid);
+      this.commitGetTask();
     }
 
 
   }
-  commitGetTask(spid: number) {
-    this.api.getSprintTask(spid).then(data => {
+  commitGetTask() {
+    this.api.getSprintTask().then(data => {
 
       for (let tasks of data) {
         for (let task of tasks) {
