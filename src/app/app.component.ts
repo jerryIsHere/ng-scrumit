@@ -1,6 +1,5 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { ApiAgentService } from './api-agent.service';
-import { TemplateUtilityService } from './template-utility.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 
@@ -12,7 +11,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {
-  constructor(public api: ApiAgentService, public util: TemplateUtilityService) {
+  constructor(public api: ApiAgentService) {
     this.api.getAllProject();
   }
 
@@ -133,22 +132,22 @@ export class AppComponent {
   sprintStyle(sprint) {
     if (this.view == "branch2sprint") return {};
     let style = {}
-    if (sprint.id && this.api.currentProject && sprint.id == this.api.currentSprint.id) style["background-color"] = 'greenyellow'
+    if (sprint.id && this.api.currentSprint && sprint.id == this.api.currentSprint.id) style["background-color"] = 'greenyellow'
 
     return style;
   }
-  // personStyle(person) {
-  //   let style = {}
-  //   if (person.id && person.id == this.api.currentPerson.id) style["background-color"] = 'greenyellow'
+  personStyle(person) {
+    let style = {}
+    if (person.id && this.api.currentPerson && person.id == this.api.currentPerson.id) style["background-color"] = 'greenyellow'
 
-  //   return style;
-  // }
-  // storyStyle(story) {
-  //   let style = {}
-  //   if (story.id && story.id == this.api.currentStory.id) style["background-color"] = 'greenyellow'
+    return style;
+  }
+  storyStyle(story) {
+    let style = {}
+    if (story.id && this.api.currentStory && story.id == this.api.currentStory.id) style["background-color"] = 'greenyellow'
 
-  //   return style;
-  // }
+    return style;
+  }
 
 
   getAllProject() {
@@ -261,11 +260,11 @@ export class AppComponent {
     })
   }
 
-  boardSelectedId
   getSprintTask(spid: number) {
     this.sideNavToggle = false;
-    this.view = 'board'
-    this.boardSelectedId=spid;
+    this.api.getSprintStory(spid).then(story => {
+      this.view = 'board'
+    })
   }
 
 

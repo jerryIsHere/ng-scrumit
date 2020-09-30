@@ -28,6 +28,7 @@ import { BoardComponent } from './board/board.component';
 import { PersonFormComponent } from './person-form/person-form.component';
 import { UserstoryFormComponent } from './userstory-form/userstory-form.component';
 import { ProjectOverviewComponent } from './project-overview/project-overview.component';
+import { FilterPipe } from './filter.pipe';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { ProjectOverviewComponent } from './project-overview/project-overview.co
     BoardComponent,
     PersonFormComponent,
     UserstoryFormComponent,
-    ProjectOverviewComponent
+    ProjectOverviewComponent,
+    FilterPipe
   ],
   imports: [
     BrowserModule,

@@ -21,7 +21,7 @@
                             </mat-icon>
                         </mat-panel-description>
                     </mat-expansion-panel-header>
-                    <p *ngFor="let person of util.filter(api.persons,'id',task.person)">
+                    <p *ngFor="let person of api.persons | filter: 'id' : task.person">
                         {{person.firstName+ " " +person.lastName}}
                     </p>
                 </mat-expansion-panel>
@@ -38,7 +38,7 @@
                         </mat-panel-description>
 
                     </mat-expansion-panel-header>
-                    <p *ngFor="let person of util.filter(api.persons,'id',task.person)">
+                    <p *ngFor="let person of api.persons | filter : 'id' : task.person">
                         {{person.firstName+ " " +person.lastName}}
                     </p>
                 </mat-expansion-panel>
@@ -54,7 +54,7 @@
                             </mat-icon>
                         </mat-panel-description>
                     </mat-expansion-panel-header>
-                    <p *ngFor="let person of util.filter(api.persons,'id',task.person)">
+                    <p *ngFor="let person of api.persons | filter : 'id' : task.person">
                         {{person.firstName+ " " +person.lastName}}
                     </p>
                 </mat-expansion-panel>
@@ -65,12 +65,12 @@
             <button mat-fab color="pink" style="left:40%; bottom: 15%; top: auto; position: fixed;" cdkDrag
                 cdkDragBoundary=".example-boundary" matTooltip="from previous sprint"
                 (cdkDragReleased)="release($event,2)">
-                <mat-icon [matBadge]="util.filter(inProgressDragList,'status',2).length">assignment_late</mat-icon>
+                <mat-icon [matBadge]="(inProgressDragList | filter : 'status': 2 ).length">assignment_late</mat-icon>
             </button>
             <button mat-fab color="lightblue" style="left:40%; bottom: 5%; top: auto; position: fixed;" cdkDrag
                 cdkDragBoundary=".example-boundary" matTooltip="move to next sprint"
                 (cdkDragReleased)="release($event,3)">
-                <mat-icon [matBadge]="util.filter(inProgressDragList,'status',3).length">assignment_returned</mat-icon>
+                <mat-icon [matBadge]="(inProgressDragList | filter : 'status' : 3).length">assignment_returned</mat-icon>
             </button>
             <button mat-fab color="lightblue" style="left:60%; bottom: 5%; top: auto; position: fixed;" cdkDrag
                 cdkDragBoundary=".example-boundary" matTooltip="move to next sprint"

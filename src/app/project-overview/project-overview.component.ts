@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ApiAgentService } from './../api-agent.service';
+
 
 @Component({
   selector: 'app-project-overview',
@@ -7,7 +9,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ProjectOverviewComponent implements OnInit {
 
-  constructor() { }
+  constructor(public api:ApiAgentService) { }
 
   ngOnInit(): void {
   }

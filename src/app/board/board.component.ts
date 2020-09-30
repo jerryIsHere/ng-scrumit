@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
 import { ApiAgentService } from './../api-agent.service';
-import { TemplateUtilityService } from './../template-utility.service';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 @Component({
   selector: 'app-board',
@@ -11,7 +10,7 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
 export class BoardComponent implements OnInit {
   @Input()
   sprintId: number;
-  constructor(public api: ApiAgentService, public util: TemplateUtilityService) {
+  constructor(public api: ApiAgentService) {
 
   }
   ngOnInit() {

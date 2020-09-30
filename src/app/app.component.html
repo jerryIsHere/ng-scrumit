@@ -66,7 +66,7 @@
         </mat-list-item>
         <mat-divider></mat-divider>
 
-        <button mat-fab color="accent" style="left:5%; bottom: 10%; top: auto; position: fixed;"
+        <button *ngIf="view!='board'" mat-fab color="accent" style="left:5%; bottom: 10%; top: auto; position: fixed;"
           matTooltip="new sprint">
           <mat-icon>library_add_check</mat-icon>
         </button>
@@ -81,31 +81,7 @@
     <mat-spinner *ngIf="!haveContent()"></mat-spinner>
     <div *ngIf="haveContent()">
       <div *ngSwitchCase="'project'">
-        <form formGroupName="projectForm">
-          <mat-form-field>
-            <mat-label>ID: </mat-label>
-            <input type="text" formControlName="id" matInput [value]="this.api.currentProject.id">
-          </mat-form-field>
-          <br>
-          <mat-form-field>
-            <mat-label>Name: </mat-label>
-            <input type="text" formControlName="name" matInput [value]="this.api.currentProject.name">
-          </mat-form-field>
-          <br>
-          <mat-form-field>
-            <mat-label>Description: </mat-label>
-            <input type="text" formControlName="description" matInput [value]="this.api.currentProject.description">
-          </mat-form-field>
-          <br>
-          <mat-form-field>
-            <mat-label>Creation: </mat-label>
-            <input type="text" matInput formControlName="creation" [value]="this.api.currentProject.creationDate">
-          </mat-form-field>
-        </form>
-        <button mat-fab color="accent" style="right:5%; bottom: 10%; top: auto; position: fixed;"
-          matTooltip="add developer">
-          <mat-icon>edit</mat-icon>
-        </button>
+        <app-project-overview></app-project-overview>
       </div>
       <div *ngSwitchCase="'person'">
         <mat-nav-list>
@@ -128,9 +104,7 @@
         </mat-nav-list>
       </div>
       <div *ngSwitchCase="'chart'" style="width: 100%; height: 90vh;">
-        <ngx-charts-area-chart [results]='costLineChart' legend="true" xAxis="true" yAxis="true" showGridLines="true"
-          xAxisLabel="hour" yAxisLabel="cost" showXAxisLabel="true" showYAxisLabel="true" (select)="onSelect($event)">
-        </ngx-charts-area-chart>
+        <app-chart></app-chart>
       </div>
 
       <div *ngSwitchCase="'story'">
@@ -157,7 +131,7 @@
 
     </div>
     <div *ngSwitchCase="'board'">
-      <app-board [sprintId]="boardSelectedId"></app-board>
+      <app-board></app-board>
     </div>
 
 

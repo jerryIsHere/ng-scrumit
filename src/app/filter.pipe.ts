@@ -1,12 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
 
-@Injectable({
-  providedIn: 'root'
+@Pipe({
+  name: 'filter'
 })
-export class TemplateUtilityService {
+export class FilterPipe implements PipeTransform {
 
-  constructor() { }
-  filter(objs, key, values) {
+  transform(objs: Array<unknown>, key: string, values): unknown {
     if (typeof values == 'number') {
       return objs.filter(o => o[key] == values)
     }
@@ -15,4 +14,5 @@ export class TemplateUtilityService {
     }
     return []
   }
+
 }
