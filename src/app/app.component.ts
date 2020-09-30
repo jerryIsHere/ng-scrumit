@@ -1,7 +1,8 @@
 import { Component, ViewEncapsulation } from '@angular/core';
-import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { ApiAgentService } from './api-agent.service';
+import { TemplateUtilityService } from './template-utility.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+
 
 //to do 0. api service 1. display individual info and update form  2. form for multiple submit button  3. board 4. chart
 @Component({
@@ -11,7 +12,10 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {
-  title = 'ng-scrumit';
+  constructor(public api: ApiAgentService, public util: TemplateUtilityService) {
+    this.api.getAllProject();
+  }
+
   haveEntry() {
     switch (this.view) {
       case 'root':
@@ -51,21 +55,21 @@ export class AppComponent {
       case 'story':
         return this.api.stories != null;
       case 'board':
-        return this.api.tasks != null;
+        return true;
       default:
         return false;
     }
   }
 
 
-  currentTitle() {
+  Title() {
     let s: String = '';
-    if (this.currentProjectId) {
+    if (this.api.currentProject) {
       s = s +
-        "project: " + this.api.projects.filter(pj => pj.id == this.currentProjectId)[0].name;
-      if (this.currentSprintId) {
+        "project: " + this.api.currentProject.name;
+      if (this.api.currentSprint) {
         s = s +
-          " - Sprint: " + this.api.sprints.filter(pj => pj.id == this.currentSprintId)[0].slogan;
+          " - Sprint: " + this.api.currentSprint.slogan;
       }
     }
 
@@ -74,62 +78,7 @@ export class AppComponent {
     return s;
   }
 
-  _currentProjectId = null;
-  get currentProjectId(): number {
-    return this._currentProjectId;
-  }
-  set currentProjectId(id: number) {
-    if (this._currentProjectId != id) {
-      this.api.persons = new Array<any>();
-      this.api.sprints = new Array<any>();
-      this.api.stories = new Array<any>();
-      this.api.tasks = new Array<any>();
-      this.api.issues = new Array<any>();
-    }
-    this._currentProjectId = id;
-  }
 
-  _currentSprintId = null;
-  get currentSprintId(): number {
-    return this._currentSprintId;
-  }
-  set currentSprintId(id: number) {
-    if (this._currentSprintId != id) {
-      this.api.stories = new Array<any>();
-      this.api.tasks = new Array<any>();
-      this.api.issues = new Array<any>();
-    }
-    this._currentSprintId = id;
-  }
-
-  _currentPersonId = null;
-  get currentPersonId(): number {
-    return this._currentPersonId;
-  }
-  set currentPersonId(id: number) {
-    this._currentPersonId = id;
-  }
-
-  _currentStoryId = null;
-  get currentStoryId(): number {
-
-    return this._currentStoryId;
-  }
-  set currentStoryId(id: number) {
-    if (this._currentStoryId != id) {
-      this.api.tasks = new Array<any>();
-      this.api.issues = new Array<any>();
-    }
-    this._currentStoryId = id;
-  }
-
-  _currentTaskId = null;
-  get currentTaskId(): number {
-    return this._currentTaskId;
-  }
-  set currentTaskId(id: number) {
-    this._currentTaskId = id;
-  }
 
 
   sideNavToggle = false;
@@ -151,11 +100,9 @@ export class AppComponent {
     })
   }
   states: Array<Array<string>> = [["root", "project", "person", "chart"], ["branch2sprint", "sprint", "story"], ["board"]]
-  constructor(private api: ApiAgentService) {
-    this.api.getAllProject();
-  }
+
   ngOnInit() {
-    this.projectForm.disable();
+
   }
 
 
@@ -164,69 +111,45 @@ export class AppComponent {
       this._view.pop();
       switch (this._view.length) {
         case 1:
-          this.currentPersonId = null;
-          if (this.view == 'root') this.currentProjectId = null;
+
         case 2:
-          this.currentSprintId = null;
-          this.currentStoryId = null;
+
         case 3:
-          this.currentTaskId = null;
+
       }
     }
     else {
       this.view = "root";
-      this.currentProjectId = null;
-      this.currentPersonId = null;
-      this.currentSprintId = null;
-      this.currentStoryId = null;
-      this.currentTaskId = null;
-
-      this.api.persons = null;
-      this.api.sprints = null;
-      this.api.stories = null;
-      this.api.tasks = null;
     }
   }
 
   projectStyle(project) {
+    if (this.view == "root") return {};
     let style = {}
-    if (project.id && project.id == this.currentProjectId) style["background-color"] = 'greenyellow'
+    if (project.id && this.api.currentProject && project.id == this.api.currentProject.id) style["background-color"] = 'greenyellow'
 
     return style;
   }
   sprintStyle(sprint) {
+    if (this.view == "branch2sprint") return {};
     let style = {}
-    if (sprint.id && sprint.id == this.currentSprintId) style["background-color"] = 'greenyellow'
+    if (sprint.id && this.api.currentProject && sprint.id == this.api.currentSprint.id) style["background-color"] = 'greenyellow'
 
     return style;
   }
-  personStyle(person) {
-    let style = {}
-    if (person.id && person.id == this.currentPersonId) style["background-color"] = 'greenyellow'
+  // personStyle(person) {
+  //   let style = {}
+  //   if (person.id && person.id == this.api.currentPerson.id) style["background-color"] = 'greenyellow'
 
-    return style;
-  }
-  storyStyle(story) {
-    let style = {}
-    if (story.id && story.id == this.currentStoryId) style["background-color"] = 'greenyellow'
+  //   return style;
+  // }
+  // storyStyle(story) {
+  //   let style = {}
+  //   if (story.id && story.id == this.api.currentStory.id) style["background-color"] = 'greenyellow'
 
-    return style;
-  }
-  storyBoardStyle(story) {
+  //   return style;
+  // }
 
-  }
-  taskBoardStyle(task) {
-    let style = {}
-    if (task.status == 3) {
-      style["border-color"] = "lightblue"
-      style["border-style"] = "solid";
-    }
-    else if (task.status == 2) {
-      style["border-color"] = "pink"
-      style["border-style"] = "solid";
-    }
-    return style;
-  }
 
   getAllProject() {
     this.api.getAllProject();
@@ -234,12 +157,12 @@ export class AppComponent {
   getProject(pjid) {
     this.view = 'project';
     this.api.getProject(pjid).then(data => {
-      this.currentProjectId = pjid;
+
     })
   }
 
   getProjectPerson(pjid: number) {
-    this.currentProjectId = pjid;
+
     this.view = 'person'
     this.api.getProjectPerson(pjid).then(data => {
 
@@ -249,7 +172,7 @@ export class AppComponent {
   getChart(pjid: number) {
     this.costLineChart = null;
     this.view = 'chart'
-    this.currentProjectId = pjid;
+
     let slope = {};
     this.api.getProject(pjid).then(project => {
       let data = [{
@@ -275,7 +198,6 @@ export class AppComponent {
         }
         slope[project.duration + overTime] = 0;
         for (let issue of issues) {
-          console.log()
           let title = issue.description
           let i = 0;
           while (titleDict.hasOwnProperty(title)) {
@@ -310,7 +232,6 @@ export class AppComponent {
 
         let cummulativeSlope = 0;
         let cummulativeCost = 0;
-        console.log(slope)
         for (let time in slope) {
           cummulativeCost = cummulativeSlope * parseInt(time)
           cummulativeSlope = cummulativeSlope + slope[time]
@@ -318,7 +239,6 @@ export class AppComponent {
 
         }
         this.costLineChartTitleId = titleDict;
-        console.log(this.costLineChartTitleId)
         data.push(total);
         this.costLineChart = data;
 
@@ -329,101 +249,40 @@ export class AppComponent {
 
   }
   getProjectSprint(pjid: number) {
-    this.currentProjectId = pjid;
+
     this.api.getProjectSprint(pjid).then(data => {
       this.view = 'branch2sprint'
     })
   }
   getSprintStory(spid: number) {
-    this.currentSprintId = spid;
+
     this.api.getSprintStory(spid).then(data => {
       this.view = 'story'
     })
   }
 
+  boardSelectedId
   getSprintTask(spid: number) {
     this.sideNavToggle = false;
-    this.currentSprintId = spid;
-    this.openDragList = []
-    this.inProgressDragList = []
-    this.doneDragList = []
-    if (!this.api.persons || this.api.persons.length == 0) {
-      this.api.getProjectPerson(this.currentProjectId).then(data => {
-        this.commitGetTask(spid);
-      })
-    }
-    else {
-      this.commitGetTask(spid);
-    }
-
-
-  }
-  commitGetTask(spid: number) {
-    this.api.getSprintTask(spid).then(data => {
-      this.view = 'board'
-      for (let tasks of data) {
-        for (let task of tasks) {
-          if (task.status == 0) {
-            this.openDragList.push(task)
-          }
-          else if (task.status == 4) {
-            this.doneDragList.push(task)
-          }
-          else {
-            this.inProgressDragList.push(task)
-          }
-        }
-      }
-      this.openDragList.sort((a, b) => a.order - b.order)
-      this.inProgressDragList.sort((a, b) => a.order - b.order)
-      this.doneDragList.sort((a, b) => a.order - b.order)
-    })
-  }
-  filter(objs, key, values) {
-    if (typeof values == 'number') {
-      return objs.filter(o => o[key] == values)
-    }
-    if (Array.isArray(values)) {
-      return objs.filter(o => values.includes(o[key]))
-    }
-    return []
-
+    this.view = 'board'
+    this.boardSelectedId=spid;
   }
 
 
-  projectForm = new FormGroup({
-    id: new FormControl(),
-    name: new FormControl(),
-    description: new FormControl(),
-    creation: new FormControl()
-  });
+
+  // projectForm = new FormGroup({
+  //   id: new FormControl(),
+  //   name: new FormControl(),
+  //   description: new FormControl(),
+  //   creation: new FormControl()
+  // });
 
   costLineChart
   costLineChartTitleId
 
-  openDragList = []
-  inProgressDragList = []
-  doneDragList = []
 
 
 
-  drop(event: CdkDragDrop<string[]>) {
-    console.log(event)
-    if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-    } else {
-      transferArrayItem(event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex);
-    }
-  }
-  release(event: CdkDragDrop<string[]>, status) {
-    if (this.selectedTask == null) return;
-    this.api.tasks.reduce((acc, val) => acc.concat(val), []).filter(task => task.id == this.selectedTask)[0].status = status;
-  }
-  selectedTask
-  mouseOverTask(id) {
-    this.selectedTask = id
-  }
+
+
 }

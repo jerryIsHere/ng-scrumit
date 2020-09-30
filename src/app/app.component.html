@@ -3,7 +3,7 @@
     aria-label="Example icon-button with menu icon" *ngIf="view =='board'">
     <mat-icon>menu</mat-icon>
   </button>
-  <span class="example-spacer" style="text-align:  center;"> {{currentTitle()}}</span>
+  <span class="example-spacer" style="text-align:  center;"> {{Title()}}</span>
   <button mat-icon-button (click)="back()" *ngIf="view != 'root'">
     <mat-icon>arrow_back</mat-icon>
   </button>
@@ -84,26 +84,22 @@
         <form formGroupName="projectForm">
           <mat-form-field>
             <mat-label>ID: </mat-label>
-            <input type="text" formControlName="id" matInput
-              [value]="filter(api.projects, 'id',currentProjectId)[0].id">
+            <input type="text" formControlName="id" matInput [value]="this.api.currentProject.id">
           </mat-form-field>
           <br>
           <mat-form-field>
             <mat-label>Name: </mat-label>
-            <input type="text" formControlName="name" matInput
-              [value]="filter(api.projects, 'id',currentProjectId)[0].name">
+            <input type="text" formControlName="name" matInput [value]="this.api.currentProject.name">
           </mat-form-field>
           <br>
           <mat-form-field>
             <mat-label>Description: </mat-label>
-            <input type="text" formControlName="description" matInput
-              [value]="filter(api.projects, 'id',currentProjectId)[0].description">
+            <input type="text" formControlName="description" matInput [value]="this.api.currentProject.description">
           </mat-form-field>
           <br>
           <mat-form-field>
             <mat-label>Creation: </mat-label>
-            <input type="text" matInput formControlName="creation"
-              [value]="filter(api.projects, 'id',currentProjectId)[0].creationDate">
+            <input type="text" matInput formControlName="creation" [value]="this.api.currentProject.creationDate">
           </mat-form-field>
         </form>
         <button mat-fab color="accent" style="right:5%; bottom: 10%; top: auto; position: fixed;"
@@ -161,79 +157,9 @@
 
     </div>
     <div *ngSwitchCase="'board'">
-      <div cdkDropListGroup style="height:90vh; width: 10%; display: inline-block; vertical-align: top;">
-        <mat-accordion v cdkDropList (cdkDropListDropped)="drop($event)" [cdkDropListData]="api.stories">
-          <mat-expansion-panel *ngFor="let story of api.stories" [ngStyle]="storyBoardStyle(story)" cdkDrag>
-            <mat-expansion-panel-header>
-              <mat-panel-title>{{story.name}}</mat-panel-title>
-            </mat-expansion-panel-header>
-          </mat-expansion-panel>
-        </mat-accordion>
-      </div>
-      <div style="width: 90%; display: inline-block;">
-        <div cdkDropListGroup>
-          <mat-accordion cdkDropList style="height:90vh; width: 33%; display: inline-block; vertical-align: top;"
-            (cdkDropListDropped)="drop($event)" [cdkDropListData]="openDragList">
-            <mat-expansion-panel *ngFor="let task of openDragList" [ngStyle]="taskBoardStyle(task)" cdkDrag
-              [style]="taskBoardStyle(task)">
-              <mat-expansion-panel-header>
-                <mat-panel-title>{{task.description}}</mat-panel-title>
-                <mat-panel-description>
-                  <mat-icon [matBadge]="task.person.length" matBadgeSize="small" matBadgeColor="warn">person</mat-icon>
-                </mat-panel-description>
-              </mat-expansion-panel-header>
-              <p *ngFor="let person of filter(api.persons,'id',task.person)">{{person.firstName+ " " +person.lastName}}
-              </p>
-            </mat-expansion-panel>
-          </mat-accordion>
-          <mat-accordion cdkDropList style="height:90vh; width: 33%; display: inline-block; vertical-align: top;"
-            class="example-boundary" (cdkDropListDropped)="drop($event)" [cdkDropListData]="inProgressDragList">
-            <mat-expansion-panel *ngFor="let task of inProgressDragList" [ngStyle]="taskBoardStyle(task)" cdkDrag
-              [style]="taskBoardStyle(task)" (mouseover)="mouseOverTask(task.id)">
-              <mat-expansion-panel-header>
-                <mat-panel-title>{{task.description}}</mat-panel-title>
-                <mat-panel-description>
-                  <mat-icon [matBadge]="task.person.length" matBadgeSize="small" matBadgeColor="warn">person</mat-icon>
-                </mat-panel-description>
-
-              </mat-expansion-panel-header>
-              <p *ngFor="let person of filter(api.persons,'id',task.person)">{{person.firstName+ " " +person.lastName}}
-              </p>
-            </mat-expansion-panel>
-          </mat-accordion>
-          <mat-accordion cdkDropList style="height:90vh; width: 33%; display: inline-block; vertical-align: top;"
-            (cdkDropListDropped)="drop($event)" [cdkDropListData]="doneDragList">
-            <mat-expansion-panel *ngFor="let task of doneDragList" [ngStyle]="taskBoardStyle(task)" cdkDrag
-              [style]="taskBoardStyle(task)">
-              <mat-expansion-panel-header>
-                <mat-panel-title>{{task.description}}</mat-panel-title>
-                <mat-panel-description>
-                  <mat-icon [matBadge]="task.person.length" matBadgeSize="small" matBadgeColor="warn">person</mat-icon>
-                </mat-panel-description>
-              </mat-expansion-panel-header>
-              <p *ngFor="let person of filter(api.persons,'id',task.person)">{{person.firstName+ " " +person.lastName}}
-              </p>
-            </mat-expansion-panel>
-          </mat-accordion>
-
-        </div>
-        <div cdkDropList>
-          <button mat-fab color="pink" style="left:40%; bottom: 15%; top: auto; position: fixed;" cdkDrag
-            cdkDragBoundary=".example-boundary" matTooltip="from previous sprint" (cdkDragReleased)="release($event,2)">
-            <mat-icon [matBadge]="filter(inProgressDragList,'status',2).length">assignment_late</mat-icon>
-          </button>
-          <button mat-fab color="lightblue" style="left:40%; bottom: 5%; top: auto; position: fixed;" cdkDrag
-            cdkDragBoundary=".example-boundary" matTooltip="move to next sprint" (cdkDragReleased)="release($event,3)">
-            <mat-icon [matBadge]="filter(inProgressDragList,'status',3).length">assignment_returned</mat-icon>
-          </button>
-          <button mat-fab color="lightblue" style="left:60%; bottom: 5%; top: auto; position: fixed;" cdkDrag
-            cdkDragBoundary=".example-boundary" matTooltip="move to next sprint" (cdkDragReleased)="release($event,1)">
-            
-          </button>
-        </div>
-      </div>
-
+      <app-board [sprintId]="boardSelectedId"></app-board>
     </div>
+
 
 
     <div *ngSwitchDefault>
