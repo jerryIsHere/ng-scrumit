@@ -41,14 +41,15 @@ export class ChartComponent implements OnInit {
       this.api.getProjectTask().then(tasks => {
         let series = []
         for (let task of tasks) {
-          series.push({ type: 'line', name: task.description, areaStyle: {}, data: [0], stack: task.id, object: task })
+
+          series.push({ type: 'line', name: uniqueName(series, 'name', task.description), areaStyle: {}, data: [0], stack: task.id, object: task })
           for (let issue of task.issues) {
-            series.push({ type: 'line', name: issue.description, areaStyle: {}, data: [0], stack: task.id, object: issue })
+            series.push({ type: 'line', name: uniqueName(series, 'name', issue.description), areaStyle: {}, data: [0], stack: task.id, object: issue })
           }
         }
         let xAxis = [0];
         series.push({
-          type: 'line', name: project.name, areaStyle: {}, data: [0], stack: null, object: {
+          type: 'line', name: uniqueName(series, 'name', project.name), areaStyle: {}, data: [0], stack: null, object: {
             commencement: 0,
             cost: 0,
             duration: project.duration,
@@ -56,7 +57,6 @@ export class ChartComponent implements OnInit {
           }
         })
         let i = 1;
-        console.log(series)
         while (true) {
           let haveData = false;
           for (let entry of series) {
@@ -66,8 +66,8 @@ export class ChartComponent implements OnInit {
           if (!haveData) break;
           for (let entry of series) {
             if (entry.object.commencement <= i && i < entry.object.commencement + entry.object.duration) {
-              let cost = entry.object.cost ? entry.object.cost : 0
-              entry.data[i] = entry.data[i - 1] + cost + project.cost;
+              let cost = entry.object.cost ? entry.object.cost : project.cost
+              entry.data[i] = entry.data[i - 1] + cost  //duration append to end?
             }
             else {
               entry.data[i] = entry.data[i - 1];
@@ -76,7 +76,8 @@ export class ChartComponent implements OnInit {
           xAxis.push(i);
           i++;
         }
-        let total = { type: 'line', name: "total", areaStyle: {}, data: [], stack: null, object: { type: 'total dummy' } }
+        xAxis.push(i);
+        let total = { type: 'line', name: uniqueName(series, 'name', "total"), areaStyle: {}, data: [0], stack: null, object: { type: 'total dummy' } }
         for (let j = 0; j < i; j++) {
           total.data[j] = 0
           for (let entry of series) {
@@ -87,8 +88,10 @@ export class ChartComponent implements OnInit {
         series.push(total);
         this.options.series = series;
         this.options.xAxis["data"] = xAxis;
+        console.log(series)
       })
     })
+
     //     return
     //     let overTime = 0
     //     let titleDict: { [description: string]: number } = {};
@@ -149,6 +152,12 @@ export class ChartComponent implements OnInit {
       trigger: 'axis'
     },
     legend: {
+      type: 'scroll',
+      orient: 'vertical',
+      right: 10,
+      top: 20,
+      bottom: 20,
+
     },
     toolbox: {
       show: true,
@@ -167,4 +176,14 @@ export class ChartComponent implements OnInit {
     ]
   };
 
+}
+
+function uniqueName(series, key, id) {
+  let i = 0;
+  let title = id
+  while (series.filter(entry => entry[key] == title).length > 0) {
+    i++;
+    title = id + ' (' + i + ')';
+  }
+  return title;
 }

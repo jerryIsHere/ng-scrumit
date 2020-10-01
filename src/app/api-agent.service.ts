@@ -38,9 +38,9 @@ var dummy_relation = {
 var dummy = {
   'projects': [
     {
-      "creationDate": 1600863833000, "description": "trr", "name": "test project 2", "id": 2, "duration": 0, "cost": 200
+      "creationDate": 1600863833000, "description": "trr", "name": "test project 2", "id": 2, "duration": 0, "cost": 400
     }, {
-      "creationDate": 1600662795000, "description": "testing", "name": "test project arrr", "id": 1, "duration": 70, "cost": 200
+      "creationDate": 1600662795000, "description": "testing", "name": "test project arrr", "id": 1, "duration": 70, "cost": 400
     }
   ],
   'persons': [
@@ -72,15 +72,15 @@ var dummy = {
     { "creationDate": 1600671987000, "commencement": 50, "order": 2, "duration": 8, "description": "test-b", "status": 0, "id": 2, "person": [] },
     { "creationDate": 1600671141000, "commencement": 40, "order": 3, "duration": 8, "description": "test  by kenny", "status": 1, "id": 3, "person": [2] },
     { "creationDate": 1600692238000, "commencement": 40, "order": 4, "duration": 8, "description": "Test", "status": 1, "id": 4, "person": [2] },
-    { "creationDate": 1600866624000, "commencement": 30, "order": 5, "duration": 8, "description": "New task...", "status": 2, "id": 5, "person": [3, 4] },
-    { "creationDate": 1600663046000, "commencement": 55, "order": 6, "duration": 8, "description": "New task...", "status": 3, "id": 6, "person": [3,] },
+    { "creationDate": 1600866624000, "commencement": 30, "order": 5, "duration": 8, "description": "problem 1", "status": 2, "id": 5, "person": [3, 4] },
+    { "creationDate": 1600663046000, "commencement": 62, "order": 6, "duration": 8, "description": "problem 2", "status": 3, "id": 6, "person": [3,] },
     { "creationDate": 1600663046000, "commencement": 15, "order": 7, "duration": 8, "description": "New task...", "status": 4, "id": 7, "person": [2] },
     { "creationDate": 1600663046000, "commencement": 10, "order": 8, "duration": 8, "description": "New task...", "status": 4, "id": 8, "person": [4] },
   ],
   'issues': [
-    { "creationDate": 1600671987000, "commencement": 45, "duration": 10, "cost": 800, "description": "assigne more developer", "category": ["resign", "recruit"], "id": 3 },
-    { "creationDate": 1600669342000, "commencement": 60, "duration": 10, "cost": 0, "description": "extend deadline", "category": ["unexpected error"], "id": 2 },
-    { "creationDate": 1600671987000, "commencement": 35, "duration": 0, "cost": 400, "description": "assigne more developer", "category": ["resign", "recruit"], "id": 1 },
+    { "creationDate": 1600671987000, "commencement": 45, "duration": 10, "cost": 300, "description": "assigne more developer", "category": ["resign", "recruit"], "id": 3 },
+    { "creationDate": 1600669342000, "commencement": 70, "duration": 10, "cost": 0, "description": "extend deadline", "category": ["unexpected error"], "id": 2 },
+    { "creationDate": 1600671987000, "commencement": 35, "duration": 5, "cost": 800, "description": "assigne more developer", "category": ["resign", "recruit"], "id": 1 },
   ]
 
 }
