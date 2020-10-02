@@ -34,6 +34,7 @@ import { FilterPipe } from './filter.pipe';
 
 import { NgxEchartsModule } from 'ngx-echarts';
 import * as echarts from 'echarts';
+import { SprintOverviewComponent } from './sprint-overview/sprint-overview.component';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import * as echarts from 'echarts';
     UserstoryFormComponent,
     ProjectOverviewComponent,
     FilterPipe,
+    SprintOverviewComponent,
   ],
   imports: [
     BrowserModule,
