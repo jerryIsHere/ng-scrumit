@@ -1,0 +1,18 @@
+<mat-nav-list>
+    <mat-list-item>
+      list of developers
+    </mat-list-item>
+    <mat-list-item *ngFor="let person of api.persons">
+      <button mat-raised-button>{{person.firstName+ " " +person.lastName}}
+        <mat-icon>open_in_new</mat-icon>
+      </button>
+      <button mat-icon-button style="margin-left:auto; margin-right:0;" matTooltip="remove developer">
+        <mat-icon>person_remove</mat-icon>
+      </button>
+    </mat-list-item>
+    <mat-divider></mat-divider>
+    <button mat-fab color="accent" style="right:5%; bottom: 10%; top: auto; position: fixed;"
+      matTooltip="add developer">
+      <mat-icon>person_add</mat-icon>
+    </button>
+  </mat-nav-list>

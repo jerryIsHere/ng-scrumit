@@ -1,6 +1,7 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { ApiAgentService } from './api-agent.service';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Location } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
 
 
 //to do 0. api service 1. display individual info and update form  2. form for multiple submit button  3. board 4. chart
@@ -11,8 +12,9 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {
-  constructor(public api: ApiAgentService) {
+  constructor(public api: ApiAgentService, public router: Router, private location: Location, public activeRoute: ActivatedRoute) {
     this.api.getAllProject();
+
   }
 
   haveEntry() {
@@ -37,28 +39,7 @@ export class AppComponent {
         return false;
     }
   }
-  haveContent() {
-    switch (this.view) {
-      case 'root':
-        return true;
-      case 'project':
-        return true;
-      case 'person':
-        return this.api.persons != null;
-      case 'chart':
-        return true;
-      case 'branch2sprint':
-        return true
-      case 'sprint':
-        return true;
-      case 'story':
-        return this.api.stories != null;
-      case 'board':
-        return true;
-      default:
-        return false;
-    }
-  }
+
 
 
   Title() {
@@ -77,50 +58,34 @@ export class AppComponent {
     return s;
   }
 
-
-
-
-  sideNavToggle = false;
-  _view: string[] = new Array("root");
   get view(): string {
-
-    return this._view[this._view.length - 1];
-
+    for (let view in this.routes) {
+      if ('/' + this.router.url.split('/')[1] == this.routes[view])
+        return view
+    }
+    return "root"
   }
-  set view(state: string) {
-    this.states.forEach((substate, index) => {
-      if (substate.includes(state)) {
-        while (this._view.length > index) this._view.pop();
-        while (this._view.length < index)
-          this._view.push(this.states[this._view.length][0]);
-
-        this._view.push(state);
-      }
-    })
+  back() {
+    this.location.back()
   }
+
   states: Array<Array<string>> = [["root", "project", "person", "chart"], ["branch2sprint", "sprint", "story"], ["board"]]
+  routes: { [view: string]: string } = {
+    "root": "/home",
+    "project": "/project-overview",
+    "person": "/person-list",
+    "chart": "/chart",
+    "sprint": "/sprint-overview",
+    "story": "/userstory-list",
+    "board": "/board",
+    "branch2sprint": "/sprint-home"
+  }
 
   ngOnInit() {
-
   }
 
 
-  back() {
-    if (this._view.length > 1) {
-      this._view.pop();
-      switch (this._view.length) {
-        case 1:
 
-        case 2:
-
-        case 3:
-
-      }
-    }
-    else {
-      this.view = "root";
-    }
-  }
 
   projectStyle(project) {
     if (this.view == "root") return {};
@@ -136,74 +101,11 @@ export class AppComponent {
 
     return style;
   }
-  personStyle(person) {
-    let style = {}
-    if (person.id && this.api.currentPerson && person.id == this.api.currentPerson.id) style["background-color"] = 'greenyellow'
-
-    return style;
-  }
-  storyStyle(story) {
-    let style = {}
-    if (story.id && this.api.currentStory && story.id == this.api.currentStory.id) style["background-color"] = 'greenyellow'
-
-    return style;
-  }
-
 
   getAllProject() {
     this.api.getAllProject();
   }
-  getProject(pjid) {
-    this.view = 'project';
-    this.api.getProject(pjid).then(data => {
-
-    })
-  }
-
-  getProjectPerson(pjid: number) {
-
-    this.view = 'person'
-    this.api.getProjectPerson(pjid).then(data => {
-
-    })
-  }
-
-
-  getProjectSprint(pjid: number) {
-
-    this.api.getProjectSprint(pjid).then(data => {
-      this.view = 'branch2sprint'
-    })
-  }
-  getSprintStory(spid: number) {
-
-    this.api.getSprintStory(spid).then(data => {
-      this.view = 'story'
-    })
-  }
-
-  getSprintTask(spid: number) {
-    this.sideNavToggle = false;
-    this.api.getSprintStory(spid).then(story => {
-      this.view = 'board'
-    })
-  }
-
-  getChart(pjid: number) {
-    this.api.getProject(pjid).then(project => {
-      this.view = 'chart'
-    })
-  }
-
-  // projectForm = new FormGroup({
-  //   id: new FormControl(),
-  //   name: new FormControl(),
-  //   description: new FormControl(),
-  //   creation: new FormControl()
-  // });
-
-
-
+  sideNavToggle
 
 
 

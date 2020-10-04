@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
 import { ApiAgentService } from './../api-agent.service';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-board',
   templateUrl: './board.component.html',
@@ -9,12 +10,15 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
 })
 export class BoardComponent implements OnInit {
 
-  constructor(public api: ApiAgentService) {
+  constructor(public api: ApiAgentService, public route: ActivatedRoute) { }
 
-  }
   ngOnInit() {
-    this.getSprintTask();
+    this.route.paramMap.subscribe(params => {
+      this.getSprintTask(params.get('id'));
+
+    })
   }
+
   storyBoardStyle(story) {
 
   }
@@ -82,18 +86,21 @@ export class BoardComponent implements OnInit {
   inProgressDragList = []
   doneDragList = []
 
-  getSprintTask() {
-    this.openDragList = []
-    this.inProgressDragList = []
-    this.doneDragList = []
-    if (!this.api.persons || this.api.persons.length == 0) {
-      this.api.getProjectPerson().then(data => {
+  getSprintTask(spid) {
+    this.api.getSprintTask(spid).then(data => {
+      this.openDragList = []
+      this.inProgressDragList = []
+      this.doneDragList = []
+      if (!this.api.persons || this.api.persons.length == 0) {
+        this.api.getProjectPerson().then(data => {
+          this.commitGetTask();
+        })
+      }
+      else {
         this.commitGetTask();
-      })
-    }
-    else {
-      this.commitGetTask();
-    }
+      }
+    })
+
 
 
   }

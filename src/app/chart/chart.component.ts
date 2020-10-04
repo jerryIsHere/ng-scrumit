@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { ApiAgentService } from './../api-agent.service';
 
 
@@ -9,21 +10,23 @@ import { ApiAgentService } from './../api-agent.service';
 })
 export class ChartComponent implements OnInit {
 
-  constructor(public api: ApiAgentService) {
-    this.getChart();
+  constructor(public api: ApiAgentService, public route: ActivatedRoute) {
   }
 
   ngOnInit(): void {
+    this.route.paramMap.subscribe(params => {
+      this.getChart(Number(params.get('id')))
+    })
   }
 
   costLineChart
   costLineChartTitleId
 
-  getChart() {
+  getChart(pjid) {
     this.costLineChart = null;
 
     let slope = {};
-    this.api.getProject().then(project => {
+    this.api.getProject(pjid).then(project => {
       let data = [{
         name: "initial expectation",
         series: [

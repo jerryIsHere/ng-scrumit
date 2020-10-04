@@ -35,6 +35,10 @@ import { FilterPipe } from './filter.pipe';
 import { NgxEchartsModule } from 'ngx-echarts';
 import * as echarts from 'echarts';
 import { SprintOverviewComponent } from './sprint-overview/sprint-overview.component';
+import { PersonListComponent } from './person-list/person-list.component';
+import { UserStoryListComponent } from './user-story-list/user-story-list.component';
+import { HomeComponent } from './home/home.component';
+import { SprintHomeComponent } from './sprint-home/sprint-home.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +50,10 @@ import { SprintOverviewComponent } from './sprint-overview/sprint-overview.compo
     ProjectOverviewComponent,
     FilterPipe,
     SprintOverviewComponent,
+    PersonListComponent,
+    UserStoryListComponent,
+    HomeComponent,
+    SprintHomeComponent,
   ],
   imports: [
     BrowserModule,
