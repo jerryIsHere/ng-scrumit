@@ -14,7 +14,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class AppComponent {
   constructor(public api: ApiAgentService, public router: Router, private location: Location, public activeRoute: ActivatedRoute) {
     this.api.getAllProject();
-
   }
 
   haveEntry() {
@@ -82,6 +81,10 @@ export class AppComponent {
   }
 
   ngOnInit() {
+    this.activeRoute.paramMap.subscribe(params => {
+      console.log(params)
+      console.log(Number(params.get('id')))
+    })
   }
 
 
