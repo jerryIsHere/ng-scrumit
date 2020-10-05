@@ -1,8 +1,8 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { ApiAgentService } from './api-agent.service';
 import { Location } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
-
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
+type requestAction = (id: number) => Promise<any>;
 
 //to do 0. api service 1. display individual info and update form  2. form for multiple submit button  3. board 4. chart
 @Component({
@@ -12,9 +12,19 @@ import { ActivatedRoute, Router } from '@angular/router';
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {
-  constructor(public api: ApiAgentService, public router: Router, private location: Location, public activeRoute: ActivatedRoute) {
+  constructor(public api: ApiAgentService, public router: Router, private location: Location, public activatedRoute: ActivatedRoute) {
     this.api.getAllProject();
+    this.router.events.subscribe(e => {
+      if (e instanceof NavigationEnd) {
+        console.log(e)
+        let id = Number(e.id)
+        if (this.requests[this.view]) this.requests[this.view](id);
+      }
+    })
   }
+
+
+
 
   haveEntry() {
     switch (this.view) {
@@ -59,7 +69,7 @@ export class AppComponent {
 
   get view(): string {
     for (let view in this.routes) {
-      if ('/' + this.router.url.split('/')[1] == this.routes[view])
+      if (this.router.url.split('/')[1] == this.routes[view])
         return view
     }
     return "root"
@@ -68,23 +78,30 @@ export class AppComponent {
     this.location.back()
   }
 
-  states: Array<Array<string>> = [["root", "project", "person", "chart"], ["branch2sprint", "sprint", "story"], ["board"]]
   routes: { [view: string]: string } = {
-    "root": "/home",
-    "project": "/project-overview",
-    "person": "/person-list",
-    "chart": "/chart",
-    "sprint": "/sprint-overview",
-    "story": "/userstory-list",
-    "board": "/board",
-    "branch2sprint": "/sprint-home"
+    "root": "home",
+    "project": "project-overview",
+    "person": "person-list",
+    "chart": "chart",
+    "sprint": "sprint-overview",
+    "story": "userstory-list",
+    "board": "board",
+    "branch2sprint": "sprint-home"
   }
 
+  requests: { [view: string]: requestAction } = {
+    "root": null,
+    "project": null,
+    "person": null,
+    "chart": null,
+    "sprint": this.api.getProjectSprint,
+    "story": this.api.getProjectSprint,
+    "board": this.api.getProjectSprint,
+    "branch2sprint": this.api.getProjectSprint,
+  }
+
+
   ngOnInit() {
-    this.activeRoute.paramMap.subscribe(params => {
-      console.log(params)
-      console.log(Number(params.get('id')))
-    })
   }
 
 
