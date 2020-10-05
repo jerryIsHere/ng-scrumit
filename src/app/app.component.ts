@@ -102,9 +102,14 @@ export class AppComponent {
 
 
   ngOnInit() {
+    this.api.getAllProject();
   }
 
 
+  removeProject(pjid) {
+    this.api.deleteProject(pjid);
+    this.ngOnInit();
+  }
 
 
   projectStyle(project) {

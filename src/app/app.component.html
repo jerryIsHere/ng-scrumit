@@ -38,9 +38,12 @@
         </mat-list-item>
 
         <mat-divider></mat-divider>
-
+        <button *ngIf="this.api.currentProjectId" mat-fab color="accent" style="left:1%; bottom: 10%; top: auto;  position: fixed;"
+          matTooltip="remove project" (click)="removeProject(this.api.currentProjectId)">
+          <mat-icon>delete</mat-icon>
+        </button>
         <button mat-fab color="accent" style="left:5%; bottom: 10%; top: auto;  position: fixed;"
-          matTooltip="new project">
+          matTooltip="new project" routerLink="{{'/project-overview/0'}}">
           <mat-icon>create_new_folder</mat-icon>
         </button>
       </mat-nav-list>

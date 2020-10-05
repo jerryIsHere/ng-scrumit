@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ApiAgentService } from './../api-agent.service';
 
-
 @Component({
   selector: 'app-project-overview',
   templateUrl: './project-overview.component.html',
@@ -21,12 +20,10 @@ export class ProjectOverviewComponent implements OnInit {
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
-      console.log('init');
-      let id = params.get('id');
+      let id = Number(params.get('id'));
       console.log(id);
-      if (id != 'new') {
+      if (id != 0) {
         this.api.getProject(Number(id)).then(data => {
-          console.log("asd");
           this.id = data.id;
           this.name = data.name;
           this.description = data.description;
@@ -34,8 +31,8 @@ export class ProjectOverviewComponent implements OnInit {
           this.isNew = false;
         });
       } else {
-          console.log('new');
           this.isNew = true;
+          this.api.currentProjectId = null;
           this.clear();
       }
 
@@ -46,13 +43,13 @@ export class ProjectOverviewComponent implements OnInit {
   create():void {
     this.api.createProject(this.constructRequestObject(true)).then(response => {
       this.api.getAllProject();
-    })
+      this.reset();
+    });
   }
 
   update():void {
     this.api.updateProject(this.constructRequestObject(false)).then(response => {
       this.reset();
-      console.log("updated success");
     });
   }
 
@@ -68,11 +65,15 @@ export class ProjectOverviewComponent implements OnInit {
   }
 
   constructRequestObject(isNew:boolean):any {
-    var projectRequestObject = {name:this.name, description:this.description};
+    var projectRequestObject = {
+      name: this.name,
+      description: this.description
+    };
     if (!isNew) {
       projectRequestObject['id'] = this.id;
       projectRequestObject['creationDate'] = this.creationDate;
     }
+    console.log(projectRequestObject);
     return projectRequestObject;
   }
 }

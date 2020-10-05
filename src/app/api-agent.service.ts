@@ -136,25 +136,28 @@ export class ApiAgentService {
       return project;
     })
   }
-
   updateProjectRequest = (newProject) => {
-    return this.http.post(`${apiURL}/project/update/`,newProject,httpOptions).toPromise();
+    return this.http.post(`${apiURL}/project/update/`,newProject).toPromise();
   }
   updateProject = (newProject): Promise<any> => {
     return this.updateProjectRequest(newProject).then(res => {
       return res;
     });
   }
-
   createProjectRequest = (newProject) => {
     return this.http.post(`${apiURL}/project/add/`,newProject).toPromise();
   }
-  createProject = (newProject) => {
-    return this.createProject(newProject).then(res => {
+  createProject = (newProject):Promise<any> => {
+    return this.createProjectRequest(newProject).then(res => {
       return res;
     });
   }
-
+  deleteProjectRequest = (pjid) => {
+    return this.http.get(`${apiURL}/project/remove/${pjid}/`).toPromise();
+  }
+  deleteProject = (pjid):Promise<any> => {
+    return this.deleteProjectRequest(pjid).then(res => {});
+  }
 
   getProjectPersonRequest = (pjid) => {
     return Promise.resolve(dummy["persons"].filter(data => (dummy_relation["project"]["person"][pjid] as Array<number>).includes(data.id)))
@@ -316,10 +319,10 @@ export class ApiAgentService {
     }
   };
   private _currentProjectId = null;
-  private get currentProjectId(): number {
+  get currentProjectId(): number {
     return this._currentProjectId;
   }
-  private set currentProjectId(id: number) {
+  set currentProjectId(id: number) {
     if (this._currentProjectId != id) {
       this.persons = null;
       this.sprints = null;

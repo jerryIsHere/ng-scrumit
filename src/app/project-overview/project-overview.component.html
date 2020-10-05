@@ -1,22 +1,22 @@
 <form formGroupName="projectForm">
     <mat-form-field *ngIf="!isNew">
         <mat-label>ID: </mat-label>
-        <input type="text" formControlName="id" matInput [value]="this.id" [readonly]="true">
+        <input type="text" name="id" matInput [value]="this.id" [readonly]="true">
     </mat-form-field>
     <br>
     <mat-form-field>
         <mat-label>Name: </mat-label>
-        <input type="text" formControlName="name" matInput [value]="this.name">
+        <input type="text" name="name" matInput [(ngModel)]="this.name">
     </mat-form-field>
     <br>
     <mat-form-field>
         <mat-label>Description: </mat-label>
-        <input type="text" formControlName="description" matInput [value]="this.description">
+        <input type="text" name="description" matInput [(ngModel)]="this.description">
     </mat-form-field>
     <br>
     <mat-form-field *ngIf="!isNew">
         <mat-label>Creation: </mat-label>
-        <input type="text" matInput formControlName="creation" [value]="this.creationDate" [readonly]="true">
+        <input type="text" matInput   name="creationDate" [value]="this.creationDate" [readonly]="true">
     </mat-form-field>
 </form>
 <button *ngIf="isNew" mat-fab color="accent" style="right:5%; bottom: 10%; top: auto; position: fixed;" matTooltip="Create" (click)="create()">
