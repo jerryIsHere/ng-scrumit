@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from './../environments/environment';
+
 
 var dummy_relation = {
   'project': {
@@ -75,7 +77,7 @@ var dummy = {
     { "creationDate": 1600866624000, "commencement": 30, "order": 5, "duration": 8, "description": "problem 1", "status": 2, "id": 5, "person": [3, 4] },
     { "creationDate": 1600663046000, "commencement": 62, "order": 6, "duration": 8, "description": "problem 2", "status": 3, "id": 6, "person": [3,] },
     { "creationDate": 1600663046000, "commencement": 15, "order": 7, "duration": 8, "description": "New task...", "status": 4, "id": 7, "person": [2] },
-    { "creationDate": 1600663046000, "commencement": 10, "order": 8, "duration": 8, "description": "New task...", "status": 4, "id": 8, "person": [4] }, 
+    { "creationDate": 1600663046000, "commencement": 10, "order": 8, "duration": 8, "description": "New task...", "status": 4, "id": 8, "person": [4] },
   ],
   'issues': [
     { "creationDate": 1600671987000, "commencement": 45, "duration": 10, "cost": 300, "description": "assigne more developer", "category": ["resign", "recruit"], "id": 3 },
@@ -84,6 +86,18 @@ var dummy = {
   ]
 
 }
+
+//TODO cannot fix CORS problem
+let httpOptions = {
+  headers: new HttpHeaders({
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': '*',
+    'Access-Control-Allow-Methods': '*',
+    'Content-Type': 'application/json'
+  })
+};
+
+const apiURL = environment.apiURL;
 
 @Injectable({
   providedIn: 'root'
@@ -99,8 +113,7 @@ export class ApiAgentService {
 
   }
   getAllProjectRequest = () => {
-    return Promise.resolve(dummy["projects"])
-    return this.http.get("http://34.92.198.0:8080/scrumit/project/allprojects/").toPromise()
+    return this.http.get(`${apiURL}/project/allprojects/`).toPromise();
   }
   getAllProject = (): Promise<any> => {
     return this.getAllProjectRequest().then(projects => {
@@ -109,15 +122,37 @@ export class ApiAgentService {
     })
   }
   getProjectRequest = (pjid) => {
-    return Promise.resolve(dummy["projects"].filter(data => data.id == pjid)[0])
-    return this.http.get("http://34.92.198.0:8080/scrumit/project/" + pjid + "/").toPromise()
+    return this.http.get(`${apiURL}/project/${pjid}/`).toPromise();
   }
   getProject = (pjid = this._currentProjectId): Promise<any> => {
     this.currentProjectId = pjid;
     return this.getProjectRequest(pjid).then(project => {
-      this.projects.filter(pj => pj.id == pjid)[0] = project
+      this.projects.map((existingProj,index) => {
+        if (existingProj.id == pjid) {
+          project['creationDate'] = this.convertToDateTime(parseInt(project['creationDate']));
+          this.projects[index] = project;
+        }
+      });
       return project;
     })
+  }
+
+  updateProjectRequest = (newProject) => {
+    return this.http.post(`${apiURL}/project/update/`,newProject,httpOptions).toPromise();
+  }
+  updateProject = (newProject): Promise<any> => {
+    return this.updateProjectRequest(newProject).then(res => {
+      return res;
+    });
+  }
+
+  createProjectRequest = (newProject) => {
+    return this.http.post(`${apiURL}/project/add/`,newProject).toPromise();
+  }
+  createProject = (newProject) => {
+    return this.createProject(newProject).then(res => {
+      return res;
+    });
   }
 
 
@@ -147,8 +182,7 @@ export class ApiAgentService {
   }
 
   getProjectSprintRequest = (pjid) => {
-    return Promise.resolve(dummy["sprints"].filter(data => (dummy_relation["project"]["sprint"][pjid] as Array<number>).includes(data.id)))
-    return this.http.get("http://34.92.198.0:8080/scrumit/sprint/all/" + pjid + "/").toPromise()
+    return this.http.get(`${apiURL}/sprint/all/${pjid}/`).toPromise();
   }
   getProjectSprint = (pjid: number = this._currentProjectId): Promise<any> => {
     this.currentProjectId = pjid;
@@ -166,8 +200,18 @@ export class ApiAgentService {
     this.currentSprintId = id;
     return this.getSprintRequest(pjid).then(sprint => {
       this.sprints.filter(s => s.id == id)[0] = sprint;
-      return sprint
-    })
+      return sprint;
+    });
+  }
+
+  createSprintRequest = (pjid,newSprint) => {
+      return this.http.post(`${apiURL}/sprint/add/${pjid}`,newSprint,httpOptions).toPromise();
+  }
+  createSprint = (pjid: number,newSprint):Promise<any> => {
+      this.currentProjectId = pjid;
+      return this.createSprintRequest(pjid,newSprint).then(res=>{
+        return res;
+      });
   }
 
 
@@ -241,6 +285,28 @@ export class ApiAgentService {
       return tasks
     })
   }
+
+  convertToDateTime = (milliseconds: number): string => {
+    const dataObject = new Date(milliseconds);
+    var day = `${dataObject.getDate()}`;
+    var month = `${(dataObject.getMonth() + 1)}`;
+    var year = `${dataObject.getFullYear()}`;
+    var hour = `${dataObject.getHours()}`
+    var minutes = `${dataObject.getMinutes()}`
+    var seconds = `${dataObject.getSeconds()}`
+    var dateTime =  `${day}.${month}.${year} ${hour}:${minutes}:${seconds}`;
+    return dateTime;
+  }
+
+  convertToDate = (milliseconds: number): string => {
+    const dataObject = new Date(milliseconds);
+    var day = `${dataObject.getDate()}`;
+    var month = `${(dataObject.getMonth() + 1)}`;
+    var year = `${dataObject.getFullYear()}`;
+    var dateTime =  `${day}.${month}.${year}`;
+    return dateTime;
+  }
+
   get currentProject() {
     try {
       return this.projects.filter(project => project.id == this._currentProjectId)[0]

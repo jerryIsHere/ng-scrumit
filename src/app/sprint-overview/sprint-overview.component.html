@@ -1,1 +1,30 @@
-<p>sprint-overview works!</p>
+<form formGroupName="sprintForm">
+  <mat-form-field *ngIf="!isNew">
+      <mat-label>ID: </mat-label>
+      <input type="text" formControlName="id" matInput [value]="this.id" [readonly]="true">
+  </mat-form-field>
+  <br>
+  <mat-form-field>
+      <mat-label>Name: </mat-label>
+      <input type="text" formControlName="name" matInput [value]="this.name">
+  </mat-form-field>
+  <br>
+  <mat-form-field>
+      <mat-label>Description: </mat-label>
+      <input type="text" formControlName="description" matInput [value]="this.startDate" [readonly]="true">
+  </mat-form-field>
+  <br>
+  <mat-form-field *ngIf="!isNew">
+      <mat-label>Creation: </mat-label>
+      <input type="text" matInput formControlName="creation" [value]="this.endDate" [readonly]="true">
+  </mat-form-field>
+</form>
+<button *ngIf="isNew" mat-fab color="accent" style="right:5%; bottom: 10%; top: auto; position: fixed;" matTooltip="Create" (click)="create()">
+<mat-icon>done</mat-icon>
+</button>
+<button *ngIf="!isNew" mat-fab color="accent" style="right:5%; bottom: 10%; top: auto; position: fixed;" matTooltip="Update" (click)="update()">
+  <mat-icon>edit</mat-icon>
+</button>
+<button mat-fab color="accent" style="right:10%; bottom: 10%; top: auto; position: fixed;" matTooltip="Clear" (click)="reset()">
+<mat-icon>clear</mat-icon>
+</button>
