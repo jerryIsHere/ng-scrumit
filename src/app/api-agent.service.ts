@@ -197,7 +197,7 @@ export class ApiAgentService {
   getSprintRequest = (id) => {
     return this.http.get(`${apiURL}/sprint/sprint/${id}/`).toPromise();
   }
-  getSprint = (pjid: number = this._currentProjectId, id = this._currentSprintId): Promise<any> => {
+  getSprint = (pjid: number , id): Promise<any> => {
     this.currentProjectId = pjid;
     this.currentSprintId = id;
     return this.getSprintRequest(id).then(sprint => {

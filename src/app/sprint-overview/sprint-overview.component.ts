@@ -21,12 +21,9 @@ export class SprintOverviewComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
-      console.log(this.api.currentProject.id);
-      let id = Number(params.get('id'));
-      console.log(id);
-      if (id != 0) {
-        this.api.getSprint(this.api.currentProjectId, id).then(data => {
-          console.log('hi');
+      const spid = Number(params.get('id'));
+      if (spid != 0) {
+        this.api.getSprint(this.api.currentProjectId, spid).then(data => {
           this.id = data.id;
           this.slogan = data.slogan;
           this.startDate = data.startDate;
@@ -37,7 +34,6 @@ export class SprintOverviewComponent implements OnInit {
           this.isNew = true;
           this.clear();
       }
-
     });
   }
 
