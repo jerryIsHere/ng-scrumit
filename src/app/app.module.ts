@@ -22,6 +22,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatTabsModule } from '@angular/material/tabs';
 
 
 import { ChartComponent } from './chart/chart.component';
@@ -77,7 +78,8 @@ import { SprintHomeComponent } from './sprint-home/sprint-home.component';
     NgxEchartsModule.forRoot({
       echarts,
     }),
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    MatTabsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
