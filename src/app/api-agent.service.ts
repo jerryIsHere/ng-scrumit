@@ -75,7 +75,7 @@ var dummy = {
     { "creationDate": 1600866624000, "commencement": 30, "order": 5, "duration": 8, "description": "problem 1", "status": 2, "id": 5, "person": [3, 4] },
     { "creationDate": 1600663046000, "commencement": 62, "order": 6, "duration": 8, "description": "problem 2", "status": 3, "id": 6, "person": [3,] },
     { "creationDate": 1600663046000, "commencement": 15, "order": 7, "duration": 8, "description": "New task...", "status": 4, "id": 7, "person": [2] },
-    { "creationDate": 1600663046000, "commencement": 10, "order": 8, "duration": 8, "description": "New task...", "status": 4, "id": 8, "person": [4] }, 
+    { "creationDate": 1600663046000, "commencement": 10, "order": 8, "duration": 8, "description": "New task...", "status": 4, "id": 8, "person": [4] },
   ],
   'issues': [
     { "creationDate": 1600671987000, "commencement": 45, "duration": 10, "cost": 300, "description": "assigne more developer", "category": ["resign", "recruit"], "id": 3 },
@@ -161,10 +161,9 @@ export class ApiAgentService {
     return Promise.resolve(dummy["sprints"].filter(sprint => sprint.id == id))
     return this.http.get("http://34.92.198.0:8080/scrumit/sprint/sprint/" + id + "/").toPromise()
   }
-  getSprint = (pjid: number = this._currentProjectId, id = this._currentSprintId): Promise<any> => {
-    this.currentProjectId = pjid;
+  getSprint = (id = this._currentSprintId): Promise<any> => {
     this.currentSprintId = id;
-    return this.getSprintRequest(pjid).then(sprint => {
+    return this.getSprintRequest(id).then(sprint => {
       this.sprints.filter(s => s.id == id)[0] = sprint;
       return sprint
     })
@@ -186,10 +185,9 @@ export class ApiAgentService {
     return Promise.resolve(dummy["stpries"].filter(sprint => sprint.id == id))
     return this.http.get("http://34.92.198.0:8080/scrumit/sprint/userstory/" + id + " / ").toPromise()
   }
-  getStory = (spid: number = this._currentSprintId, id: number = this._currentStoryId): Promise<any> => {
-    this.currentSprintId = spid;
+  getStory = (id: number = this._currentStoryId): Promise<any> => {
     this.currentStoryId = id;
-    return this.getStoryRequest(spid).then(story => {
+    return this.getStoryRequest(id).then(story => {
       this.stories.filter(s => s.id == id)[0] = story;
       return story
     })
