@@ -1,22 +1,22 @@
 <form formGroupName="sprintForm">
   <mat-form-field *ngIf="!isNew">
       <mat-label>ID: </mat-label>
-      <input type="text" formControlName="id" matInput [value]="this.id" [readonly]="true">
+      <input type="text" name="id" matInput [value]="this.id" [readonly]="true">
   </mat-form-field>
   <br>
   <mat-form-field>
-      <mat-label>Name: </mat-label>
-      <input type="text" formControlName="name" matInput [value]="this.slogan">
+      <mat-label>Slogan: </mat-label>
+      <input type="text" name="slogan" matInput [(ngModel)]="this.slogan">
   </mat-form-field>
   <br>
   <mat-form-field>
-      <mat-label>Description: </mat-label>
-      <input type="text" formControlName="description" matInput [value]="this.startDate" [readonly]="true">
+      <mat-label>Start Date: </mat-label>
+      <input type="text" name="description" matInput [(ngModel)]="this.startDate" [readonly]="true">
   </mat-form-field>
   <br>
   <mat-form-field *ngIf="!isNew">
-      <mat-label>Creation: </mat-label>
-      <input type="text" matInput formControlName="creation" [value]="this.endDate" [readonly]="true">
+      <mat-label>End Date: </mat-label>
+      <input type="text" matInput name="creation" [value]="this.endDate" [readonly]="true">
   </mat-form-field>
 </form>
 <button *ngIf="isNew" mat-fab color="accent" style="right:5%; bottom: 10%; top: auto; position: fixed;" matTooltip="Create" (click)="create()">

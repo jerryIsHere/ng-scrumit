@@ -105,6 +105,9 @@ export class AppComponent {
     this.api.getAllProject();
   }
 
+  removeSprint(sprintId) {
+
+  }
 
   removeProject(pjid) {
     this.api.deleteProject(pjid);

@@ -191,18 +191,23 @@ export class ApiAgentService {
     this.currentProjectId = pjid;
     return this.getProjectSprintRequest(pjid).then(sprints => {
       this.sprints = sprints as Array<any>;
-      return sprints
+      return sprints;
     })
   }
   getSprintRequest = (id) => {
-    return Promise.resolve(dummy["sprints"].filter(sprint => sprint.id == id))
-    return this.http.get("http://34.92.198.0:8080/scrumit/sprint/sprint/" + id + "/").toPromise()
+    return this.http.get(`${apiURL}/sprint/sprint/${id}/`).toPromise();
   }
   getSprint = (pjid: number = this._currentProjectId, id = this._currentSprintId): Promise<any> => {
     this.currentProjectId = pjid;
     this.currentSprintId = id;
-    return this.getSprintRequest(pjid).then(sprint => {
-      this.sprints.filter(s => s.id == id)[0] = sprint;
+    return this.getSprintRequest(id).then(sprint => {
+      this.sprints.map((existingSprint,index) => {
+        if (existingSprint.id == id) {
+          sprint['startDate'] = this.convertToDate(parseInt(sprint['startDate']));
+          sprint['endDate'] = this.convertToDate(parseInt(sprint['endDate']));
+          this.sprints[index] = sprint;
+        }
+      });
       return sprint;
     });
   }

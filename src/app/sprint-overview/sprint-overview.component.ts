@@ -9,7 +9,7 @@ import { ApiAgentService } from '../api-agent.service';
 })
 export class SprintOverviewComponent implements OnInit {
 
-  isNew:boolean;
+  isNew:boolean=false;
   id:number;
   slogan:string;
   startDate:string;
@@ -21,12 +21,12 @@ export class SprintOverviewComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
-      console.log('init');
-      let id = params.get('id');
+      console.log(this.api.currentProject.id);
+      let id = Number(params.get('id'));
       console.log(id);
-      if (id != 'new') {
-        this.api.getSprint(Number(id)).then(data => {
-          console.log("asd");
+      if (id != 0) {
+        this.api.getSprint(this.api.currentProjectId, id).then(data => {
+          console.log('hi');
           this.id = data.id;
           this.slogan = data.slogan;
           this.startDate = data.startDate;
@@ -34,7 +34,6 @@ export class SprintOverviewComponent implements OnInit {
           this.isNew = false;
         });
       } else {
-          console.log('new');
           this.isNew = true;
           this.clear();
       }
@@ -43,16 +42,11 @@ export class SprintOverviewComponent implements OnInit {
   }
 
   create():void {
-    this.api.createProject(this.constructRequestObject(true)).then(response => {
-      this.api.getAllProject();
-    })
+
   }
 
   update():void {
-    this.api.updateProject(this.constructRequestObject(false)).then(response => {
-      console.log(response);
-      this.reset();
-    });
+
   }
 
   reset():void {
@@ -67,7 +61,9 @@ export class SprintOverviewComponent implements OnInit {
   }
 
   constructRequestObject(isNew:boolean):any {
-    var sprintObject = {slogan:this.slogan};
+    var sprintObject = {
+      slogan: this.slogan
+    };
     if (!isNew) {
       sprintObject['id'] = this.id;
       sprintObject['startDate'] = this.startDate;

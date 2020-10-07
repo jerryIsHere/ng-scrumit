@@ -52,7 +52,7 @@
         <mat-divider></mat-divider>
         <mat-list-item>Filter</mat-list-item>
         <mat-divider></mat-divider>
-        <mat-spinner *ngIf="!haveEntry"></mat-spinner>
+        <mat-spinner *ngIf="!haveEntry()"></mat-spinner>
 
         <mat-list-item *ngFor="let sprint of api.sprints" [ngStyle]="sprintStyle(sprint)">
           <button routerLink="{{'/sprint-overview/' + sprint.id}}" mat-raised-button>{{sprint.slogan}}
