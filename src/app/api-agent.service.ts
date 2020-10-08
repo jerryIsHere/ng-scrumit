@@ -60,22 +60,22 @@ var dummy = {
   'stories': [
     {
       "creationDate": null, "xCoord": 10, "yCoord": 6, "duration": 30, "acceptanceTest": null,
-      "sprints": [], "tasks": [], "name": "test", "priority": 0, "id": 1
+      "sprint": 1, "tasks": [1, 2, 3, 4], "name": "test", "priority": 1, "id": 1
     },
     {
       "creationDate": null, "xCoord": 10, "yCoord": 27, "duration": 40, "acceptanceTest": null,
-      "sprints": [], "tasks": [], "name": "test2", "priority": 0, "id": 2
+      "sprint": 1, "tasks": [5, 6, 7, 8], "name": "test2", "priority": 0, "id": 2
     }
   ],
   'tasks': [// task have person & issue array
-    { "creationDate": 1600669342000, "commencement": 50, "order": 1, "duration": 8, "description": "test-a1", "status": 0, "id": 1, "person": [] },
-    { "creationDate": 1600671987000, "commencement": 50, "order": 2, "duration": 8, "description": "test-b", "status": 0, "id": 2, "person": [] },
-    { "creationDate": 1600671141000, "commencement": 40, "order": 3, "duration": 8, "description": "test  by kenny", "status": 1, "id": 3, "person": [2] },
-    { "creationDate": 1600692238000, "commencement": 40, "order": 4, "duration": 8, "description": "Test", "status": 1, "id": 4, "person": [2] },
-    { "creationDate": 1600866624000, "commencement": 30, "order": 5, "duration": 8, "description": "problem 1", "status": 2, "id": 5, "person": [3, 4] },
-    { "creationDate": 1600663046000, "commencement": 62, "order": 6, "duration": 8, "description": "problem 2", "status": 3, "id": 6, "person": [3,] },
-    { "creationDate": 1600663046000, "commencement": 15, "order": 7, "duration": 8, "description": "New task...", "status": 4, "id": 7, "person": [2] },
-    { "creationDate": 1600663046000, "commencement": 10, "order": 8, "duration": 8, "description": "New task...", "status": 4, "id": 8, "person": [4] },
+    { "creationDate": 1600669342000, "commencement": 50, "priority": 5, "duration": 8, "description": "test-a1", "status": 0, "id": 1, "person": [] },
+    { "creationDate": 1600671987000, "commencement": 50, "priority": 2, "duration": 8, "description": "test-b", "status": 0, "id": 2, "person": [] },
+    { "creationDate": 1600671141000, "commencement": 40, "priority": 3, "duration": 8, "description": "test  by kenny", "status": 1, "id": 3, "person": [2] },
+    { "creationDate": 1600692238000, "commencement": 40, "priority": 4, "duration": 8, "description": "Test", "status": 1, "id": 4, "person": [2] },
+    { "creationDate": 1600866624000, "commencement": 30, "priority": 1, "duration": 8, "description": "problem 1", "status": 2, "id": 5, "person": [3, 4] },
+    { "creationDate": 1600663046000, "commencement": 62, "priority": 6, "duration": 8, "description": "problem 2", "status": 3, "id": 6, "person": [3,] },
+    { "creationDate": 1600663046000, "commencement": 15, "priority": 7, "duration": 8, "description": "New task...", "status": 4, "id": 7, "person": [2] },
+    { "creationDate": 1600663046000, "commencement": 10, "priority": 8, "duration": 8, "description": "New task...", "status": 4, "id": 8, "person": [4] },
   ],
   'issues': [
     { "creationDate": 1600671987000, "commencement": 45, "duration": 10, "cost": 300, "description": "assigne more developer", "category": ["resign", "recruit"], "id": 3 },

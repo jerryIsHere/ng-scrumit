@@ -43,6 +43,7 @@ import { UserStoryListComponent } from './user-story-list/user-story-list.compon
 import { HomeComponent } from './home/home.component';
 import { SprintHomeComponent } from './sprint-home/sprint-home.component';
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -57,6 +58,7 @@ import { SprintHomeComponent } from './sprint-home/sprint-home.component';
     UserStoryListComponent,
     HomeComponent,
     SprintHomeComponent,
+
   ],
   imports: [
     BrowserModule,

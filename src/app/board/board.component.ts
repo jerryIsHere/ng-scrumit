@@ -40,8 +40,7 @@ export class BoardComponent implements OnInit {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       event.container.data.forEach((task, index) => {
-        task.order = index;
-
+        task.priority = index;
       });
     }
     else {
@@ -64,11 +63,11 @@ export class BoardComponent implements OnInit {
       event.container.data[event.currentIndex].status = status
     }
     event.container.data.forEach((task, index) => {
-      task.order = index;
+      task.priority = index;
 
     });
     event.previousContainer.data.forEach((task, index) => {
-      task.order = index;
+      task.priority = index;
 
     });
 
@@ -78,14 +77,11 @@ export class BoardComponent implements OnInit {
     this.api.tasks.reduce((acc, val) => acc.concat(val), []).filter(task => task.id == this.selectedTask)[0].status = status;
   }
   selectedTask
-  mouseOverTask(id) {
-    this.selectedTask = id
-  }
 
   openDragList = []
   inProgressDragList = []
   doneDragList = []
-
+  taskList = [this.openDragList, this.inProgressDragList, this.doneDragList]
   getSprintTask(spid) {
     this.api.getSprintTask(spid).then(data => {
       this.openDragList = []
@@ -106,7 +102,9 @@ export class BoardComponent implements OnInit {
   }
   commitGetTask() {
     this.api.getSprintTask().then(data => {
-
+      console.log(data)
+      console.log(this.api.stories)
+      console.log(this.api.tasks)
       for (let tasks of data) {
         for (let task of tasks) {
           if (task.status == 0) {
@@ -120,9 +118,10 @@ export class BoardComponent implements OnInit {
           }
         }
       }
-      this.openDragList.sort((a, b) => a.order - b.order)
-      this.inProgressDragList.sort((a, b) => a.order - b.order)
-      this.doneDragList.sort((a, b) => a.order - b.order)
+      this.openDragList.sort((a, b) => b.priority - a.priority)
+      this.inProgressDragList.sort((a, b) => b.priority - a.priority)
+      this.doneDragList.sort((a, b) => b.priority - a.priority)
+      this.api.stories.sort((a, b) => b.priority - a.priority)
     })
   }
 }

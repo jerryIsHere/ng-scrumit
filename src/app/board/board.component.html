@@ -1,6 +1,6 @@
 <div>
     <div cdkDropListGroup style="height:90vh; width: 10%; display: inline-block; vertical-align: top;">
-        <mat-accordion  cdkDropList (cdkDropListDropped)="dropStory($event)" [cdkDropListData]="api.stories">
+        <mat-accordion cdkDropList (cdkDropListDropped)="dropStory($event)" [cdkDropListData]="api.stories">
             <mat-expansion-panel *ngFor="let story of api.stories" [ngStyle]="storyBoardStyle(story)" cdkDrag>
                 <mat-expansion-panel-header>
                     <mat-panel-title>{{story.name}}</mat-panel-title>
@@ -29,7 +29,8 @@
             <mat-accordion cdkDropList style="height:90vh; width: 33%; display: inline-block; vertical-align: top;"
                 (cdkDropListDropped)="dropTask($event,1)" [cdkDropListData]="inProgressDragList">
                 <mat-expansion-panel *ngFor="let task of inProgressDragList" [ngStyle]="taskBoardStyle(task)" cdkDrag
-                    [style]="taskBoardStyle(task)" (mouseover)="mouseOverTask(task.id)">
+                    [style]="taskBoardStyle(task)" (mouseenter )="selectedTask = task.id"
+                    (mouseout)="selectedTask = null">
                     <mat-expansion-panel-header>
                         <mat-panel-title>{{task.description}}</mat-panel-title>
                         <mat-panel-description>
@@ -70,7 +71,8 @@
             <button mat-fab color="lightblue" style="left:40%; bottom: 5%; top: auto; position: fixed;" cdkDrag
                 cdkDragBoundary=".example-boundary" matTooltip="move to next sprint"
                 (cdkDragReleased)="release($event,3)">
-                <mat-icon [matBadge]="(inProgressDragList | filter : 'status' : 3).length">assignment_returned</mat-icon>
+                <mat-icon [matBadge]="(inProgressDragList | filter : 'status' : 3).length">assignment_returned
+                </mat-icon>
             </button>
             <button mat-fab color="lightblue" style="left:60%; bottom: 5%; top: auto; position: fixed;" cdkDrag
                 cdkDragBoundary=".example-boundary" matTooltip="move to next sprint"
