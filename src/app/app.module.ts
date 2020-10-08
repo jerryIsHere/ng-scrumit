@@ -23,7 +23,9 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
-
+import { MatSliderModule } from '@angular/material/slider';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { FormsModule } from '@angular/forms';
 
 import { ChartComponent } from './chart/chart.component';
 import { BoardComponent } from './board/board.component';
@@ -79,7 +81,10 @@ import { SprintHomeComponent } from './sprint-home/sprint-home.component';
       echarts,
     }),
     MatButtonToggleModule,
-    MatTabsModule
+    MatTabsModule,
+    MatSliderModule,
+    MatCheckboxModule,
+    FormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -53,7 +53,7 @@ export class ChartComponent implements OnInit {
         }
         let xAxis = [0];
         line_series.push({
-          type: 'line', name: uniqueName(line_series, 'name', project.name), areaStyle: {}, data: [0], stack: null, object: {
+          type: 'line', name: uniqueName(line_series, 'name', 'cost initial expection'), areaStyle: {}, data: [0], stack: null, object: {
             data: {
               commencement: 0,
               cost: 0,
@@ -84,10 +84,10 @@ export class ChartComponent implements OnInit {
           i++;
         }
         xAxis.push(i);
-        let total = { type: 'line', name: uniqueName(line_series, 'name', "total"), areaStyle: {}, data: [0], stack: null, object: { type: 'total' } }
+        let total = { type: 'line', name: uniqueName(line_series, 'name', "total cost forcast"), areaStyle: {}, data: [0], stack: null, object: { type: 'total' } }
         for (let j = 0; j < i; j++) {
           total.data[j] = 0
-          for (let entry of line_series) {
+          for (let entry of line_series.filter(item => item.object.type != 'project')) {
             if (entry.object.data.type != "project dummy")
               total.data[j] += entry.data[j]
           }
@@ -99,83 +99,96 @@ export class ChartComponent implements OnInit {
         this.generate_bar();
       })
     })
-
-    //     return
-    //     let overTime = 0
-    //     let titleDict: { [description: string]: number } = {};
-
-    //     for (let issue of issues) {
-    //       overTime = overTime + issue.duration
-    //     }
-    //     slope[project.duration + overTime] = 0;
-    //     for (let issue of issues) {
-    //       let title = issue.description
-    //       let i = 0;
-    //       while (titleDict.hasOwnProperty(title)) {
-    //         i++;
-    //         title = issue.description + ' (' + i + ')';
-    //       }
-    //       titleDict[title] = issue.id;
-    //       data.push({
-    //         name: title,
-    //         series: [
-    //           {
-    //             name: issue.hourElapsed,
-    //             value: 0
-    //           },
-    //           {
-    //             name: project.duration + overTime,
-    //             value: (project.duration + overTime) * issue.cost
-    //           }
-    //         ]
-    //       })
-    //       if (slope.hasOwnProperty(issue.hourElapsed)) {
-    //         slope[issue.hourElapsed] = slope[issue.hourElapsed] + issue.cost
-    //       }
-    //       else {
-    //         slope[issue.hourElapsed] = issue.cost
-    //       }
-    //     }
-    //     let total = {
-    //       name: "forcast",
-    //       series: []
-    //     }
-
-    //     let cummulativeSlope = 0;
-    //     let cummulativeCost = 0;
-    //     for (let time in slope) {
-    //       cummulativeCost = cummulativeSlope * parseInt(time)
-    //       cummulativeSlope = cummulativeSlope + slope[time]
-    //       total.series.push({ name: parseInt(time), value: cummulativeCost })
-
-    //     }
-    //     this.costLineChartTitleId = titleDict;
-    //     data.push(total);
-    //     this.costLineChart = data;
-
   }
   datePipe = new DatePipe('en-US')
-  generate_bar(window = 8) {
-    let bar_series = []
+  bar_window = 8
+  bar_except_weekday = [0, 6]
+  weekdayToogle(day, b) {
+    if (!b) {
+      this.bar_except_weekday.push(day)
+    }
+    else {
+      this.bar_except_weekday = this.bar_except_weekday.filter(d => d != day)
+    }
+    this.generate_bar()
+  }
+  generate_bar() {
+    let issue_bar_series = []
     let xAxis = []
     let date: Date = new Date(
       this.line_options.series.filter(item => item.object.type && item.object.type == 'project')[0].object.data.creationDate
     );
-    xAxis.push()
     for (let issue of this.line_options.series.filter(item => item.object.type && item.object.type == 'issue')) {
       let data = []
-      for (let i = 0; i < issue.data.length; i = i + window) {
+      for (let i = 0; i < issue.data.length; i = i + this.bar_window) {
         data.push(issue.data[i])
       }
-      bar_series.push({ type: 'bar', name: issue.name, areaStyle: {}, stack: true, data: data, object: issue.object })
+      issue_bar_series.push({ type: 'bar', name: issue.name, areaStyle: {}, stack: true, data: data, object: issue.object })
     }
-    for (let dummy of bar_series[0].data) {
-      xAxis.push(this.datePipe.transform(date, 'MMM d'))
-      date.setDate(date.getDate() + 1);
+
+    while (this.bar_except_weekday.includes(date.getDay())) { date.setDate(date.getDate() + 1) }
+    for (let dummy of issue_bar_series[0].data) {
+      xAxis.push(this.datePipe.transform(date, 'MMM d EE'))
+      do { date.setDate(date.getDate() + 1) }
+      while (this.bar_except_weekday.includes(date.getDay()))
     }
-    this.bar_options.series = bar_series
-    this.bar_options.xAxis["data"] = xAxis;
+
+    let task_bar_series = []
+    for (let task of this.line_options.series.filter(item => item.object.type && item.object.type == 'task')) {
+      let data = []
+      for (let i = 0; i < task.data.length; i = i + this.bar_window) {
+        data.push(task.data[i])
+      }
+      task_bar_series.push({ type: 'bar', name: task.name, areaStyle: {}, stack: true, data: data, object: task.object })
+    }
+    let total = this.line_options.series.filter(item => item.object.type && item.object.type == 'total')[0]
+    let project = this.line_options.series.filter(item => item.object.type && item.object.type == 'project')[0]
+    let markLine = {
+      symbol: 'none',
+      label: {
+        position: 'middle',
+        formatter: '{b} : {c}'
+      },
+      data: [
+        { name: total.name, yAxis: total.data[total.data.length - 1] },
+        { name: project.name, yAxis: project.data[project.data.length - 1] },]
+    }
+
+    this.issue_bar_options.series = issue_bar_series
+    this.issue_bar_options.xAxis["data"] = xAxis;
+    this.issue_bar_options.series[0].markLine = markLine;
+    this.issue_bar_options.yAxis = { type: 'value', max: total.data[total.data.length - 1] }
+
+
+    this.task_bar_options.series = task_bar_series
+    this.task_bar_options.xAxis["data"] = xAxis;
+    this.task_bar_options.series.push({ type: 'bar', markLine: markLine });
+    this.task_bar_options.yAxis = { type: 'value', max: total.data[total.data.length - 1] }
+
+    this.issue_bar_options = Object.assign({}, this.issue_bar_options)
+    this.task_bar_options = Object.assign({}, this.task_bar_options)
+    this.cd.detectChanges();
+    console.log(this.issue_bar_options)
+    console.log(this.task_bar_options)
   }
+
+  lineChartInit(event: any) {
+    event.getZr().on('click', (e) => {
+      let x = event.convertFromPixel({ seriesIndex: 0 }, [e.offsetX, e.offsetY])[0]
+      let data = []
+      for (let item of this.line_options.series.filter(i => i.object.type != 'project' && i.object.type != 'total')) {
+        if (item.data[x] > 0)
+          data.push({ value: item.data[x], name: item.name })
+      }
+      console.log(data)
+      this.pie_options.series[0].data = data
+      this.pie_options = Object.assign({}, this.pie_options)
+      this.cd.detectChanges();
+
+    });
+  }
+
+
   line_options = {
 
     tooltip: {
@@ -184,7 +197,7 @@ export class ChartComponent implements OnInit {
     legend: {
       type: 'scroll',
       orient: 'vertical',
-      right: 10,
+      left: 10,
       top: 20,
       bottom: 20,
 
@@ -205,15 +218,49 @@ export class ChartComponent implements OnInit {
     series: [
     ]
   };
-  bar_options = {
-
+  issue_bar_options = {
+    title: {
+      text: 'Stacked cost of issue'
+    },
     tooltip: {
       trigger: 'axis'
     },
     legend: {
       type: 'scroll',
-      orient: 'vertical',
-      right: 10,
+      orient: 'horizontal',
+      left: 10,
+      top: 20,
+      bottom: 20,
+
+    },
+    toolbox: {
+      show: true,
+      feature: {
+        saveAsImage: { show: true }
+      }
+    },
+    xAxis: {
+      boundaryGap: true,
+
+    },
+    yAxis: {
+
+    },
+    series: [
+    ]
+
+  }
+  task_bar_options = {
+    title: {
+      text: 'Stacked cost of tasks'
+    },
+    tooltip: {
+      trigger: 'axis'
+    },
+    legend: {
+      type: 'scroll',
+      orient: 'horizontal',
+      left: 10,
       top: 20,
       bottom: 20,
 
@@ -234,7 +281,6 @@ export class ChartComponent implements OnInit {
     series: [
     ]
   }
-
   pie_options = {
 
     tooltip: {
@@ -269,22 +315,6 @@ export class ChartComponent implements OnInit {
       data: []
     }
     ]
-  }
-
-  lineChartInit(event: any) {
-    event.getZr().on('click', (e) => {
-      let x = event.convertFromPixel({ seriesIndex: 0 }, [e.offsetX, e.offsetY])[0]
-      let data = []
-      for (let item of this.line_options.series.filter(i => i.object.type != 'project' && i.object.type != 'total')) {
-        if (item.data[x] > 0)
-          data.push({ value: item.data[x], name: item.name })
-      }
-      console.log(data)
-      this.pie_options.series[0].data = data
-      this.pie_options = Object.assign({}, this.pie_options)
-      this.cd.detectChanges();
-
-    });
   }
 }
 
