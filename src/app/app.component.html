@@ -52,14 +52,14 @@
         <mat-spinner *ngIf="!haveEntry"></mat-spinner>
 
         <mat-list-item *ngFor="let sprint of api.sprints" [ngStyle]="sprintStyle(sprint)">
-          <button routerLink="{{'/sprint-overview/' + sprint.id}}" mat-raised-button>{{sprint.slogan}}
+          <button routerLink="{{'/project/'+ api.currentProject.id + '/sprint-overview/' + sprint.id}}" mat-raised-button>{{sprint.slogan}}
             <mat-icon>login</mat-icon>
           </button>
-          <button mat-icon-button routerLink="{{'/userstory-list/' + sprint.id}}"
+          <button mat-icon-button routerLink="{{'/project/'+ api.currentProject.id + '/userstory-list/' + sprint.id}}"
             style="margin-left:auto; margin-right:0;" matTooltip="user stories">
             <mat-icon>view_list</mat-icon>
           </button>
-          <button mat-icon-button routerLink="{{'/board/' + sprint.id}}" (click)="sideNavToggle = false"
+          <button mat-icon-button routerLink="{{'/project/'+ api.currentProject.id + '/board/' + sprint.id}}" (click)="sideNavToggle = false"
             style="margin-left:0; margin-right:0;" matTooltip="task board">
             <mat-icon>view_quilt</mat-icon>
           </button>

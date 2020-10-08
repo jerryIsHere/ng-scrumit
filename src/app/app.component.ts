@@ -16,7 +16,7 @@ export class AppComponent {
     this.api.getAllProject();
     this.router.events.subscribe(e => {
       if (e instanceof NavigationEnd) {
-        let id = Number(e.id)
+        let id = (<any>e).pjid ? Number((<any>e).pjid) : Number((<any>e).id)
         if (this.requests[this.view] && !this.haveEntry()) this.requests[this.view](id);
       }
     })
@@ -68,7 +68,7 @@ export class AppComponent {
 
   get view(): string {
     for (let view in this.routes) {
-      if (this.router.url.split('/')[1] == this.routes[view])
+      if (this.router.url.split('/')[this.router.url.split('/').length - 2] == this.routes[view])
         return view
     }
     return "root"

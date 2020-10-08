@@ -15,9 +15,9 @@ const routes: Routes = [
   { path: 'person-list/:id', component: PersonListComponent },
   { path: 'project-overview/:id', component: ProjectOverviewComponent },
   { path: 'sprint-home/:id', component: SprintHomeComponent },
-  { path: 'userstory-list/:id', component: UserStoryListComponent },
-  { path: 'board/:id', component: BoardComponent },
-  { path: 'sprint-overview/:id', component: SprintOverviewComponent },
+  { path: 'project/:pjid/userstory-list/:id', component: UserStoryListComponent },
+  { path: 'project/:pjid/board/:id', component: BoardComponent },
+  { path: 'project/:pjid/sprint-overview/:id', component: SprintOverviewComponent },
 ];
 
 @NgModule({
