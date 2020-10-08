@@ -102,16 +102,16 @@ export class AppComponent {
 
 
   ngOnInit() {
-    this.api.getAllProject();
   }
 
   removeSprint(sprintId) {
-
+    this.api.deleteSprint(sprintId);
+    this.api.getProjectSprint(this.api.currentProject.id);
   }
 
   removeProject(pjid) {
     this.api.deleteProject(pjid);
-    this.ngOnInit();
+    this.api.getAllProject();
   }
 
 

@@ -38,11 +38,17 @@ export class SprintOverviewComponent implements OnInit {
   }
 
   create():void {
-
+    this.api.createSprint(this.api.currentProject.id, this.constructRequestObject(true)).then(response => {
+      this.api.getProjectSprint(this.api.currentProject.id);
+      this.reset();
+    });
   }
 
   update():void {
-
+    this.api.updateSprintRequest(this.constructRequestObject(false)).then(response => {
+      this.api.getProjectSprint(this.api.currentProject.id);
+      this.reset();
+    });
   }
 
   reset():void {
@@ -58,13 +64,12 @@ export class SprintOverviewComponent implements OnInit {
 
   constructRequestObject(isNew:boolean):any {
     var sprintObject = {
-      slogan: this.slogan
+      slogan: this.slogan,
+      startDate: this.startDate,
+      endDate: this.endDate
     };
     if (!isNew) {
       sprintObject['id'] = this.id;
-      sprintObject['startDate'] = this.startDate;
-      sprintObject['endDate'] = this.endDate;
-
     }
     return sprintObject;
   }

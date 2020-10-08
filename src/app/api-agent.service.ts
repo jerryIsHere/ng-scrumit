@@ -187,7 +187,7 @@ export class ApiAgentService {
   getProjectSprintRequest = (pjid) => {
     return this.http.get(`${apiURL}/sprint/all/${pjid}/`).toPromise();
   }
-  getProjectSprint = (pjid: number = this._currentProjectId): Promise<any> => {
+  getProjectSprint = (pjid): Promise<any> => {
     this.currentProjectId = pjid;
     return this.getProjectSprintRequest(pjid).then(sprints => {
       this.sprints = sprints as Array<any>;
@@ -213,7 +213,7 @@ export class ApiAgentService {
   }
 
   createSprintRequest = (pjid,newSprint) => {
-      return this.http.post(`${apiURL}/sprint/add/${pjid}`,newSprint,httpOptions).toPromise();
+      return this.http.post(`${apiURL}/sprint/add/${pjid}`,newSprint).toPromise();
   }
   createSprint = (pjid: number,newSprint):Promise<any> => {
       this.currentProjectId = pjid;
@@ -222,6 +222,21 @@ export class ApiAgentService {
       });
   }
 
+  updateSprintRequest = (newSprint) => {
+    return this.http.post(`${apiURL}/sprint/update/`,newSprint).toPromise();
+  }
+  updateSprint = (newSprint):Promise<any> => {
+    return this.updateSprintRequest(newSprint).then(res => {
+      return res;
+    });
+  }
+
+  deleteSprintRequest = (sprintId) => {
+    return this.http.get(`${apiURL}/sprint/remove/${sprintId}/`).toPromise();
+  }
+  deleteSprint = (sprintId): Promise<any> => {
+    return this.deleteSprintRequest(sprintId);
+  }
 
   getSprintStoryRequest = (spid) => {
     return Promise.resolve(dummy["stories"].filter(data => (dummy_relation["sprint"]["story"][spid] as Array<number>).includes(data.id)))
