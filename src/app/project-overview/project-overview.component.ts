@@ -23,9 +23,11 @@ export class ProjectOverviewComponent implements OnInit {
   )
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
-      console.log(Number(params.get('id')))
       this.api.getProject(Number(params.get('id'))).then(data => {
-
+        this.projectForm.get("id").setValue(data.id)
+        this.projectForm.get("name").setValue(data.name)
+        this.projectForm.get("description").setValue(data.description)
+        this.projectForm.get("creation").setValue(new Date(data.creationDate))
       })
     })
   }

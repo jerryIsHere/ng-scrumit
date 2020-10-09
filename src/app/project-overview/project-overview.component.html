@@ -1,24 +1,23 @@
 <form [formGroup]="projectForm">
     <mat-form-field>
         <mat-label>ID: </mat-label>
-        <input type="text" formControlName="id" matInput [value]="this.api.currentProject.id">
+        <input type="text" formControlName="id" matInput>
     </mat-form-field>
     <br>
     <mat-form-field>
         <mat-label>Name: </mat-label>
-        <input type="text" formControlName="name" matInput [value]="this.api.currentProject.name">
+        <input type="text" formControlName="name" matInput>
     </mat-form-field>
     <br>
     <mat-form-field>
         <mat-label>Description: </mat-label>
-        <input type="text" formControlName="description" matInput [value]="this.api.currentProject.description">
+        <input type="text" formControlName="description" matInput>
     </mat-form-field>
     <br>
     <mat-form-field>
         <mat-label>Creation: </mat-label>
-        <input type="text" matInput formControlName="creation" [value]="this.api.currentProject.creationDate">
+        <input type="text" matInput formControlName="creation" [matDatepicker]="picker">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
 </form>
-<button mat-fab color="accent" style="right:5%; bottom: 10%; top: auto; position: fixed;" matTooltip="add developer">
-    <mat-icon>edit</mat-icon>
-</button>

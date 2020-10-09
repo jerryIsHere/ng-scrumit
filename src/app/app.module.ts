@@ -25,8 +25,10 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core'
 
 import { ChartComponent } from './chart/chart.component';
 import { BoardComponent } from './board/board.component';
@@ -49,7 +51,6 @@ import { TaskDeveloperFormComponent } from './task-developer-form/task-developer
 import { TaskEditFormComponent } from './task-edit-form/task-edit-form.component';
 import { IssueEditFormComponent } from './issue-edit-form/issue-edit-form.component';
 
-import { ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -99,9 +100,11 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatTabsModule,
     MatSliderModule,
     MatCheckboxModule,
-    FormsModule,
+    FormsModule, ReactiveFormsModule,
     MatDialogModule,
-    ReactiveFormsModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+
   ],
   providers: [],
   bootstrap: [AppComponent],
