@@ -1,4 +1,4 @@
-<form formGroupName="projectForm">
+<form [formGroup]="projectForm">
     <mat-form-field>
         <mat-label>ID: </mat-label>
         <input type="text" formControlName="id" matInput [value]="this.api.currentProject.id">
