@@ -14,7 +14,7 @@ export class SprintOverviewComponent implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       this.api.getSprint(Number(params.get('id'))).then(data => {
-        console.log(this.api.currentSprint)
+
       })
     })
   }

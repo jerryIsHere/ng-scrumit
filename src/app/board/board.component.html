@@ -1,83 +1,201 @@
-<div>
+<div *ngIf="api.stories">
     <div cdkDropListGroup style="height:90vh; width: 10%; display: inline-block; vertical-align: top;">
         <mat-accordion cdkDropList (cdkDropListDropped)="dropStory($event)" [cdkDropListData]="api.stories">
             <mat-expansion-panel *ngFor="let story of api.stories" [ngStyle]="storyBoardStyle(story)" cdkDrag>
                 <mat-expansion-panel-header>
                     <mat-panel-title>{{story.name}}</mat-panel-title>
                 </mat-expansion-panel-header>
+                <mat-action-row>
+                    <button mat-button (click)="createTaskDialogue(story.id)" *ngIf="view != 'root'"
+                        matTooltip="creat a task for this story">
+                        <mat-icon>add_task</mat-icon>
+                    </button>
+                </mat-action-row>
             </mat-expansion-panel>
         </mat-accordion>
     </div>
     <div style="width: 90%; display: inline-block;">
         <div cdkDropListGroup>
             <mat-accordion cdkDropList style="height:90vh; width: 33%; display: inline-block; vertical-align: top;"
-                (cdkDropListDropped)="dropTask($event,0)" [cdkDropListData]="openDragList">
+                (cdkDropListDropped)="dropTask($event,0)" [cdkDropListData]="openDragList"
+                [cdkDropListEnterPredicate]="dragListStatusExcludePredicate([2,3])" multi>
                 <mat-expansion-panel *ngFor="let task of openDragList" [ngStyle]="taskBoardStyle(task)" cdkDrag
-                    [style]="taskBoardStyle(task)">
+                    [cdkDragData]="task" [style]="taskBoardStyle(task)">
                     <mat-expansion-panel-header>
                         <mat-panel-title>{{task.description}}</mat-panel-title>
                         <mat-panel-description>
-                            <mat-icon [matBadge]="task.person.length" matBadgeSize="small" matBadgeColor="warn">person
+                            <mat-icon [matBadge]="task.person.length" matBadgeSize="small" matBadgeColor="accent"
+                                style="position: absolute; right:20%;">
+                                person
+                            </mat-icon>
+                            <mat-icon [matBadge]="task.issues.length" matBadgeSize="small" matBadgeColor="warn"
+                                style="position: absolute; right:10%;">
+                                report_problem
                             </mat-icon>
                         </mat-panel-description>
                     </mat-expansion-panel-header>
+                    <mat-action-row>
+                        <button mat-button (click)="assignPersonDialogue(task.id)" *ngIf="view != 'root'"
+                            matTooltip="assign developer">
+                            <mat-icon>groups</mat-icon>
+                        </button>
+                        <button mat-button (click)="createIssueDialogue(task.id)" *ngIf="view != 'root'"
+                            matTooltip="report issue">
+                            <mat-icon>announcement</mat-icon>
+                        </button>
+                        <button mat-button (click)="taskDetailsDialogue(task.id)" *ngIf="view != 'root'"
+                            matTooltip="view or edit details">
+                            <mat-icon>preview</mat-icon>
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                    </mat-action-row>
                     <p *ngFor="let person of api.persons | filter: 'id' : task.person">
                         {{person.firstName+ " " +person.lastName}}
                     </p>
+                    <mat-accordion *ngIf="task.issues.length > 0">
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>Issues</mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <p *ngFor="let issue of task.issues">
+                                {{issue.description}}
+                                <button mat-button (click)="issueDetailsDialogue(task.id)" *ngIf="view != 'root'"
+                                    style="position: absolute; right:5%;" matTooltip="view or edit details">
+                                    <mat-icon>preview</mat-icon>
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                            </p>
+                        </mat-expansion-panel>
+                    </mat-accordion>
                 </mat-expansion-panel>
             </mat-accordion>
             <mat-accordion cdkDropList style="height:90vh; width: 33%; display: inline-block; vertical-align: top;"
-                (cdkDropListDropped)="dropTask($event,1)" [cdkDropListData]="inProgressDragList">
+                (cdkDropListDropped)="dropTask($event,1)" [cdkDropListData]="inProgressDragList" multi>
                 <mat-expansion-panel *ngFor="let task of inProgressDragList" [ngStyle]="taskBoardStyle(task)" cdkDrag
-                    [style]="taskBoardStyle(task)" (mouseenter )="selectedTask = task.id"
-                    (mouseout)="selectedTask = null">
+                    [cdkDragData]="task" [style]="taskBoardStyle(task)" (mouseenter)="selectedTaskId = task.id"
+                    (mouseleave)="selectedTaskId = null">
                     <mat-expansion-panel-header>
                         <mat-panel-title>{{task.description}}</mat-panel-title>
                         <mat-panel-description>
-                            <mat-icon [matBadge]="task.person.length" matBadgeSize="small" matBadgeColor="warn">person
+                            <mat-icon [matBadge]="task.person.length" matBadgeSize="small" matBadgeColor="accent"
+                                style="position: absolute; right:20%;">
+                                person
+                            </mat-icon>
+                            <mat-icon [matBadge]="task.issues.length" matBadgeSize="small" matBadgeColor="warn"
+                                style="position: absolute; right:10%;">
+                                report_problem
                             </mat-icon>
                         </mat-panel-description>
-
                     </mat-expansion-panel-header>
-                    <p *ngFor="let person of api.persons | filter : 'id' : task.person">
+                    <mat-action-row>
+                        <button mat-button (click)="assignPersonDialogue(task.id)" *ngIf="view != 'root'"
+                            matTooltip="assign developer">
+                            <mat-icon>groups</mat-icon>
+                        </button>
+                        <button mat-button (click)="createIssueDialogue(task.id)" *ngIf="view != 'root'"
+                            matTooltip="report issue">
+                            <mat-icon>announcement</mat-icon>
+                        </button>
+                        <button mat-button (click)="taskDetailsDialogue(task.id)" *ngIf="view != 'root'"
+                            matTooltip="view or edit details">
+                            <mat-icon>preview</mat-icon>
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                    </mat-action-row>
+                    <p *ngFor="let person of api.persons | filter: 'id' : task.person">
                         {{person.firstName+ " " +person.lastName}}
                     </p>
+                    <mat-accordion *ngIf="task.issues.length > 0">
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>Issues</mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <p *ngFor="let issue of task.issues">
+                                {{issue.description}}
+                                <button mat-button (click)="issueDetailsDialogue(task.id)" *ngIf="view != 'root'"
+                                    style="position: absolute; right:5%;" matTooltip="view or edit details">
+                                    <mat-icon>preview</mat-icon>
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                            </p>
+                        </mat-expansion-panel>
+                    </mat-accordion>
                 </mat-expansion-panel>
             </mat-accordion>
             <mat-accordion cdkDropList style="height:90vh; width: 33%; display: inline-block; vertical-align: top;"
-                (cdkDropListDropped)="dropTask($event,4)" [cdkDropListData]="doneDragList">
+                (cdkDropListDropped)="dropTask($event,4)" [cdkDropListData]="doneDragList"
+                [cdkDropListEnterPredicate]="dragListStatusExcludePredicate([3])" multi>
                 <mat-expansion-panel *ngFor="let task of doneDragList" [ngStyle]="taskBoardStyle(task)" cdkDrag
-                    [style]="taskBoardStyle(task)">
+                    [cdkDragData]="task" [style]="taskBoardStyle(task)">
                     <mat-expansion-panel-header>
                         <mat-panel-title>{{task.description}}</mat-panel-title>
                         <mat-panel-description>
-                            <mat-icon [matBadge]="task.person.length" matBadgeSize="small" matBadgeColor="warn">person
+                            <mat-icon [matBadge]="task.person.length" matBadgeSize="small" matBadgeColor="accent"
+                                style="position: absolute; right:20%;">
+                                person
+                            </mat-icon>
+                            <mat-icon [matBadge]="task.issues.length" matBadgeSize="small" matBadgeColor="warn"
+                                style="position: absolute; right:10%;">
+                                report_problem
                             </mat-icon>
                         </mat-panel-description>
                     </mat-expansion-panel-header>
-                    <p *ngFor="let person of api.persons | filter : 'id' : task.person">
+                    <mat-action-row>
+                        <button mat-button (click)="assignPersonDialogue(task.id)" *ngIf="view != 'root'"
+                            matTooltip="assign developer">
+                            <mat-icon>groups</mat-icon>
+                        </button>
+                        <button mat-button (click)="createIssueDialogue(task.id)" *ngIf="view != 'root'"
+                            matTooltip="report issue">
+                            <mat-icon>announcement</mat-icon>
+                        </button>
+                        <button mat-button (click)="taskDetailsDialogue(task.id)" *ngIf="view != 'root'"
+                            matTooltip="view or edit details">
+                            <mat-icon>preview</mat-icon>
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                    </mat-action-row>
+                    <p *ngFor="let person of api.persons | filter: 'id' : task.person">
                         {{person.firstName+ " " +person.lastName}}
                     </p>
+                    <mat-accordion *ngIf="task.issues.length > 0">
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>Issues</mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <p *ngFor="let issue of task.issues">
+                                {{issue.description}}
+                                <button mat-button (click)="issueDetailsDialogue(task.id)" *ngIf="view != 'root'"
+                                    style="position: absolute; right:5%;" matTooltip="view or edit details">
+                                    <mat-icon>preview</mat-icon>
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                            </p>
+                        </mat-expansion-panel>
+                    </mat-accordion>
                 </mat-expansion-panel>
             </mat-accordion>
 
         </div>
         <div cdkDropList>
-            <button mat-fab color="pink" style="left:40%; bottom: 15%; top: auto; position: fixed;" cdkDrag
-                cdkDragBoundary=".example-boundary" matTooltip="from previous sprint"
-                (cdkDragReleased)="release($event,2)">
-                <mat-icon [matBadge]="(inProgressDragList | filter : 'status': 2)?.length">assignment_late</mat-icon>
+            <button mat-fab color="pink" style="left:38%; bottom: 2%; top: auto; position: fixed;"
+                class="dragDropButton" matTooltip="from previous sprint" (cdkDragReleased)="release($event,2)">
+                <mat-icon style="color:lightcoral;" [matBadge]="(inProgressDragList | filter : 'status': 2)?.length"
+                    matBadgeColor="warn">
+                    assignment_late</mat-icon>
             </button>
-            <button mat-fab color="lightblue" style="left:40%; bottom: 5%; top: auto; position: fixed;" cdkDrag
-                cdkDragBoundary=".example-boundary" matTooltip="move to next sprint"
-                (cdkDragReleased)="release($event,3)">
-                <mat-icon [matBadge]="(inProgressDragList | filter : 'status' : 3).length">assignment_returned
+            <button mat-fab color="lightblue" style="left:38%; bottom: 20%; top: auto; position: fixed;" cdkDrag
+                class="dragDropButton" matTooltip="move to next sprint" (cdkDragReleased)="release($event,3)">
+                <mat-icon style="color:gold;" [matBadge]="(inProgressDragList | filter : 'status' : 3).length"
+                    matBadgeColor="warn">
+                    assignment_returned
                 </mat-icon>
             </button>
-            <button mat-fab color="lightblue" style="left:60%; bottom: 5%; top: auto; position: fixed;" cdkDrag
-                cdkDragBoundary=".example-boundary" matTooltip="move to next sprint"
-                (cdkDragReleased)="release($event,1)">
-
+            <button mat-fab color="lightblue" style="left:38%; bottom: 12%; top: auto; position: fixed;" cdkDrag
+                class="dragDropButton" matTooltip="unset special status" (cdkDragReleased)="release($event,1)">
+                <mat-icon>
+                    assignment_turned_in
+                </mat-icon>
             </button>
         </div>
     </div>

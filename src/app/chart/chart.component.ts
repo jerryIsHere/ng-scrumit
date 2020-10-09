@@ -68,7 +68,6 @@ export class ChartComponent implements OnInit {
           let haveData = false;
           for (let entry of line_series) {
             if (i < entry.object.data.commencement + entry.object.data.duration) haveData = true;
-            if (entry.object.data.commencement + entry.object.data.duration === NaN) console.log(entry.object);
           }
           if (!haveData) break;
           for (let entry of line_series) {
@@ -168,8 +167,6 @@ export class ChartComponent implements OnInit {
     this.issue_bar_options = Object.assign({}, this.issue_bar_options)
     this.task_bar_options = Object.assign({}, this.task_bar_options)
     this.cd.detectChanges();
-    console.log(this.issue_bar_options)
-    console.log(this.task_bar_options)
   }
 
   lineChartInit(event: any) {
@@ -180,7 +177,6 @@ export class ChartComponent implements OnInit {
         if (item.data[x] > 0)
           data.push({ value: item.data[x], name: item.name })
       }
-      console.log(data)
       this.pie_options.series[0].data = data
       this.pie_options = Object.assign({}, this.pie_options)
       this.cd.detectChanges();

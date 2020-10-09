@@ -26,6 +26,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormsModule } from '@angular/forms';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { ChartComponent } from './chart/chart.component';
 import { BoardComponent } from './board/board.component';
@@ -42,6 +43,13 @@ import { PersonListComponent } from './person-list/person-list.component';
 import { UserStoryListComponent } from './user-story-list/user-story-list.component';
 import { HomeComponent } from './home/home.component';
 import { SprintHomeComponent } from './sprint-home/sprint-home.component';
+import { StoryAddTaskFormComponent } from './story-add-task-form/story-add-task-form.component';
+import { TaskAddIssueFormComponent } from './task-add-issue-form/task-add-issue-form.component';
+import { TaskDeveloperFormComponent } from './task-developer-form/task-developer-form.component';
+import { TaskEditFormComponent } from './task-edit-form/task-edit-form.component';
+import { IssueEditFormComponent } from './issue-edit-form/issue-edit-form.component';
+
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -58,6 +66,11 @@ import { SprintHomeComponent } from './sprint-home/sprint-home.component';
     UserStoryListComponent,
     HomeComponent,
     SprintHomeComponent,
+    StoryAddTaskFormComponent,
+    TaskAddIssueFormComponent,
+    TaskDeveloperFormComponent,
+    TaskEditFormComponent,
+    IssueEditFormComponent,
 
   ],
   imports: [
@@ -87,8 +100,19 @@ import { SprintHomeComponent } from './sprint-home/sprint-home.component';
     MatSliderModule,
     MatCheckboxModule,
     FormsModule,
+    MatDialogModule,
+    ReactiveFormsModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [
+    PersonFormComponent,
+    UserstoryFormComponent,
+    StoryAddTaskFormComponent,
+    TaskAddIssueFormComponent,
+    TaskDeveloperFormComponent,
+    TaskEditFormComponent,
+    IssueEditFormComponent,
+  ]
 })
 export class AppModule { }

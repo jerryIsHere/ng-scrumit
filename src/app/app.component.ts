@@ -16,8 +16,11 @@ export class AppComponent {
     this.api.getAllProject();
     this.router.events.subscribe(e => {
       if (e instanceof NavigationEnd) {
-        let id = (<any>e).pjid ? Number((<any>e).pjid) : Number((<any>e).id)
-        if (this.requests[this.view] && !this.haveEntry()) this.requests[this.view](id);
+
+        if (this.requests[this.view] && !this.haveEntry()) {
+          let id = (<any>e).pjid ? Number((<any>e).pjid) : Number((<any>e).id)
+          this.requests[this.view](id);
+        }
       }
     })
   }
