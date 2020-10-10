@@ -273,13 +273,39 @@ export class ApiAgentService {
   getStoryRequest = (id) => {
     return this.http.get(`${apiURL}/sprint/userstory/${id}/`).toPromise();
   }
-  getStory = (spid: number = this._currentSprintId, id: number = this._currentStoryId): Promise<any> => {
-    this.currentSprintId = spid;
+  getStory = (id: number = this._currentStoryId): Promise<any> => {
     this.currentStoryId = id;
-    return this.getStoryRequest(spid).then(story => {
-      this.stories.filter(s => s.id == id)[0] = story;
-      return story
-    })
+    return this.getSprintRequest(id).then(story => {
+      this.stories.map((existingStory,index) => {
+        if (existingStory.id == id) {
+          story['creationDate'] = this.convertToDate(parseInt(story['startDate']));
+          this.stories[index] = story;
+        }
+      });
+      return story;
+    });
+  }
+  createStoryRequest = (spid,newStory) => {
+    return this.http.post(`${apiURL}/sprint/add/userstory/${spid}/`,newStory).toPromise();
+  }
+  createStory = (spid,newStory): Promise<any> => {
+    return this.createStoryRequest(spid,newStory).then(response => {
+      return response;
+    });
+  }
+  updateStoryRequest = (newStory) => {
+    return this.http.post(`${apiURL}/sprint/userstory/update`,newStory).toPromise();
+  }
+  updateStory = (newStory): Promise<any> => {
+    return this.updateStoryRequest(newStory).then(res => {
+      return res;
+    });
+  }
+  deleteStoryReqyest = (sid) => {
+    return this.http.get(`${apiURL}/sprint/userstory/remove/${sid}/`).toPromise();
+  }
+  deleteStory = (sid): Promise<any> => {
+    return this.deleteStoryReqyest(sid).then(response => {});
   }
 
 
