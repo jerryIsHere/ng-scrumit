@@ -267,6 +267,15 @@ export class ApiAgentService {
     if (dummy) {
       console.log('postStoryTaskRequest/' + this.currentSprint.id + '/' + stid)
       console.log(requestBody)
+      let id = 0
+      while (dummy.tasks.filter(i => i.id == id).length > 0) id++;
+      dummy.tasks.push({
+        creationDate: (new Date()).getUTCMilliseconds(), commencement: null, duration: 8, description: requestBody.description,
+        id: id, persons: [], issues: [], priority: 0, status: 0, sprints: []
+      })
+      dummy_relation.story.task[stid].push(id);
+      dummy_relation.task.issue[id] = [];
+      console.log('not adding dummy relation for issue - project as this demo is for board only')
       return Promise.resolve(true)
     }
     return Promise.resolve(true)
@@ -297,6 +306,14 @@ export class ApiAgentService {
     if (dummy) {
       console.log('postTaskIssueRequest/' + tkid)
       console.log(requestBody)
+      let id = 0
+      while (dummy.issues.filter(i => i.id == id).length > 0) id++;
+      dummy.issues.push({
+        creationDate: (new Date()).getUTCMilliseconds(), commencement: null, duration: null, cost: null, description: requestBody.description,
+        category: [], id: id,
+      })
+      dummy_relation.task.issue[tkid].push(id);
+      console.log('not adding dummy relation for issue - project as this demo is for board only')
       return Promise.resolve(true)
     }
     return Promise.resolve(true)
@@ -311,14 +328,32 @@ export class ApiAgentService {
     if (dummy) {
       console.log('patchTaskRequest/' + tkid)
       console.log(requestBody)
-      dummy.tasks.filter(task => task.id == tkid)[0].description = requestBody.description;
-      dummy.tasks.filter(task => task.id == tkid)[0].commencement = requestBody.commencement;
+      for (let [key,value] of Object.entries(requestBody)) {
+        dummy.tasks.filter(task => task.id == tkid)[0][key] = value
+      }
       return Promise.resolve(true)
     }
     return Promise.resolve(true)
   }
   patchTask = (tkid: number, requestBody: any): Promise<any> => {
     return this.patchTaskRequest(tkid, requestBody).then(result => {
+      return result
+    })
+  }
+  patchIssueRequest = (isid: number, requestBody: any) => {
+    if (dummy) {
+      console.log('patchIssueRequest/' + isid)
+      console.log(requestBody)
+      for (let [key,value] of Object.entries(requestBody)) {
+        dummy.issues.filter(issue => issue.id == isid)[0][key] = value
+      }
+
+      return Promise.resolve(true)
+    }
+    return Promise.resolve(true)
+  }
+  patchIssue = (isid: number, requestBody: any): Promise<any> => {
+    return this.patchIssueRequest(isid, requestBody).then(result => {
       return result
     })
   }

@@ -195,9 +195,9 @@ export class BoardComponent implements OnInit {
       this.getSprintTask(this.api.currentProject.id, this.api.currentSprint.id)
     });
   }
-  issueDetailsDialogue(tkid) {
+  issueDetailsDialogue(tkid, isid) {
     const dialogRef = this.dialog.open(IssueEditFormComponent, {
-      data: { id: tkid }
+      data: { tkid: tkid, id: isid }
     });
 
     dialogRef.afterClosed().subscribe(result => {

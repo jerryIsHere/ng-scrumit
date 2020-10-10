@@ -1,33 +1,23 @@
 <h1 mat-dialog-title>Developer for {{(api.tasks | filter: 'id' : data.id)[0].description}}</h1>
 <div mat-dialog-content>
-    <p>
-        assigned developer:
-    </p>
+    <h2> assigned developer: </h2>
     <mat-chip-list>
-        <div *ngFor="let person of api.persons | filter : 'id' :assingedPerson">
-            <mat-chip (click)="removePerson(person.id)" removable="true">
-                {{person.firstName+ " " +person.lastName}}
-                <mat-icon style="position: relative; left: 5px;">person_remove</mat-icon>
-            </mat-chip>
-            <br>
-        </div>
-
+        <mat-chip class="mat-chip-list-stacked" aria-orientation="vertical"
+            *ngFor="let person of api.persons | filter : 'id' :assingedPerson" (click)="removePerson(person.id)"
+            removable="true">
+            {{person.firstName+ " " +person.lastName}}
+            <mat-icon style="position: relative; left: 5px;">person_remove</mat-icon>
+        </mat-chip>
     </mat-chip-list>
     <mat-divider></mat-divider>
-    <p>
-        other developer:
-    </p>
-
-
+    <h2> other developer: </h2>
     <mat-chip-list>
-        <div *ngFor="let person of api.persons | filter : 'id' :sparedPerson">
-            <mat-chip (click)="assginPerson(person.id)" removable="true">
-                {{person.firstName+ " " +person.lastName}}
-                <mat-icon style="position: relative; left: 5px;">person_add</mat-icon>
-            </mat-chip>
-            <br>
-        </div>
-
+        <mat-chip class="mat-chip-list-stacked" aria-orientation="vertical"
+            *ngFor="let person of api.persons | filter : 'id' :sparedPerson" (click)="assginPerson(person.id)"
+            removable="true">
+            {{person.firstName+ " " +person.lastName}}
+            <mat-icon style="position: relative; left: 5px;">person_add</mat-icon>
+        </mat-chip>
     </mat-chip-list>
 
 </div>
