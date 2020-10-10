@@ -14,6 +14,7 @@ export class SprintOverviewComponent implements OnInit {
   slogan:string;
   startDate:string;
   endDate:string;
+  pjid:number;
 
   constructor(public api: ApiAgentService, public route: ActivatedRoute) {
 
@@ -22,8 +23,9 @@ export class SprintOverviewComponent implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       const spid = Number(params.get('id'));
+      this.pjid = Number(params.get('pjid'));
       if (spid != 0) {
-        this.api.getSprint(this.api.currentProjectId, spid).then(data => {
+        this.api.getSprint(this.pjid, spid).then(data => {
           this.id = data.id;
           this.slogan = data.slogan;
           this.startDate = data.startDate;
@@ -38,15 +40,15 @@ export class SprintOverviewComponent implements OnInit {
   }
 
   create():void {
-    this.api.createSprint(this.api.currentProject.id, this.constructRequestObject(true)).then(response => {
-      this.api.getProjectSprint(this.api.currentProject.id);
+    this.api.createSprint(this.pjid, this.constructRequestObject(true)).then(response => {
+      this.api.getProjectSprint(this.pjid);
       this.reset();
     });
   }
 
   update():void {
     this.api.updateSprintRequest(this.constructRequestObject(false)).then(response => {
-      this.api.getProjectSprint(this.api.currentProject.id);
+      this.api.getProjectSprint(this.pjid);
       this.reset();
     });
   }

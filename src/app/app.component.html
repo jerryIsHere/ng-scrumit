@@ -55,23 +55,28 @@
         <mat-spinner *ngIf="!haveEntry()"></mat-spinner>
 
         <mat-list-item *ngFor="let sprint of api.sprints" [ngStyle]="sprintStyle(sprint)">
-          <button routerLink="{{'/project/'+ api.currentProject.id + '/sprint-overview/' + sprint.id}}" mat-raised-button>{{sprint.slogan}}
+          <button routerLink="{{'/project/'+ api.currentProjectId + '/sprint-overview/' + sprint.id}}" mat-raised-button>{{sprint.slogan}}
             <mat-icon>login</mat-icon>
           </button>
-          <button mat-icon-button routerLink="{{'/project/'+ api.currentProject.id + '/userstory-list/' + sprint.id}}"
+          <button mat-icon-button routerLink="{{'/project/'+ this.api.currentProjectId + '/userstory-list/' + sprint.id}}"
             style="margin-left:auto; margin-right:0;" matTooltip="user stories">
             <mat-icon>view_list</mat-icon>
           </button>
-          <button mat-icon-button routerLink="{{'/project/'+ api.currentProject.id + '/board/' + sprint.id}}" (click)="sideNavToggle = false"
+          <button mat-icon-button routerLink="{{'/project/'+ this.api.currentProjectId + '/board/' + sprint.id}}" (click)="sideNavToggle = false"
             style="margin-left:0; margin-right:0;" matTooltip="task board">
             <mat-icon>view_quilt</mat-icon>
           </button>
         </mat-list-item>
         <mat-divider></mat-divider>
 
+        <button *ngIf="this.api.currentSprintId" mat-fab color="accent" style="left:1%; bottom: 10%; top: auto;  position: fixed;"
+          matTooltip="remove sprint" (click)="removeSprint(this.api.currentSprintId)">
+          <mat-icon>delete</mat-icon>
+        </button>
+
         <button *ngIf="view!='board'" mat-fab color="accent" style="left:5%; bottom: 10%; top: auto; position: fixed;"
-          matTooltip="new sprint">
-          <mat-icon>library_add_check</mat-icon>
+          matTooltip="new sprint" routerLink="{{'/project/'+ this.api.currentProjectId +  '/sprint-overview/0'}}">
+          <mat-icon>create_new_folder</mat-icon>
         </button>
       </mat-nav-list>
 

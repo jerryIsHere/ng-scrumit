@@ -160,8 +160,7 @@ export class ApiAgentService {
   }
 
   getProjectPersonRequest = (pjid) => {
-    return Promise.resolve(dummy["persons"].filter(data => (dummy_relation["project"]["person"][pjid] as Array<number>).includes(data.id)))
-    return this.http.get("http://34.92.198.0:8080/scrumit/project/allpersons/" + pjid + "/").toPromise()
+    return this.http.get(`${apiURL}/project/allpersons/${pjid}/`).toPromise();
   }
   getProjectPerson = (pjid: number = this._currentProjectId): Promise<any> => {
     this.currentProjectId = pjid;
@@ -172,16 +171,39 @@ export class ApiAgentService {
   }
 
   getPersonRequest = (id) => {
-    return Promise.resolve(dummy["persons"].filter(person => person.id == id))
-    return this.http.get("http://34.92.198.0:8080/scrumit/project/person/" + id + "/").toPromise()
+    return this.http.get(`${apiURL}/project/person/${id}/`).toPromise();
   }
   getPerson = (id: number = this._currentPersonId): Promise<any> => {
     this.currentPersonId = id;
     return this.getPersonRequest(id).then(person => {
       this.persons.filter(p => p.id == id)[0] = person;
-      return person
+      return person;
     })
+  }
+  createPersonRequest = (pjid,newPerson) => {
+    return this.http.post(`${apiURL}/project/person/add/${pjid}/`,newPerson).toPromise();
+  }
+  createPerson = (pjid,newPerson): Promise<any> => {
+    this.currentProjectId = pjid;
+    return this.createPersonRequest(pjid,newPerson).then(response => {
+      return response;
+    });
+  }
 
+  updatePersonRequest = (newPerson) => {
+    return this.http.post(`${apiURL}/project/person/update/`,newPerson).toPromise();
+  }
+  updatePerson = (newPerson) => {
+    return this.updatePersonRequest(newPerson).then(response => {
+    });
+  }
+
+  deletePersonRequest = (pid) => {
+    return this.http.get(`${apiURL}/project/person/remove/${pid}/`).toPromise();
+  }
+  deletePerson = (pid): Promise<any> => {
+    return this.deletePersonRequest(pid).then(response => {
+    })
   }
 
   getProjectSprintRequest = (pjid) => {
@@ -213,7 +235,7 @@ export class ApiAgentService {
   }
 
   createSprintRequest = (pjid,newSprint) => {
-      return this.http.post(`${apiURL}/sprint/add/${pjid}`,newSprint).toPromise();
+      return this.http.post(`${apiURL}/sprint/add/${pjid}/`,newSprint).toPromise();
   }
   createSprint = (pjid: number,newSprint):Promise<any> => {
       this.currentProjectId = pjid;
@@ -239,8 +261,7 @@ export class ApiAgentService {
   }
 
   getSprintStoryRequest = (spid) => {
-    return Promise.resolve(dummy["stories"].filter(data => (dummy_relation["sprint"]["story"][spid] as Array<number>).includes(data.id)))
-    return this.http.get("http://34.92.198.0:8080/scrumit/board/alluserstories/" + spid + " / ").toPromise()
+    return this.http.get(`${apiURL}/board/alluserstories/${spid}/`).toPromise();
   }
   getSprintStory = (spid: number = this._currentSprintId): Promise<any> => {
     this.currentSprintId = spid;
@@ -250,8 +271,7 @@ export class ApiAgentService {
     })
   }
   getStoryRequest = (id) => {
-    return Promise.resolve(dummy["stpries"].filter(sprint => sprint.id == id))
-    return this.http.get("http://34.92.198.0:8080/scrumit/sprint/userstory/" + id + " / ").toPromise()
+    return this.http.get(`${apiURL}/sprint/userstory/${id}/`).toPromise();
   }
   getStory = (spid: number = this._currentSprintId, id: number = this._currentStoryId): Promise<any> => {
     this.currentSprintId = spid;
@@ -361,10 +381,10 @@ export class ApiAgentService {
     }
   }
   private _currentSprintId = null;
-  private get currentSprintId(): number {
+  get currentSprintId(): number {
     return this._currentSprintId;
   }
-  private set currentSprintId(id: number) {
+  set currentSprintId(id: number) {
     if (this._currentSprintId != id) {
       this.stories = null;
       this.tasks = null;
