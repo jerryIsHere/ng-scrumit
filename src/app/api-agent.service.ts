@@ -71,14 +71,14 @@ var dummy = {
     }
   ],
   'tasks': [// task have person & issue array
-    { "creationDate": 1600669342000, "commencement": 50, "priority": 5, "duration": 8, "description": "test-a1", "status": 0, "id": 1, "person": [], "issue": [], sprints: [1] },
-    { "creationDate": 1600671987000, "commencement": 50, "priority": 2, "duration": 8, "description": "test-b", "status": 0, "id": 2, "person": [], "issue": [], sprints: [1] },
-    { "creationDate": 1600671141000, "commencement": 40, "priority": 3, "duration": 8, "description": "test  by kenny", "status": 1, "id": 3, "person": [2], sprints: [1] },
-    { "creationDate": 1600692238000, "commencement": 40, "priority": 4, "duration": 8, "description": "Test", "status": 1, "id": 4, "person": [2], "issue": [], sprints: [1] },
-    { "creationDate": 1600866624000, "commencement": 30, "priority": 1, "duration": 8, "description": "problem 1", "status": 2, "id": 5, "person": [3, 4], "issue": [1, 3], sprints: [1, 5] },
-    { "creationDate": 1600663046000, "commencement": 62, "priority": 6, "duration": 8, "description": "problem 2", "status": 3, "id": 6, "person": [3,], "issue": [2], sprints: [1] },
-    { "creationDate": 1600663046000, "commencement": 15, "priority": 7, "duration": 8, "description": "New task...", "status": 4, "id": 7, "person": [2], "issue": [], sprints: [1] },
-    { "creationDate": 1600663046000, "commencement": 10, "priority": 8, "duration": 8, "description": "New task...", "status": 4, "id": 8, "person": [4], "issue": [], sprints: [1] },
+    { "creationDate": 1600669342000, "commencement": 50, "priority": 5, "duration": 8, "description": "test-a1", "status": 0, "id": 1, "persons": [], "issues": [], sprints: [1] },
+    { "creationDate": 1600671987000, "commencement": 50, "priority": 2, "duration": 8, "description": "test-b", "status": 0, "id": 2, "persons": [], "issues": [], sprints: [1] },
+    { "creationDate": 1600671141000, "commencement": 40, "priority": 3, "duration": 8, "description": "test  by kenny", "status": 1, "id": 3, "persons": [2], "issues": [], sprints: [1] },
+    { "creationDate": 1600692238000, "commencement": 40, "priority": 4, "duration": 8, "description": "Test", "status": 1, "id": 4, "persons": [2], "issues": [], sprints: [1] },
+    { "creationDate": 1600866624000, "commencement": 30, "priority": 1, "duration": 8, "description": "problem 1", "status": 2, "id": 5, "persons": [3, 4], "issues": [1, 3], sprints: [1, 5] },
+    { "creationDate": 1600663046000, "commencement": 62, "priority": 6, "duration": 8, "description": "problem 2", "status": 3, "id": 6, "persons": [3,], "issues": [2], sprints: [1] },
+    { "creationDate": 1600663046000, "commencement": 15, "priority": 7, "duration": 8, "description": "New task...", "status": 4, "id": 7, "persons": [2], "issues": [], sprints: [1] },
+    { "creationDate": 1600663046000, "commencement": 10, "priority": 8, "duration": 8, "description": "New task...", "status": 4, "id": 8, "persons": [4], "issues": [], sprints: [1] },
   ],
   'issues': [
     { "creationDate": 1600671987000, "commencement": 45, "duration": 10, "cost": 300, "description": "assigne more developer", "category": ["resign", "recruit"], "id": 3 },
@@ -228,8 +228,8 @@ export class ApiAgentService {
             }
           }
           Promise.all(issues_promises).then(issuesOfTasks => {
-            this.issues = issuesOfTasks
-            this.tasks = taskOfStories;
+            this.issues = [].concat(...issuesOfTasks)
+            this.tasks = [].concat(...taskOfStories)
             res(taskOfStories)
           })
 
@@ -244,7 +244,7 @@ export class ApiAgentService {
     for (let spid of dummy_relation.project.sprint[pjid]) {
       for (let stid of dummy_relation.sprint.story[spid]) {
         for (let tkid of dummy_relation.story.task[stid]) {
-          let task = dummy.tasks.filter(task => task.id == tkid)[0]
+          let task = Object.assign(dummy.tasks.filter(task => task.id == tkid)[0])
           task["issues"] = []
           for (let isid of dummy_relation.task.issue[tkid])
             task["issues"].push(dummy.issues.filter(issue => issue.id == isid)[0])
@@ -262,6 +262,67 @@ export class ApiAgentService {
       return tasks
     })
   }
+
+  postStoryTaskRequest = (stid: number, requestBody: any) => {
+    if (dummy) {
+      console.log('postStoryTaskRequest/' + this.currentSprint.id + '/' + stid)
+      console.log(requestBody)
+      return Promise.resolve(true)
+    }
+    return Promise.resolve(true)
+  }
+  postStoryTask = (stid: number, requestBody: any): Promise<any> => {
+    return this.postStoryTaskRequest(stid, requestBody).then(result => {
+      return result
+    })
+  }
+
+  postTaskPersonRequest = (tkid: number, requestBody: any) => {
+    if (dummy) {
+      console.log('postTaskPersonRequest/' + tkid)
+      console.log(requestBody)
+      dummy.tasks.filter(task => task.id == tkid)[0].persons = requestBody;
+
+      return Promise.resolve(true)
+    }
+    return Promise.resolve(true)
+  }
+  postTaskPerson = (tkid: number, requestBody: any): Promise<any> => {
+    return this.postTaskPersonRequest(tkid, requestBody).then(result => {
+      return result
+    })
+  }
+
+  postTaskIssueRequest = (tkid: number, requestBody: any) => {
+    if (dummy) {
+      console.log('postTaskIssueRequest/' + tkid)
+      console.log(requestBody)
+      return Promise.resolve(true)
+    }
+    return Promise.resolve(true)
+  }
+  postTaskIssue = (tkid: number, requestBody: any): Promise<any> => {
+    return this.postTaskIssueRequest(tkid, requestBody).then(result => {
+      return result
+    })
+  }
+
+  patchTaskRequest = (tkid: number, requestBody: any) => {
+    if (dummy) {
+      console.log('patchTaskRequest/' + tkid)
+      console.log(requestBody)
+      dummy.tasks.filter(task => task.id == tkid)[0].description = requestBody.description;
+      dummy.tasks.filter(task => task.id == tkid)[0].commencement = requestBody.commencement;
+      return Promise.resolve(true)
+    }
+    return Promise.resolve(true)
+  }
+  patchTask = (tkid: number, requestBody: any): Promise<any> => {
+    return this.patchTaskRequest(tkid, requestBody).then(result => {
+      return result
+    })
+  }
+
   get currentProject() {
     try {
       return this.projects.filter(project => project.id == this._currentProjectId)[0]

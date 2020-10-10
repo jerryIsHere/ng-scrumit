@@ -1,1 +1,45 @@
-<p>task-edit-form works!</p>
+<h1 mat-dialog-title>Task details:</h1>
+<div mat-dialog-content>
+    <form [formGroup]="form">
+        <mat-form-field>
+            <mat-label>Task description</mat-label>
+            <input matInput formControlName="description">
+            <mat-error *ngIf="form.get('description').invalid">
+                {{form.get('description').hasError('required')?'required':''}}
+            </mat-error>
+        </mat-form-field>
+        <br>
+        <mat-form-field>
+            <mat-label>Task commencement</mat-label>
+            <input type='number' matInput formControlName="commencement">
+            <mat-error *ngIf="form.get('commencement').invalid">
+                {{form.get('commencement').hasError('min')?'The commencement hour must be non-negative':''}}
+            </mat-error>
+        </mat-form-field>
+        <br>
+    </form>
+    <form [formGroup]="dummyForm">
+        <mat-form-field>
+            <mat-label>Creation Date: </mat-label>
+            <input type="text" matInput formControlName="creation" [matDatepicker]="picker">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <br>
+        <mat-form-field>
+            <mat-label>ID: </mat-label>
+            <input type="text" matInput formControlName="id">
+        </mat-form-field>
+        <br>
+        <mat-form-field>
+            <mat-label>Duration: </mat-label>
+            <input type="text" matInput formControlName="duration">
+        </mat-form-field>
+    </form>
+
+</div>
+<div mat-dialog-actions>
+    <button [disabled]="!form.valid" *ngIf="edit" mat-button cdkFocusInitial (click)="submitForm()">submit</button>
+    <button mat-button cdkFocusInitial *ngIf="!edit"
+        (click)="edit = true; form.enable({ onlySelf: true })">edit</button>
+</div>

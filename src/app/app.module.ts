@@ -28,7 +28,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core'
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatChipsModule } from '@angular/material/chips';
 
 import { ChartComponent } from './chart/chart.component';
 import { BoardComponent } from './board/board.component';
@@ -104,7 +105,7 @@ import { IssueEditFormComponent } from './issue-edit-form/issue-edit-form.compon
     MatDialogModule,
     MatDatepickerModule,
     MatNativeDateModule,
-
+    MatChipsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

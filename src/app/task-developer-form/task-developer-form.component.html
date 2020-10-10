@@ -1,1 +1,36 @@
-<p>task-developer-form works!</p>
+<h1 mat-dialog-title>Developer for {{(api.tasks | filter: 'id' : data.id)[0].description}}</h1>
+<div mat-dialog-content>
+    <p>
+        assigned developer:
+    </p>
+    <mat-chip-list>
+        <div *ngFor="let person of api.persons | filter : 'id' :assingedPerson">
+            <mat-chip (click)="removePerson(person.id)" removable="true">
+                {{person.firstName+ " " +person.lastName}}
+                <mat-icon style="position: relative; left: 5px;">person_remove</mat-icon>
+            </mat-chip>
+            <br>
+        </div>
+
+    </mat-chip-list>
+    <mat-divider></mat-divider>
+    <p>
+        other developer:
+    </p>
+
+
+    <mat-chip-list>
+        <div *ngFor="let person of api.persons | filter : 'id' :sparedPerson">
+            <mat-chip (click)="assginPerson(person.id)" removable="true">
+                {{person.firstName+ " " +person.lastName}}
+                <mat-icon style="position: relative; left: 5px;">person_add</mat-icon>
+            </mat-chip>
+            <br>
+        </div>
+
+    </mat-chip-list>
+
+</div>
+<div mat-dialog-actions>
+    <button mat-button cdkFocusInitial (click)="submitForm()">update</button>
+</div>

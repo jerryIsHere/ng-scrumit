@@ -2,7 +2,6 @@ import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
 import { ApiAgentService } from './../api-agent.service';
 import { CdkDrag, CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { ActivatedRoute } from '@angular/router';
-import { TagContentType } from '@angular/compiler';
 import { MatDialog } from '@angular/material/dialog';
 import { StoryAddTaskFormComponent } from '../story-add-task-form/story-add-task-form.component';
 import { TaskDeveloperFormComponent } from '../task-developer-form/task-developer-form.component';
@@ -32,7 +31,7 @@ export class BoardComponent implements OnInit {
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
-      this.getSprintTask(params.get('id'));
+      this.getSprintTask(params.get('pjid'), params.get('id'));
     })
   }
 
@@ -112,7 +111,7 @@ export class BoardComponent implements OnInit {
   }
   release(event: CdkDragDrop<string[]>, assignStatus) {
     if (this.selectedTaskId == null) return;
-    let selectedTask = this.api.tasks.reduce((acc, val) => acc.concat(val), []).filter(task => task.id == this.selectedTaskId)[0]
+    let selectedTask = this.api.tasks.filter(task => task.id == this.selectedTaskId)[0]
     if ((assignStatus == TASK_STATUS.inprogress && selectedTask.status != TASK_STATUS.fromPrevious) ||
       (assignStatus == TASK_STATUS.moveToNext && selectedTask.status != TASK_STATUS.fromPrevious)) {
       selectedTask.status = assignStatus;
@@ -124,25 +123,18 @@ export class BoardComponent implements OnInit {
   openDragList = []
   inProgressDragList = []
   doneDragList = []
-  getSprintTask(spid) {
-    this.api.getSprintTask(spid).then(data => {
+  getSprintTask(pjid, spid) {
+    this.api.getProjectPerson(pjid).then(data => {
       this.color_generator = matplotlib_set3_color()
       this.openDragList = []
       this.inProgressDragList = []
       this.doneDragList = []
-      if (!this.api.persons || this.api.persons.length == 0) {
-        this.api.getProjectPerson().then(data => {
-          this.commitGetTask();
-        })
-      }
-      else {
-        this.commitGetTask();
-      }
+      this.commitGetTask(spid);
     })
   }
 
-  commitGetTask() {
-    this.api.getSprintTask().then(data => {
+  commitGetTask(spid) {
+    this.api.getSprintTask(spid).then(data => {
       for (let tasks of data) {
         for (let task of tasks) {
           if (task.status == TASK_STATUS.open) {
@@ -173,7 +165,7 @@ export class BoardComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      this.getSprintTask(this.api.currentSprint.id)
+      this.getSprintTask(this.api.currentProject.id, this.api.currentSprint.id)
     });
   }
   assignPersonDialogue(tkid) {
@@ -182,7 +174,7 @@ export class BoardComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      this.getSprintTask(this.api.currentSprint.id)
+      this.getSprintTask(this.api.currentProject.id, this.api.currentSprint.id)
     });
   }
   createIssueDialogue(tkid) {
@@ -191,7 +183,7 @@ export class BoardComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      this.getSprintTask(this.api.currentSprint.id)
+      this.getSprintTask(this.api.currentProject.id, this.api.currentSprint.id)
     });
   }
   taskDetailsDialogue(tkid) {
@@ -200,7 +192,7 @@ export class BoardComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      this.getSprintTask(this.api.currentSprint.id)
+      this.getSprintTask(this.api.currentProject.id, this.api.currentSprint.id)
     });
   }
   issueDetailsDialogue(tkid) {
@@ -209,7 +201,7 @@ export class BoardComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      this.getSprintTask(this.api.currentSprint.id)
+      this.getSprintTask(this.api.currentProject.id, this.api.currentSprint.id)
     });
   }
 }

@@ -1,12 +1,15 @@
-<h1 mat-dialog-title>Hi</h1>
+<h1 mat-dialog-title>New task for {{(api.stories | filter: 'id' : data.id)[0].name}}</h1>
 <div mat-dialog-content>
-  <p>What's your favorite animal?</p>
-  <mat-form-field>
-    <mat-label>Favorite Animal</mat-label>
-    <input matInput [(ngModel)]="animal">
-  </mat-form-field>
+  <form [formGroup]="form">
+    <mat-form-field>
+      <mat-label>Name of the new task</mat-label>
+      <input matInput formControlName="description">
+      <mat-error *ngIf="form.get('description').invalid">{{form.get('description').hasError('required')?'required':''}}
+      </mat-error>
+    </mat-form-field>
+  </form>
+
 </div>
 <div mat-dialog-actions>
-  <button mat-button >No Thanks</button>
-  <button mat-button [mat-dialog-close]="animal" cdkFocusInitial>Ok</button>
+  <button [disabled]="!form.valid" mat-button cdkFocusInitial (click)="submitForm()">submit</button>
 </div>
