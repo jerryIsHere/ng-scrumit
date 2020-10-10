@@ -1,1 +1,33 @@
-<p>person-form works!</p>
+<form formGroupName="personFOrm">
+    <mat-form-field *ngIf="!isNew">
+        <mat-label>ID: </mat-label>
+        <input type="text" name="id" matInput [value]="this.id" [readonly]="true">
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+        <mat-label>First Name: </mat-label>
+        <input type="text" name="firstName" matInput [(ngModel)]="this.firstName">
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+        <mat-label>Last Name: </mat-label>
+        <input type="text" name="lastName" matInput [(ngModel)]="this.lastName">
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+        <mat-label>Email: </mat-label>
+        <input type="text" matInput name="creationDate" [(ngModel)]="this.email">
+    </mat-form-field>
+    <button *ngIf="isNew" mat-fab color="accent" style="right:5%; bottom: 10%; top: auto; position: fixed;"
+        matTooltip="Create" (click)="create()">
+        <mat-icon>done</mat-icon>
+    </button>
+    <button *ngIf="!isNew" mat-fab color="accent" style="right:5%; bottom: 10%; top: auto; position: fixed;"
+        matTooltip="Update" (click)="update()">
+        <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-fab color="accent" style="right:10%; bottom: 10%; top: auto; position: fixed;" matTooltip="Clear"
+        (click)="reset()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</form>

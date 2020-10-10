@@ -1,1 +1,43 @@
-<p>userstory-form works!</p>
+<form formGroupName="userStoryForm">
+    <mat-form-field *ngIf="!isNew">
+        <mat-label>ID: </mat-label>
+        <input type="text" name="id" matInput [value]="this.id" [readonly]="true">
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+        <mat-label>Name: </mat-label>
+        <input type="text" name="name" matInput [(ngModel)]="this.name">
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+        <mat-label>Priority: </mat-label>
+        <input type="text" name="priority" matInput [(ngModel)]="this.priority">
+    </mat-form-field>
+    <br>
+    <mat-form-field *ngIf="!isNew">
+        <mat-label>Creation: </mat-label>
+        <input type="text" matInput name="creationDate" [value]="this.creationDate" [readonly]="true">
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+        <mat-label>Est. size: </mat-label>
+        <input type="text" matInput name="estimatedSize" [(ngModel)]="this.estimatedSize">
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+        <mat-label>Acc. test: </mat-label>
+        <input type="text" matInput name="acceptanceTest" [(ngModel)]="this.acceptanceTest">
+    </mat-form-field>
+    <button *ngIf="isNew" mat-fab color="accent" style="right:5%; bottom: 10%; top: auto; position: fixed;"
+        matTooltip="Create" (click)="create()">
+        <mat-icon>done</mat-icon>
+    </button>
+    <button *ngIf="!isNew" mat-fab color="accent" style="right:5%; bottom: 10%; top: auto; position: fixed;"
+        matTooltip="Update" (click)="update()">
+        <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-fab color="accent" style="right:10%; bottom: 10%; top: auto; position: fixed;" matTooltip="Clear"
+        (click)="reset()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</form>

@@ -1,23 +1,33 @@
-<form [formGroup]="projectForm">
-    <mat-form-field>
+<form formGroupName="projectForm">
+    <mat-form-field *ngIf="!isNew">
         <mat-label>ID: </mat-label>
-        <input type="text" formControlName="id" matInput>
+        <input type="text" name="id" matInput [value]="this.id" [readonly]="true">
     </mat-form-field>
     <br>
     <mat-form-field>
         <mat-label>Name: </mat-label>
-        <input type="text" formControlName="name" matInput>
+        <input type="text" name="name" matInput [(ngModel)]="this.name">
     </mat-form-field>
     <br>
     <mat-form-field>
         <mat-label>Description: </mat-label>
-        <input type="text" formControlName="description" matInput>
+        <input type="text" name="description" matInput [(ngModel)]="this.description">
     </mat-form-field>
     <br>
-    <mat-form-field>
+    <mat-form-field *ngIf="!isNew">
         <mat-label>Creation: </mat-label>
-        <input type="text" matInput formControlName="creation" [matDatepicker]="picker">
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
+        <input type="text" matInput name="creationDate" [value]="this.creationDate" [readonly]="true">
     </mat-form-field>
 </form>
+<button *ngIf="isNew" mat-fab color="accent" style="right:5%; bottom: 10%; top: auto; position: fixed;"
+    matTooltip="Create" (click)="create()">
+    <mat-icon>done</mat-icon>
+</button>
+<button *ngIf="!isNew" mat-fab color="accent" style="right:5%; bottom: 10%; top: auto; position: fixed;"
+    matTooltip="Update" (click)="update()">
+    <mat-icon>edit</mat-icon>
+</button>
+<button mat-fab color="accent" style="right:10%; bottom: 10%; top: auto; position: fixed;" matTooltip="Clear"
+    (click)="reset()">
+    <mat-icon>clear</mat-icon>
+</button>

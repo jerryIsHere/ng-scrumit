@@ -44,10 +44,10 @@ export class ChartComponent implements OnInit {
       this.api.getProjectTask().then(tasks => {
         let line_series = []
         for (let task of tasks) {
-
-
+          if (task.commencement == null) continue;
           line_series.push({ type: 'line', name: uniqueName(line_series, 'name', task.description), areaStyle: {}, data: [0], stack: task.id, object: { data: task, type: 'task' } })
           for (let issue of task.issues) {
+            if (issue.commencement == null || issue.cost == null) continue;
             line_series.push({ type: 'line', name: uniqueName(line_series, 'name', issue.description), areaStyle: {}, data: [0], stack: task.id, object: { data: issue, type: 'issue' } })
           }
         }
@@ -112,6 +112,7 @@ export class ChartComponent implements OnInit {
     this.generate_bar()
   }
   generate_bar() {
+    if (this.line_options.series.length < 3) return;
     let issue_bar_series = []
     let xAxis = []
     let date: Date = new Date(

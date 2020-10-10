@@ -16,14 +16,14 @@ var dummy_relation = {
       5: []
     },
     "issue": {
-      1: [1, 2],
+      1: [1, 2, 3, 4, 5],
       5: []
     }
   },
   "story": {
     "task": {
       1: [1, 2, 3, 4],
-      2: [5, 6, 7, 8]
+      2: [5, 6, 7, 8, 9]
     },
     "issue": {
       2: [1, 2]
@@ -34,6 +34,7 @@ var dummy_relation = {
       1: [], 2: [], 3: [], 4: [], 7: [], 8: [],
       5: [1, 3],
       6: [2],
+      9: [4, 5]
     }
   }
 }
@@ -79,11 +80,14 @@ var dummy = {
     { "creationDate": 1600663046000, "commencement": 62, "priority": 6, "duration": 8, "description": "problem 2", "status": 3, "id": 6, "persons": [3,], "issues": [2], sprints: [1] },
     { "creationDate": 1600663046000, "commencement": 15, "priority": 7, "duration": 8, "description": "New task...", "status": 4, "id": 7, "persons": [2], "issues": [], sprints: [1] },
     { "creationDate": 1600663046000, "commencement": 10, "priority": 8, "duration": 8, "description": "New task...", "status": 4, "id": 8, "persons": [4], "issues": [], sprints: [1] },
+    { "creationDate": 1600663046000, "commencement": null, "priority": 8, "duration": 8, "description": "difficult", "status": 4, "id": 9, "persons": [4], "issues": [4, 5], sprints: [1] },
   ],
   'issues': [
     { "creationDate": 1600671987000, "commencement": 45, "duration": 10, "cost": 300, "description": "assigne more developer", "category": ["resign", "recruit"], "id": 3 },
     { "creationDate": 1600669342000, "commencement": 70, "duration": 10, "cost": 0, "description": "extend deadline", "category": ["unexpected error"], "id": 2 },
     { "creationDate": 1600671987000, "commencement": 35, "duration": 5, "cost": 800, "description": "assigne more developer", "category": ["resign", "recruit"], "id": 1 },
+    { "creationDate": 1600671987000, "commencement": null, "duration": 5, "cost": 800, "description": "what to do", "category": ["resign", "recruit"], "id": 4 },
+    { "creationDate": 1600671987000, "commencement": null, "duration": 5, "cost": null, "description": "priceless", "category": ["resign", "recruit"], "id": 5 },
   ]
 
 }
@@ -328,7 +332,7 @@ export class ApiAgentService {
     if (dummy) {
       console.log('patchTaskRequest/' + tkid)
       console.log(requestBody)
-      for (let [key,value] of Object.entries(requestBody)) {
+      for (let [key, value] of Object.entries(requestBody)) {
         dummy.tasks.filter(task => task.id == tkid)[0][key] = value
       }
       return Promise.resolve(true)
@@ -344,7 +348,7 @@ export class ApiAgentService {
     if (dummy) {
       console.log('patchIssueRequest/' + isid)
       console.log(requestBody)
-      for (let [key,value] of Object.entries(requestBody)) {
+      for (let [key, value] of Object.entries(requestBody)) {
         dummy.issues.filter(issue => issue.id == isid)[0][key] = value
       }
 
