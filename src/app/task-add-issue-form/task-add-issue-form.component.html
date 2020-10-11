@@ -11,5 +11,6 @@
 
 </div>
 <div mat-dialog-actions>
-  <button [disabled]="!form.valid" mat-button cdkFocusInitial (click)="submitForm()">submit</button>
+  <button [disabled]="!form.valid" mat-button cdkFocusInitial (click)="submitForm()"
+    [matTooltip]="(!form.valid)?'the form is not valid':''">submit</button>
 </div>
