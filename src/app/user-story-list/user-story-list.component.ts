@@ -30,7 +30,7 @@ export class UserStoryListComponent implements OnInit {
 
   deleteUserStory(sid): void {
     this.api.deleteStory(sid).then(response => {
-      window.location.reload()
+      this.api.getSprintStory(this.api.currentSprint.id);
     });
   }
 
@@ -40,7 +40,7 @@ export class UserStoryListComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      this.api.getProjectPerson(this.api.currentProjectId);
+      this.api.getSprintStory(this.api.currentSprint.id);
     });
   }
 }

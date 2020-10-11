@@ -27,7 +27,7 @@ export class PersonListComponent implements OnInit {
 
   deleteDeveloper(pid): void {
     this.api.deletePerson(pid).then(response => {
-      window.location.reload()
+      this.api.getProjectPerson(this.api.currentProjectId);
     });
   }
 
