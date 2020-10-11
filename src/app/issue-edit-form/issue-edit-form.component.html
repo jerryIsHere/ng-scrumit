@@ -35,7 +35,8 @@
                     {{cat}}<mat-icon matChipRemove *ngIf="edit">cancel</mat-icon>
                 </mat-chip>
             </mat-chip-list>
-            <input [matChipInputFor]="chipList" (matChipInputTokenEnd)="assignCat($event)" matChipInputAddOnBlur [readonly]="!edit">
+            <input [matChipInputFor]="chipList" (matChipInputTokenEnd)="assignCat($event)" matChipInputAddOnBlur
+                [readonly]="!edit">
         </mat-form-field>
     </form>
     <form [formGroup]="dummyForm">
@@ -58,8 +59,7 @@
     </form>
 
 </div>
-<div mat-dialog-actions>
-    <button [disabled]="!form.valid" *ngIf="edit" mat-button cdkFocusInitial (click)="submitForm()"
-        [matTooltip]="(!form.valid || !dummyForm.valid)?'the form is not valid':''">submit</button>
+<div mat-dialog-actions [matTooltip]="(!form.valid || !dummyForm.valid)?'the form is not valid':''">
+    <button [disabled]="!form.valid" *ngIf="edit" mat-button cdkFocusInitial (click)="submitForm()">submit</button>
     <button mat-button cdkFocusInitial *ngIf="!edit" (click)="edit = true">edit</button>
 </div>

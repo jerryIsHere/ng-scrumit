@@ -33,11 +33,9 @@
         </form>
     </mat-card-content>
 
-    <mat-card-actions>
+    <mat-card-actions [matTooltip]="(!form.valid || !dummyForm.valid)?'the form is not valid':''">
         <button [disabled]="!form.valid" *ngIf="edit" mat-button cdkFocusInitial
-            [matTooltip]="(!form.valid || !dummyForm.valid)?'the form is not valid':''"
-            (click)="isNew?create():update()"
-            [matTooltip]="(!form.valid || !dummyForm.valid)?'the form is not valid':''">submit</button>
+            (click)="isNew?create():update()">submit</button>
         <button mat-button cdkFocusInitial *ngIf="!edit"
             (click)="edit = true; form.enable({ onlySelf: true })">edit</button>
     </mat-card-actions>

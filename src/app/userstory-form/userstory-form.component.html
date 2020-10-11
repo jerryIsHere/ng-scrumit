@@ -52,9 +52,8 @@
         </mat-form-field>
     </form>
 </div>
-<div mat-dialog-actions>
-    <button [disabled]="!form.valid" *ngIf="edit" mat-button cdkFocusInitial (click)="submitForm()"
-        [matTooltip]="(!form.valid || !dummyForm.valid)?'the form is not valid':''">submit</button>
+<div mat-dialog-actions [matTooltip]="(!form.valid || !dummyForm.valid)?'the form is not valid':''">
+    <button [disabled]="!form.valid" *ngIf="edit" mat-button cdkFocusInitial (click)="submitForm()">submit</button>
     <button mat-button cdkFocusInitial *ngIf="!edit"
         (click)="edit = true; form.enable({ onlySelf: true })">edit</button>
 </div>
