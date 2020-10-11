@@ -35,7 +35,7 @@
                     {{cat}}<mat-icon matChipRemove *ngIf="edit">cancel</mat-icon>
                 </mat-chip>
             </mat-chip-list>
-            <input [matChipInputFor]="chipList" (matChipInputTokenEnd)="assignCat($event)" [readonly]="!edit">
+            <input [matChipInputFor]="chipList" (matChipInputTokenEnd)="assignCat($event)" matChipInputAddOnBlur [readonly]="!edit">
         </mat-form-field>
     </form>
     <form [formGroup]="dummyForm">

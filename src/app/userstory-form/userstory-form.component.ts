@@ -21,8 +21,8 @@ export class UserstoryFormComponent implements OnInit {
         console.log(story)
         this.form = new FormGroup({
           name: new FormControl({ value: story.name, disabled: false }, Validators.required),
-          priority: new FormControl({ value: story.priority, disabled: false }, Validators.required),
-          estimatedSize: new FormControl({ value: story.estimatedSize, disabled: false }, Validators.required),
+          priority: new FormControl({ value: story.priority, disabled: false }, [Validators.required, Validators.pattern("^[0-9]*$")]),
+          estimatedSize: new FormControl({ value: story.estimatedSize, disabled: false }, [Validators.required, Validators.pattern("^[0-9]*$")]),
           acceptanceTest: new FormControl({ value: story.acceptanceTest, disabled: false }, Validators.required),
         })
         this.dummyForm = new FormGroup({
@@ -36,8 +36,8 @@ export class UserstoryFormComponent implements OnInit {
       this.edit = true;
       this.form = new FormGroup({
         name: new FormControl({ value: '', disabled: false }, Validators.required),
-        priority: new FormControl({ value: '', disabled: false }, Validators.required),
-        estimatedSize: new FormControl({ value: '', disabled: false }, Validators.required),
+        priority: new FormControl({ value: '', disabled: false }, [Validators.required, Validators.pattern("^[0-9]*$")]),
+        estimatedSize: new FormControl({ value: '', disabled: false }, [Validators.required, Validators.pattern("^[0-9]*$")]),
         acceptanceTest: new FormControl({ value: '', disabled: false }, Validators.required),
       })
       this.dummyForm = new FormGroup({

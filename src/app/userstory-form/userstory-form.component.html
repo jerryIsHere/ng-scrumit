@@ -14,6 +14,9 @@
             <mat-error *ngIf="form.get('priority').invalid">
                 {{form.get('priority').hasError('required')?'required':''}}
             </mat-error>
+            <mat-error *ngIf="form.get('priority').invalid">
+                {{form.get('priority').hasError('pattern')?'Please input a non-negative number':''}}
+            </mat-error>
         </mat-form-field>
         <br>
         <mat-form-field>
@@ -21,6 +24,9 @@
             <input type="text" matInput formControlName="estimatedSize" [readonly]="!edit">
             <mat-error *ngIf="form.get('estimatedSize').invalid">
                 {{form.get('estimatedSize').hasError('required')?'required':''}}
+            </mat-error>
+            <mat-error *ngIf="form.get('estimatedSize').invalid">
+                {{form.get('priority').hasError('pattern')?'Please input a non-negative number':''}}
             </mat-error>
         </mat-form-field>
         <br>
