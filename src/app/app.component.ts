@@ -1,7 +1,7 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, ViewEncapsulation } from '@angular/core';
 import { ApiAgentService } from './api-agent.service';
 import { Location } from '@angular/common';
-import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 type requestAction = (id: number) => Promise<any>;
 
 //to do 0. api service 1. display individual info and update form  2. form for multiple submit button  3. board 4. chart
@@ -12,15 +12,20 @@ type requestAction = (id: number) => Promise<any>;
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {
-  constructor(public api: ApiAgentService, public router: Router, private location: Location, public activatedRoute: ActivatedRoute) {
+  constructor(public api: ApiAgentService, private location: Location, public activatedRoute: ActivatedRoute, public router: Router,
+    public cd: ChangeDetectorRef) {
     this.api.getAllProject();
     this.router.events.subscribe(e => {
       if (e instanceof NavigationEnd) {
-
-        if (this.requests[this.view] && !this.haveEntry()) {
-          let id = (<any>e).pjid ? Number((<any>e).pjid) : Number((<any>e).id)
+        if (this.requests[this.view]) {
+          let queryParams = router.parseUrl(e.url).queryParams
+          let id = queryParams.pjid ? Number(queryParams.pjid) : Number(queryParams.id)
           this.requests[this.view](id);
         }
+        else {
+          this.api.getAllProject();
+        }
+        this.cd.detectChanges();
       }
     })
   }
@@ -71,7 +76,7 @@ export class AppComponent {
 
   get view(): string {
     for (let view in this.routes) {
-      if (this.router.url.split('/')[this.router.url.split('/').length - 2] == this.routes[view])
+      if (this.router.url.split('/')[this.router.url.split('/').length - 1].split('?')[0] == this.routes[view])
         return view
     }
     return "root"
@@ -104,6 +109,7 @@ export class AppComponent {
 
 
   ngOnInit() {
+    this.api.getAllProject();
   }
 
 
@@ -129,7 +135,6 @@ export class AppComponent {
   }
   sideNavToggle
 
-
-
+  searchingString
 
 }

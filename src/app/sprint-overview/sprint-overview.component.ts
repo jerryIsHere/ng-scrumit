@@ -1,6 +1,8 @@
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { ApiAgentService } from '../api-agent.service';
+import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ApiAgentService } from './../api-agent.service';
 
 @Component({
   selector: 'app-sprint-overview',
@@ -9,71 +11,78 @@ import { ApiAgentService } from '../api-agent.service';
 })
 export class SprintOverviewComponent implements OnInit {
 
-  isNew:boolean=false;
-  id:number;
-  slogan:string;
-  startDate:string;
-  endDate:string;
-  pjid:number;
-
-  constructor(public api: ApiAgentService, public route: ActivatedRoute) {
-
+  form: FormGroup
+  dummyForm: FormGroup
+  constructor(public api: ApiAgentService, public activatedRoute: ActivatedRoute, public router: Router, public location: Location) {
   }
-
+  isNew
+  edit
+  pjid
   ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      const spid = Number(params.get('id'));
+    this.activatedRoute.queryParamMap.subscribe(params => {
+      const id = params.get('id')
       this.pjid = Number(params.get('pjid'));
-      if (spid != 0) {
-        this.api.getSprint(this.pjid, spid).then(data => {
-          this.id = data.id;
-          this.slogan = data.slogan;
-          this.startDate = data.startDate;
-          this.endDate = data.endDate;
-          this.isNew = false;
+      if (id != 'create') {
+        this.isNew = false;
+        this.edit = false;
+        this.api.getSprint(Number(id)).then(data => {
+          this.form = new FormGroup({
+            slogan: new FormControl({ value: data.slogan, disabled: false }, Validators.required),
+          })
+          this.dummyForm = new FormGroup({
+            startDate: new FormControl({ value: new Date(data.startDate), disabled: false }, Validators.required),
+            endDate: new FormControl({ value: new Date(data.endDate), disabled: false }, Validators.required),
+            id: new FormControl({ value: data.id, disabled: false }),
+          })
+
         });
       } else {
-          this.isNew = true;
-          this.clear();
+        this.api.currentSprintId = null;
+        this.isNew = true;
+        this.edit = true;
+        this.form = new FormGroup({
+          slogan: new FormControl({ value: '', disabled: false }, Validators.required),
+        })
+        this.dummyForm = new FormGroup({
+          startDate: new FormControl({ value: '', disabled: false }, [Validators.required, this.dateVlidation()]),
+          endDate: new FormControl({ value: '', disabled: false }, [Validators.required, this.dateVlidation()]),
+          id: new FormControl({ value: '', disabled: false }),
+        })
       }
     });
   }
 
-  create():void {
-    this.api.createSprint(this.pjid, this.constructRequestObject(true)).then(response => {
-      this.api.getProjectSprint(this.pjid);
-      this.reset();
+  create(): void {
+    this.api.createSprint(this.pjid, this.form.value).then(response => {
+      this.location.back()
     });
   }
 
-  update():void {
-    this.api.updateSprintRequest(this.constructRequestObject(false)).then(response => {
-      this.api.getProjectSprint(this.pjid);
-      this.reset();
+  update(): void {
+    console.log({ ...this.form.value, ...this.dummyForm.value })
+    this.api.updateSprintRequest({ ...this.form.value, ...this.dummyForm.value }).then(response => {
+
+      window.location.reload();
     });
   }
-
-  reset():void {
-    this.ngOnInit();
+  dateVlidation() {
+    return ((control: AbstractControl) => {
+      if (this.dummyForm && this.dummyForm.get('startDate').value && this.dummyForm.get('endDate').value) {
+        let startDate: Date = this.dummyForm.get('startDate').value
+        let endDate: Date = this.dummyForm.get('endDate').value
+        if (endDate.getTime() - startDate.getTime() < 86400000) {
+          return { startEndDateInvalid: true };
+        }
+        else {
+          return null
+        }
+      }
+      return null
+    })
   }
-
-  clear():void {
-    this.id = null;
-    this.slogan = null;
-    this.startDate = null;
-    this.endDate = null;
-  }
-
-  constructRequestObject(isNew:boolean):any {
-    var sprintObject = {
-      slogan: this.slogan,
-      startDate: this.startDate,
-      endDate: this.endDate
-    };
-    if (!isNew) {
-      sprintObject['id'] = this.id;
-    }
-    return sprintObject;
+  removeSprint(spid) {
+    this.api.deleteSprint(spid);
+    this.router.navigate(['/sprint-home'], { queryParams: { id: this.api.currentProjectId } })
   }
 
 }

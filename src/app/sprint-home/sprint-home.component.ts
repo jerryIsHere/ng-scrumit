@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router }  from '@angular/router';
 import { ApiAgentService } from '../api-agent.service';
 
 @Component({
@@ -9,14 +9,9 @@ import { ApiAgentService } from '../api-agent.service';
 })
 export class SprintHomeComponent implements OnInit {
 
-  constructor(public api: ApiAgentService, public route: ActivatedRoute) { }
+  constructor(public api: ApiAgentService, public activatedRoute: ActivatedRoute, public router: Router) { }
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
-      this.api.getProjectSprint(Number(params.get('id'))).then(data => {
-
-      })
-    })
   }
 
 }

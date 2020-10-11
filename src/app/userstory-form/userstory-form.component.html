@@ -1,43 +1,54 @@
-<form formGroupName="userStoryForm">
-    <mat-form-field *ngIf="!isNew">
-        <mat-label>ID: </mat-label>
-        <input type="text" name="id" matInput [value]="this.id" [readonly]="true">
-    </mat-form-field>
-    <br>
-    <mat-form-field>
-        <mat-label>Name: </mat-label>
-        <input type="text" name="name" matInput [(ngModel)]="this.name">
-    </mat-form-field>
-    <br>
-    <mat-form-field>
-        <mat-label>Priority: </mat-label>
-        <input type="text" name="priority" matInput [(ngModel)]="this.priority">
-    </mat-form-field>
-    <br>
-    <mat-form-field *ngIf="!isNew">
-        <mat-label>Creation: </mat-label>
-        <input type="text" matInput name="creationDate" [value]="this.creationDate" [readonly]="true">
-    </mat-form-field>
-    <br>
-    <mat-form-field>
-        <mat-label>Est. size: </mat-label>
-        <input type="text" matInput name="estimatedSize" [(ngModel)]="this.estimatedSize">
-    </mat-form-field>
-    <br>
-    <mat-form-field>
-        <mat-label>Acc. test: </mat-label>
-        <input type="text" matInput name="acceptanceTest" [(ngModel)]="this.acceptanceTest">
-    </mat-form-field>
-    <button *ngIf="isNew" mat-fab color="accent" style="right:5%; bottom: 10%; top: auto; position: fixed;"
-        matTooltip="Create" (click)="create()">
-        <mat-icon>done</mat-icon>
-    </button>
-    <button *ngIf="!isNew" mat-fab color="accent" style="right:5%; bottom: 10%; top: auto; position: fixed;"
-        matTooltip="Update" (click)="update()">
-        <mat-icon>edit</mat-icon>
-    </button>
-    <button mat-fab color="accent" style="right:10%; bottom: 10%; top: auto; position: fixed;" matTooltip="Clear"
-        (click)="reset()">
-        <mat-icon>clear</mat-icon>
-    </button>
-</form>
+<div mat-dialog-content *ngIf="form && dummyForm">
+    <form [formGroup]="form">
+        <mat-form-field>
+            <mat-label>Name: </mat-label>
+            <input type="text" matInput formControlName="name" [readonly]="!edit">
+            <mat-error *ngIf="form.get('name').invalid">
+                {{form.get('name').hasError('required')?'required':''}}
+            </mat-error>
+        </mat-form-field>
+        <br>
+        <mat-form-field>
+            <mat-label>Priority: </mat-label>
+            <input type="text" matInput formControlName="priority" [readonly]="!edit">
+            <mat-error *ngIf="form.get('priority').invalid">
+                {{form.get('priority').hasError('required')?'required':''}}
+            </mat-error>
+        </mat-form-field>
+        <br>
+        <mat-form-field>
+            <mat-label>Est. size:</mat-label>
+            <input type="text" matInput formControlName="estimatedSize" [readonly]="!edit">
+            <mat-error *ngIf="form.get('estimatedSize').invalid">
+                {{form.get('estimatedSize').hasError('required')?'required':''}}
+            </mat-error>
+        </mat-form-field>
+        <br>
+        <mat-form-field>
+            <mat-label>Acc. test:</mat-label>
+            <input type="text" matInput formControlName="acceptanceTest" [readonly]="!edit">
+            <mat-error *ngIf="form.get('acceptanceTest').invalid">
+                {{form.get('acceptanceTest').hasError('required')?'required':''}}
+            </mat-error>
+        </mat-form-field>
+    </form>
+    <form [formGroup]="dummyForm">
+        <mat-form-field *ngIf="!isNew">
+            <mat-label>ID: </mat-label>
+            <input type="text" matInput [readonly]="true" formControlName="id">
+        </mat-form-field>
+        <br>
+        <mat-form-field *ngIf="!isNew">
+            <mat-label>Creation Date: </mat-label>
+            <input type="text" matInput [matDatepicker]="picker" formControlName="creation" readonly>
+            <mat-datepicker-toggle matSuffix [for]="picker" disabled></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+    </form>
+</div>
+<div mat-dialog-actions>
+    <button [disabled]="!form.valid" *ngIf="edit" mat-button cdkFocusInitial (click)="submitForm()"
+        [matTooltip]="(!form.valid || !dummyForm.valid)?'the form is not valid':''">submit</button>
+    <button mat-button cdkFocusInitial *ngIf="!edit"
+        (click)="edit = true; form.enable({ onlySelf: true })">edit</button>
+</div>

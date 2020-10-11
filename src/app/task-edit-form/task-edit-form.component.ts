@@ -18,13 +18,13 @@ export class TaskEditFormComponent implements OnInit {
   ngOnInit(): void {
     let task = this.api.tasks.filter(task => task.id == this.data.id)[0]
     this.form = new FormGroup({
-      description: new FormControl({ value: task.description, disabled: true }, Validators.required),
-      commencement: new FormControl({ value: task.commencement, disabled: true }, Validators.min(0))
+      description: new FormControl({ value: task.description, disabled: false }, Validators.required),
+      commencement: new FormControl({ value: task.commencement, disabled: false }, Validators.min(0))
     })
     this.dummyForm = new FormGroup({
-      creation: new FormControl({ value: new Date(task.creationDate), disabled: true }),
-      id: new FormControl({ value: task.id, disabled: true }),
-      duration: new FormControl({ value: task.duration, disabled: true })
+      creation: new FormControl({ value: new Date(task.creationDate), disabled: false }),
+      id: new FormControl({ value: task.id, disabled: false }),
+      duration: new FormControl({ value: task.duration, disabled: false })
     })
   }
   form: FormGroup

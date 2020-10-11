@@ -1,33 +1,55 @@
-<form formGroupName="sprintForm">
-    <mat-form-field *ngIf="!isNew">
-        <mat-label>ID: </mat-label>
-        <input type="text" name="id" matInput [value]="this.id" [readonly]="true">
-    </mat-form-field>
-    <br>
-    <mat-form-field>
-        <mat-label>Slogan: </mat-label>
-        <input type="text" name="slogan" matInput [(ngModel)]="this.slogan">
-    </mat-form-field>
-    <br>
-    <mat-form-field>
-        <mat-label>Start Date: </mat-label>
-        <input type="text" matInput name="startDate" [(ngModel)]="this.startDate">
-    </mat-form-field>
-    <br>
-    <mat-form-field>
-        <mat-label>End Date: </mat-label>
-        <input type="text" matInput name="endDate" [(ngModel)]="this.endDate">
-    </mat-form-field>
-</form>
-<button *ngIf="isNew" mat-fab color="accent" style="right:5%; bottom: 10%; top: auto; position: fixed;"
-    matTooltip="Create" (click)="create()">
-    <mat-icon>done</mat-icon>
-</button>
-<button *ngIf="!isNew" mat-fab color="accent" style="right:5%; bottom: 10%; top: auto; position: fixed;"
-    matTooltip="Update" (click)="update()">
-    <mat-icon>edit</mat-icon>
-</button>
-<button mat-fab color="accent" style="right:10%; bottom: 10%; top: auto; position: fixed;" matTooltip="Clear"
-    (click)="reset()">
-    <mat-icon>clear</mat-icon>
-</button>
+<mat-card *ngIf="form && dummyForm">
+    <mat-card-content>
+        <form [formGroup]="form">
+            <mat-form-field>
+                <mat-label>Slogan: </mat-label>
+                <input [readonly]="!edit" matInput formControlName="slogan">
+                <mat-error *ngIf="form.get('slogan').invalid">
+                    {{form.get('slogan').hasError('required')?'required':''}}
+                </mat-error>
+            </mat-form-field>
+
+        </form>
+        <form [formGroup]="dummyForm">
+            <mat-form-field>
+                <mat-label>Start Date: </mat-label>
+                <input readonly type="text" matInput formControlName="startDate" [matDatepicker]="picker1">
+                <mat-datepicker-toggle [disabled]="!isNew" matSuffix [for]="picker1"></mat-datepicker-toggle>
+                <mat-datepicker #picker1></mat-datepicker>
+                <mat-error *ngIf="dummyForm.get('startDate').invalid">
+                    {{dummyForm.get('startDate').hasError('required')?'required':''}}
+                </mat-error>
+            </mat-form-field>
+            <br>
+            <mat-form-field>
+                <mat-label>End Date: </mat-label>
+                <input readonly type="text" matInput formControlName="endDate" [matDatepicker]="picker2">
+                <mat-datepicker-toggle [disabled]="!isNew" matSuffix [for]="picker2"></mat-datepicker-toggle>
+                <mat-datepicker #picker2></mat-datepicker>
+                <mat-error *ngIf=" dummyForm.get('endDate').invalid">
+                    {{dummyForm.get('endDate').hasError('required')?'required':''}}
+                </mat-error>
+                <mat-error *ngIf="dummyForm.get('endDate').invalid">
+                    {{dummyForm.get('endDate').hasError('startEndDateInvalid')?'End Date must be after Start Date.':''}}
+                </mat-error>
+            </mat-form-field>
+            <br>
+            <mat-form-field *ngIf="!isNew">
+                <mat-label>ID: </mat-label>
+                <input readonly type="text" matInput formControlName="id">
+            </mat-form-field>
+        </form>
+    </mat-card-content>
+
+    <mat-card-actions>
+        <button [disabled]="!form.valid || !dummyForm.valid" *ngIf="edit" mat-button cdkFocusInitial
+            [matTooltip]="(!form.valid || !dummyForm.valid)?'the form is not valid':''"
+            (click)="isNew?create():update()">submit</button>
+        <button mat-button cdkFocusInitial *ngIf="!edit"
+            (click)="edit = true; form.enable({ onlySelf: true })">edit</button>
+    </mat-card-actions>
+    <button mat-fab color="accent" style="right:10%; bottom: 10%; top: auto; position: fixed"
+        matTooltip="remove project" (click)="removeSprint(this.api.currentSprintId)" *ngIf="!isNew">
+        <mat-icon>delete</mat-icon>
+    </button>
+</mat-card>

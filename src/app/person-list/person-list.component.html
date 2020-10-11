@@ -1,10 +1,6 @@
 <mat-nav-list>
   <mat-list-item>
     list of developers
-    <button mat-icon-button style="margin-left:auto; margin-right:0;" matTooltip="add developer"
-      (click)="addDeveloper()">
-      <mat-icon>person_add</mat-icon>
-    </button>
   </mat-list-item>
   <mat-list-item *ngFor="let person of api.persons">
     <button mat-raised-button (click)="showDeveloper(person.id)">{{person.firstName+ " " +person.lastName}}
@@ -17,5 +13,9 @@
   </mat-list-item>
   <mat-divider></mat-divider>
 </mat-nav-list>
-<app-person-form *ngIf="isShowPersonForm" [id]="this.pid" [pjid]="this.pjid" [isNew]="this.isNewPersonForm">
-</app-person-form>
+
+
+<button mat-fab color="accent" style="right:10%; bottom: 10%; top: auto; position: fixed" matTooltip="add developer"
+  (click)="showDeveloper('create')">
+  <mat-icon>person_add</mat-icon>
+</button>

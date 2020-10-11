@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router }  from '@angular/router';
 import { ApiAgentService } from './../api-agent.service';
 import { DatePipe } from '@angular/common'
 
@@ -10,11 +10,11 @@ import { DatePipe } from '@angular/common'
 })
 export class ChartComponent implements OnInit {
 
-  constructor(public api: ApiAgentService, public route: ActivatedRoute, private cd: ChangeDetectorRef) {
+  constructor(public api: ApiAgentService, public activatedRoute: ActivatedRoute, public router: Router, private cd: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
+    this.activatedRoute.queryParamMap.subscribe(params => {
       this.getChart(Number(params.get('id')))
     })
   }

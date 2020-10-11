@@ -51,6 +51,7 @@ import { TaskAddIssueFormComponent } from './task-add-issue-form/task-add-issue-
 import { TaskDeveloperFormComponent } from './task-developer-form/task-developer-form.component';
 import { TaskEditFormComponent } from './task-edit-form/task-edit-form.component';
 import { IssueEditFormComponent } from './issue-edit-form/issue-edit-form.component';
+import { SearchPipe } from './search.pipe';
 
 
 
@@ -73,6 +74,7 @@ import { IssueEditFormComponent } from './issue-edit-form/issue-edit-form.compon
     TaskDeveloperFormComponent,
     TaskEditFormComponent,
     IssueEditFormComponent,
+    SearchPipe,
 
   ],
   imports: [

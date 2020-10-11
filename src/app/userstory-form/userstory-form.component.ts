@@ -1,4 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit, Inject } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ApiAgentService } from '../api-agent.service';
 
 @Component({
@@ -8,74 +10,118 @@ import { ApiAgentService } from '../api-agent.service';
 })
 export class UserstoryFormComponent implements OnInit {
 
-  @Input() id: number;
-  name: string;
-  priority: number;
-  estimatedSize: number;
-  acceptanceTest: number;
-  creationDate: string;
-  @Input() isNew: boolean;
-  @Input() spid: number;
 
-  constructor(public api: ApiAgentService) { }
+
+  constructor(public api: ApiAgentService, public dialogRef: MatDialogRef<UserstoryFormComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   ngOnInit(): void {
-    if (!this.isNew) {
-      console.log('person form ngOnInit' + this.id);
-      this.api.getStory(this.id).then(response => {
-        this.clear();
-        this.id = response.id;
-        this.name = response.name;
-        this.priority = response.priority;
-        this.estimatedSize = response.estimatedSize;
-        this.acceptanceTest = response.acceptanceTest;
-        this.creationDate = response.creationDate;
+    if (this.data.id != 'create') {
+      this.api.getStory(this.data.id).then(story => {
+        console.log(story)
+        this.form = new FormGroup({
+          name: new FormControl({ value: story.name, disabled: false }, Validators.required),
+          priority: new FormControl({ value: story.priority, disabled: false }, Validators.required),
+          estimatedSize: new FormControl({ value: story.estimatedSize, disabled: false }, Validators.required),
+          acceptanceTest: new FormControl({ value: story.acceptanceTest, disabled: false }, Validators.required),
+        })
+        this.dummyForm = new FormGroup({
+          id: new FormControl({ value: story.id, disabled: false }),
+          creation: new FormControl({ value: new Date(story.creationDate), disabled: false }),
+        })
       })
-    } else {
-      this.clear();
+    }
+    else {
+      this.isNew = true;
+      this.edit = true;
+      this.form = new FormGroup({
+        name: new FormControl({ value: '', disabled: false }, Validators.required),
+        priority: new FormControl({ value: '', disabled: false }, Validators.required),
+        estimatedSize: new FormControl({ value: '', disabled: false }, Validators.required),
+        acceptanceTest: new FormControl({ value: '', disabled: false }, Validators.required),
+      })
+      this.dummyForm = new FormGroup({
+        id: new FormControl({ value: '', disabled: false }),
+        creationDate: new FormControl({ value: null, disabled: false }),
+      })
     }
   }
+  form: FormGroup
+  dummyForm: FormGroup
+  edit = false
+  isNew = false
+  submitForm() {
+    if (this.form.valid) {
+      if (this.isNew) {
+        this.api.createStory(this.api.currentSprintId, { ...this.form.value, ...this.dummyForm.value }).then(result => {
+          this.dialogRef.close()
+        })
+      }
+      else {
+        this.api.updateStory({ ...this.form.value, ...this.dummyForm.value }).then(result => {
+          this.dialogRef.close()
+        })
+      }
 
-  reset(): void {
-    this.ngOnInit();
-  }
 
-  clear(): void {
-    this.id = null;
-    this.name = null;
-    this.priority = null;
-    this.estimatedSize = null;
-    this.acceptanceTest = null;
-    this.creationDate = null;
-  }
-
-  create(): void {
-    this.api.createStory(this.spid, this.constructRequestObject(true)).then(response => {
-      this.api.getSprintStory(this.spid).then(data => {
-      })
-      this.isNew = false;
-    });
-  }
-
-  update(): void {
-    this.api.updateStory(this.constructRequestObject(false)).then(response => {
-      this.ngOnInit();
-    });
-  }
-
-  constructRequestObject(isNew: boolean): any {
-    var storyRequestObject = {
-      name: this.name,
-      priority: this.priority,
-      estimatedSize: this.estimatedSize,
-      acceptanceTest: this.acceptanceTest
-    };
-    if (!isNew) {
-      storyRequestObject['id'] = this.id;
-      storyRequestObject['creationDate'] = this.creationDate;
     }
-    console.log(storyRequestObject);
-    return storyRequestObject;
   }
+  // ngOnInit(): void {
+  //   if (!this.isNew) {
+  //     this.api.getStory(this.id).then(response => {
+  //       this.clear();
+
+  //       this.name = response.name;
+  //       this.priority = response.priority;
+  //       this.estimatedSize = response.estimatedSize;
+  //       this.acceptanceTest = response.acceptanceTest;
+  //       this.creationDate = response.creationDate;
+  //       this.cd.detectChanges()
+  //     })
+  //   } else {
+  //     this.clear();
+  //   }
+  // }
+
+  // reset(): void {
+  //   window.location.reload()
+  // }
+
+  // clear(): void {
+  //   this.id = null;
+  //   this.name = null;
+  //   this.priority = null;
+  //   this.estimatedSize = null;
+  //   this.acceptanceTest = null;
+  //   this.creationDate = null;
+  // }
+
+  // create(): void {
+  //   this.api.createStory(this.spid, this.constructRequestObject(true)).then(response => {
+  //     this.api.getSprintStory(this.spid).then(data => {
+  //     })
+  //     this.isNew = false;
+  //   });
+  // }
+
+  // update(): void {
+  //   this.api.updateStory(this.constructRequestObject(false)).then(response => {
+  //     window.location.reload()
+  //   });
+  // }
+
+  // constructRequestObject(isNew: boolean): any {
+  //   var storyRequestObject = {
+  //     name: this.name,
+  //     priority: this.priority,
+  //     estimatedSize: this.estimatedSize,
+  //     acceptanceTest: this.acceptanceTest
+  //   };
+  //   if (!isNew) {
+  //     storyRequestObject['id'] = this.id;
+  //     storyRequestObject['creationDate'] = this.creationDate;
+  //   }
+  //   return storyRequestObject;
+  // }
 
 }

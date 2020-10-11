@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
 import { ApiAgentService } from './../api-agent.service';
 import { CdkDrag, CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router }  from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { StoryAddTaskFormComponent } from '../story-add-task-form/story-add-task-form.component';
 import { TaskDeveloperFormComponent } from '../task-developer-form/task-developer-form.component';
@@ -26,11 +26,11 @@ enum TASK_STATUS {
 export class BoardComponent implements OnInit {
   color_generator
   color_map: { [index: number]: Array<number> } = {}
-  constructor(public api: ApiAgentService, public route: ActivatedRoute, public dialog: MatDialog) {
+  constructor(public api: ApiAgentService, public activatedRoute: ActivatedRoute, public router: Router, public dialog: MatDialog) {
   }
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
+    this.activatedRoute.queryParamMap.subscribe(params => {
       this.getSprintTask(params.get('pjid'), params.get('id'));
     })
   }

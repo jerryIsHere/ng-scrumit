@@ -16,50 +16,64 @@
       <mat-nav-list *ngSwitchCase="view == 'root' || view == 'project' || view == 'person' || view == 'chart' ">
         <mat-list-item>List of Projects</mat-list-item>
         <mat-divider></mat-divider>
-        <mat-list-item>Filter</mat-list-item>
+        <mat-list-item>
+          <mat-form-field>
+            <input matInput placeholder="Filter..." value="" [(ngModel)]="searchingString">
+          </mat-form-field>
+
+        </mat-list-item>
         <mat-divider></mat-divider>
 
-        <mat-list-item *ngFor="let project of api.projects" [ngStyle]="projectStyle(project)">
-          <button mat-raised-button routerLink="{{'/project-overview/' + project.id}}">{{project.name}}
+        <mat-list-item *ngFor="let project of api.projects | search : 'name' : searchingString"
+          [ngStyle]="projectStyle(project)">
+          <button mat-raised-button [routerLink]="['/project-overview']"
+            [queryParams]="{id: project.id}">{{project.name}}
             <mat-icon>login</mat-icon>
           </button>
-          <button mat-icon-button routerLink="{{'/person-list/' + project.id}}"
+          <button mat-icon-button [routerLink]="['/person-list']" [queryParams]="{id: project.id}"
             style="margin-left:auto; margin-right:0;" matTooltip="developers">
             <mat-icon>person_search</mat-icon>
           </button>
-          <button mat-icon-button routerLink="{{'/chart/' + project.id}}" style="margin-left:0; margin-right:0;"
-            matTooltip="charts">
+          <button mat-icon-button [routerLink]="['/chart']" [queryParams]="{id: project.id}"
+            style="margin-left:0; margin-right:0;" matTooltip="charts">
             <mat-icon>analytics</mat-icon>
           </button>
-          <button mat-icon-button routerLink="{{'/sprint-home/' + project.id}}" style="margin-left:0; margin-right:0;"
-            matTooltip="sprints">
+          <button mat-icon-button [routerLink]="['/sprint-home']" [queryParams]="{id: project.id}"
+            style="margin-left:0; margin-right:0;" matTooltip="sprints">
             <mat-icon>list_alt</mat-icon>
           </button>
         </mat-list-item>
 
         <mat-divider></mat-divider>
-
         <button mat-fab color="accent" style="left:5%; bottom: 10%; top: auto;  position: fixed;"
-          matTooltip="new project">
+          matTooltip="new project" [routerLink]="['/project-overview']" [queryParams]="{id: 'create'}">
           <mat-icon>create_new_folder</mat-icon>
         </button>
       </mat-nav-list>
       <mat-nav-list *ngSwitchCase="view=='branch2sprint' || view=='sprint' || view=='story' || view=='board'">
         <mat-list-item>List of Sprints</mat-list-item>
         <mat-divider></mat-divider>
-        <mat-list-item>Filter</mat-list-item>
+        <mat-list-item>
+          <mat-form-field>
+            <input matInput placeholder="Filter..." value="" [(ngModel)]="searchingString">
+          </mat-form-field>
+        </mat-list-item>
         <mat-divider></mat-divider>
         <mat-spinner *ngIf="!haveEntry"></mat-spinner>
 
-        <mat-list-item *ngFor="let sprint of api.sprints" [ngStyle]="sprintStyle(sprint)">
-          <button routerLink="{{'/project/'+ api.currentProject.id + '/sprint-overview/' + sprint.id}}" mat-raised-button>{{sprint.slogan}}
+        <mat-list-item *ngFor="let sprint of api.sprints | search : 'slogan' : searchingString"
+          [ngStyle]="sprintStyle(sprint)">
+          <button [routerLink]="['/sprint-overview']" [queryParams]="{ id: sprint.id , pjid: api.currentProject.id}"
+            mat-raised-button>{{sprint.slogan}}
             <mat-icon>login</mat-icon>
           </button>
-          <button mat-icon-button routerLink="{{'/project/'+ api.currentProject.id + '/userstory-list/' + sprint.id}}"
-            style="margin-left:auto; margin-right:0;" matTooltip="user stories">
+          <button mat-icon-button [routerLink]="['/userstory-list/']"
+            [queryParams]="{ id: sprint.id , pjid: api.currentProject.id}" style="margin-left:auto; margin-right:0;"
+            matTooltip="user stories">
             <mat-icon>view_list</mat-icon>
           </button>
-          <button mat-icon-button routerLink="{{'/project/'+ api.currentProject.id + '/board/' + sprint.id}}" (click)="sideNavToggle = false"
+          <button mat-icon-button [routerLink]="['/board/']"
+            [queryParams]="{ id: sprint.id , pjid: api.currentProject.id}" (click)="sideNavToggle = false"
             style="margin-left:0; margin-right:0;" matTooltip="task board">
             <mat-icon>view_quilt</mat-icon>
           </button>
@@ -67,7 +81,8 @@
         <mat-divider></mat-divider>
 
         <button *ngIf="view!='board'" mat-fab color="accent" style="left:5%; bottom: 10%; top: auto; position: fixed;"
-          matTooltip="new sprint">
+          matTooltip="new sprint" [routerLink]="['/sprint-overview']"
+          [queryParams]="{id: 'create', pjid: api.currentProject.id}">
           <mat-icon>library_add_check</mat-icon>
         </button>
       </mat-nav-list>

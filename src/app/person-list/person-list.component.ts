@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ApiAgentService } from '../api-agent.service';
+import { PersonFormComponent } from '../person-form/person-form.component';
 
 @Component({
   selector: 'app-person-list',
@@ -9,39 +11,33 @@ import { ApiAgentService } from '../api-agent.service';
 })
 export class PersonListComponent implements OnInit {
 
-  isShowPersonForm:boolean;
-  isNewPersonForm:boolean;
-  pjid:number;
-  pid:number;
 
-  constructor(public api: ApiAgentService, public route: ActivatedRoute) { }
+
+
+
+  constructor(public api: ApiAgentService, public activatedRoute: ActivatedRoute, public router: Router, public dialog: MatDialog) { }
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
+    this.activatedRoute.queryParamMap.subscribe(params => {
       this.api.getProjectPerson(Number(params.get('id'))).then(data => {
-        this.isShowPersonForm = false;
-        this.pjid = Number(params.get('id'));
+
       })
     })
   }
 
-  addDeveloper():void {
-    console.log('add developer');
-    this.isShowPersonForm = true;
-    this.isNewPersonForm = true;
-  }
-
-  deleteDeveloper(pid):void {
-    console.log('delete developer');
+  deleteDeveloper(pid): void {
     this.api.deletePerson(pid).then(response => {
-      this.ngOnInit();
+      window.location.reload()
     });
   }
 
-  showDeveloper(pid):void {
-    this.isShowPersonForm = false;
-    this.pid = pid;
-    this.isShowPersonForm = true;
-    this.isNewPersonForm = false;
+  showDeveloper(pid): void {
+    const dialogRef = this.dialog.open(PersonFormComponent, {
+      data: { id: pid }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.api.getProjectPerson(this.api.currentProjectId);
+    });
   }
 }

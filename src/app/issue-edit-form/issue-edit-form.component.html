@@ -6,7 +6,7 @@
     <form [formGroup]="form">
         <mat-form-field>
             <mat-label>Issue description</mat-label>
-            <input matInput formControlName="description">
+            <input matInput formControlName="description" [readonly]="!edit">
             <mat-error *ngIf="form.get('description').invalid">
                 {{form.get('description').hasError('required')?'required':''}}
             </mat-error>
@@ -14,7 +14,7 @@
         <br>
         <mat-form-field>
             <mat-label>Issue commencement</mat-label>
-            <input type='number' matInput formControlName="commencement">
+            <input type='number' matInput formControlName="commencement" [readonly]="!edit">
             <mat-error *ngIf="form.get('commencement').invalid">
                 {{form.get('commencement').hasError('min')?'The commencement hour must be non-negative':''}}
             </mat-error>
@@ -22,44 +22,44 @@
         <br>
         <mat-form-field>
             <mat-label>Issue cost</mat-label>
-            <input type='number' matInput formControlName="cost">
-            <mat-error *ngIf="form.get('commencement').invalid">
-                {{form.get('commencement').hasError('min')?'The cost must be non-negative':''}}
+            <input type='number' matInput formControlName="cost" [readonly]="!edit">
+            <mat-error *ngIf="form.get('cost').invalid">
+                {{form.get('cost').hasError('min')?'The cost must be non-negative':''}}
             </mat-error>
         </mat-form-field>
         <br>
         <mat-form-field>
             <mat-label>Category</mat-label>
             <mat-chip-list #chipList formControlName="category">
-                <mat-chip *ngFor="let cat of form.get('category').value" removable="true" (removed)="removeCat(cat)">
-                    {{cat}}<mat-icon matChipRemove>cancel</mat-icon>
+                <mat-chip *ngFor="let cat of form.get('category').value" [removable]="edit" (removed)="removeCat(cat)">
+                    {{cat}}<mat-icon matChipRemove *ngIf="edit">cancel</mat-icon>
                 </mat-chip>
             </mat-chip-list>
-            <input [matChipInputFor]="chipList" (matChipInputTokenEnd)="assignCat($event)">
+            <input [matChipInputFor]="chipList" (matChipInputTokenEnd)="assignCat($event)" [readonly]="!edit">
         </mat-form-field>
     </form>
     <form [formGroup]="dummyForm">
         <mat-form-field>
             <mat-label>Creation Date: </mat-label>
-            <input type="text" matInput formControlName="creation" [matDatepicker]="picker">
-            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <input type="text" matInput formControlName="creation" [matDatepicker]="picker" readonly>
+            <mat-datepicker-toggle matSuffix [for]="picker" disabled></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
         <br>
         <mat-form-field>
             <mat-label>ID: </mat-label>
-            <input type="text" matInput formControlName="id">
+            <input type="text" matInput formControlName="id" readonly>
         </mat-form-field>
         <br>
         <mat-form-field>
             <mat-label>Duration: </mat-label>
-            <input type="text" matInput formControlName="duration">
+            <input type="text" matInput formControlName="duration" readonly>
         </mat-form-field>
     </form>
 
 </div>
 <div mat-dialog-actions>
-    <button [disabled]="!form.valid" *ngIf="edit" mat-button cdkFocusInitial (click)="submitForm()">submit</button>
-    <button mat-button cdkFocusInitial *ngIf="!edit"
-        (click)="edit = true; form.enable({ onlySelf: true })">edit</button>
+    <button [disabled]="!form.valid" *ngIf="edit" mat-button cdkFocusInitial (click)="submitForm()"
+        [matTooltip]="(!form.valid || !dummyForm.valid)?'the form is not valid':''">submit</button>
+    <button mat-button cdkFocusInitial *ngIf="!edit" (click)="edit = true">edit</button>
 </div>

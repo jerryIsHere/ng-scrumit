@@ -1,10 +1,6 @@
 <mat-nav-list>
   <mat-list-item>
     list of user stories
-    <button mat-icon-button style="margin-left:auto; margin-right:0;" matTooltip="add user story"
-      (click)="addUserStory()">
-      <mat-icon>add_circle</mat-icon>
-    </button>
   </mat-list-item>
   <mat-list-item *ngFor="let story of api.stories" [ngStyle]="storyStyle(story)">
     <button mat-raised-button (click)="showUserStory(story.id)">{{story.name}}
@@ -16,5 +12,8 @@
   </mat-list-item>
   <mat-divider></mat-divider>
 </mat-nav-list>
-<app-userstory-form *ngIf="isShowUserStoryForm" [id]="this.uid" [spid]="this.spid" [isNew]="this.isNewUserStoryForm">
-</app-userstory-form>
+
+<button mat-fab color="accent" style="right:10%; bottom: 10%; top: auto; position: fixed" matTooltip="add user story"
+  (click)="showUserStory('create')">
+  <mat-icon>add_circle</mat-icon>
+</button>

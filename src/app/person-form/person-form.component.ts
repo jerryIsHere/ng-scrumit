@@ -1,4 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Inject } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ApiAgentService } from '../api-agent.service';
 
 @Component({
@@ -8,67 +10,56 @@ import { ApiAgentService } from '../api-agent.service';
 })
 export class PersonFormComponent implements OnInit {
 
-  @Input() id:number;
-  firstName:string;
-  lastName:string;
-  email:string;
-  @Input() isNew:boolean;
-  @Input() pjid:number;
 
-  constructor(public api:ApiAgentService) { }
+  constructor(public api: ApiAgentService, public dialogRef: MatDialogRef<PersonFormComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   ngOnInit(): void {
-    if (!this.isNew) {
-      console.log('person form ngOnInit'+this.id);
-      this.api.getPerson(this.id).then(response => {
-        this.clear();
-        this.id = response.id;
-        this.firstName = response.firstName;
-        this.lastName = response.lastName;
-        this.email = response.email;
+    if (this.data.id != 'create') {
+      this.api.getPerson(this.data.id).then(person => {
+        this.form = new FormGroup({
+          firstName: new FormControl({ value: person.firstName, disabled: false }, Validators.required),
+          email: new FormControl({ value: person.email, disabled: false }, [Validators.required, Validators.email]),
+          lastName: new FormControl({ value: person.lastName, disabled: false }, Validators.required)
+        })
+        this.dummyForm = new FormGroup({
+          id: new FormControl({ value: person.id, disabled: false }),
+        })
       })
-    } else {
-      this.clear();
+    }
+    else {
+      this.isNew = true;
+      this.edit = true;
+      this.form = new FormGroup({
+        firstName: new FormControl({ value: '', disabled: false }, Validators.required),
+        email: new FormControl({ value: '', disabled: false }, [Validators.required, Validators.email]),
+        lastName: new FormControl({ value: '', disabled: false }, Validators.required)
+      })
+      this.dummyForm = new FormGroup({
+        id: new FormControl({ value: '', disabled: false }),
+      })
+    }
+  }
+  form: FormGroup
+  dummyForm: FormGroup
+  edit = false
+  isNew = false
+  submitForm() {
+    if (this.form.valid) {
+      if (this.isNew) {
+        this.api.createPerson(this.api.currentProjectId, { ...this.form.value, ...this.dummyForm.value }).then(result => {
+          this.dialogRef.close()
+        })
+      }
+      else {
+        this.api.updatePerson({ ...this.form.value, ...this.dummyForm.value }).then(result => {
+          this.dialogRef.close()
+        })
+      }
+
+
     }
   }
 
-  reset():void {
-    this.ngOnInit();
-  }
-
-  clear():void {
-    this.id = null;
-    this.firstName = null;
-    this.lastName = null;
-    this.email = null;
-  }
-
-  create():void {
-    this.api.createPerson(this.pjid, this.constructRequestObject(true)).then(response =>{
-      this.api.getProjectPerson(this.pjid).then(data => {
-      })
-      this.isNew = false;
-    });
-  }
-
-  update():void {
-    this.api.updatePerson(this.constructRequestObject(false)).then(response => {
-      this.ngOnInit();
-    });
-  }
-
-
-  constructRequestObject(isNew:boolean):any {
-    var projectRequestObject = {
-      firstName: this.firstName,
-      lastName: this.lastName,
-      email: this.email
-    };
-    if (!isNew) {
-      projectRequestObject['id'] = this.id;
-    }
-    console.log(projectRequestObject);
-    return projectRequestObject;
-  }
 
 }

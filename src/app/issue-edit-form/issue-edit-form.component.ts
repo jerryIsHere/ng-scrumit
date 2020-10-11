@@ -18,15 +18,15 @@ export class IssueEditFormComponent implements OnInit {
   ngOnInit(): void {
     let issue = this.api.issues.filter(issue => issue.id == this.data.id)[0]
     this.form = new FormGroup({
-      description: new FormControl({ value: issue.description, disabled: true }, Validators.required),
-      commencement: new FormControl({ value: issue.commencement, disabled: true }, Validators.min(0)),
-      cost: new FormControl({ value: issue.cost, disabled: true }, Validators.min(0)),
-      category: new FormControl({ value: issue.category, disabled: true })
+      description: new FormControl({ value: issue.description, disabled: false }, Validators.required),
+      commencement: new FormControl({ value: issue.commencement, disabled: false }, Validators.min(0)),
+      cost: new FormControl({ value: issue.cost, disabled: false }, Validators.min(0)),
+      category: new FormControl({ value: issue.category, disabled: false })
     })
     this.dummyForm = new FormGroup({
-      creation: new FormControl({ value: new Date(issue.creationDate), disabled: true }),
-      id: new FormControl({ value: issue.id, disabled: true }),
-      duration: new FormControl({ value: issue.duration, disabled: true })
+      creation: new FormControl({ value: new Date(issue.creationDate), disabled: false }),
+      id: new FormControl({ value: issue.id, disabled: false }),
+      duration: new FormControl({ value: issue.duration, disabled: false })
     })
   }
   form: FormGroup
@@ -43,19 +43,23 @@ export class IssueEditFormComponent implements OnInit {
     }
   }
   assignCat(event) {
-    if (!(this.form.get('category').value as Array<string>).includes(event.value)) {
-      this.form.get('category').value.push(event.value);
-      this.form.get('category').updateValueAndValidity()
-      this.cd.detectChanges()
-    }
-    if (event.input) {
-      event.input.value = ''
+    if (this.edit) {
+      if (!(this.form.get('category').value as Array<string>).includes(event.value)) {
+        this.form.get('category').value.push(event.value);
+        this.form.get('category').updateValueAndValidity()
+        this.cd.detectChanges()
+      }
+      if (event.input) {
+        event.input.value = ''
+      }
     }
   }
   removeCat(cat: string) {
-    this.form.get('category').setValue((this.form.get('category').value as Array<string>).filter(str =>
-      str != cat))
-    this.form.get('category').updateValueAndValidity()
-    this.cd.detectChanges()
+    if (this.edit) {
+      this.form.get('category').setValue((this.form.get('category').value as Array<string>).filter(str =>
+        str != cat))
+      this.form.get('category').updateValueAndValidity()
+      this.cd.detectChanges()
+    }
   }
 }
