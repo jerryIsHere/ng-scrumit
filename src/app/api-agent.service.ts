@@ -60,8 +60,8 @@ var dummy = {
     }
   ],
   'sprints': [
-    { "slogan": "demo1", "startDate": 1600646400000, "endDate": 1600819200000, "id": 1 },
-    { "slogan": "demo0", "startDate": 1600646400000, "endDate": 1600819200000, "id": 5 }
+    { "slogan": "demo1", "startDate": 1600646400000, "endDate": 1600819200000, "id": 1, "endHour": 50 },
+    { "slogan": "demo0", "startDate": 1600819200000, "endDate": 1600992000000, "id": 5, "endHour": null }
   ],
   'stories': [
     {
@@ -79,17 +79,17 @@ var dummy = {
     { "creationDate": 1600671141000, "commencement": 40, "priority": 3, "duration": 8, "description": "test  by kenny", "status": 1, "id": 3, "persons": [2], "issues": [], sprints: [1] },
     { "creationDate": 1600692238000, "commencement": 40, "priority": 4, "duration": 8, "description": "Test", "status": 1, "id": 4, "persons": [2], "issues": [], sprints: [1] },
     { "creationDate": 1600866624000, "commencement": 30, "priority": 1, "duration": 8, "description": "problem 1", "status": 2, "id": 5, "persons": [3, 4], "issues": [1, 3], sprints: [1, 5] },
-    { "creationDate": 1600663046000, "commencement": 62, "priority": 6, "duration": 8, "description": "problem 2", "status": 3, "id": 6, "persons": [3,], "issues": [2], sprints: [1] },
+    { "creationDate": 1600663046000, "commencement": 62, "priority": 6, "duration": 8, "description": "problem 2", "status": 3, "id": 6, "persons": [3,], "issues": [2], sprints: [1, 5] },
     { "creationDate": 1600663046000, "commencement": 15, "priority": 7, "duration": 8, "description": "New task...", "status": 4, "id": 7, "persons": [2], "issues": [], sprints: [1] },
     { "creationDate": 1600663046000, "commencement": 10, "priority": 8, "duration": 8, "description": "New task...", "status": 4, "id": 8, "persons": [4], "issues": [], sprints: [1] },
-    { "creationDate": 1600663046000, "commencement": null, "priority": 8, "duration": 8, "description": "difficult", "status": 4, "id": 9, "persons": [4], "issues": [4, 5], sprints: [1] },
+    { "creationDate": 1600663046000, "commencement": 60, "priority": 8, "duration": 8, "description": "difficult", "status": 4, "id": 9, "persons": [4], "issues": [4, 5], sprints: [1,5] },
   ],
   'issues': [
-    { "creationDate": 1600671987000, "commencement": 45, "duration": 10, "cost": 300, "description": "assigne more developer", "category": ["resign", "recruit"], "id": 3 },
-    { "creationDate": 1600669342000, "commencement": 70, "duration": 10, "cost": 0, "description": "extend deadline", "category": ["unexpected error"], "id": 2 },
-    { "creationDate": 1600671987000, "commencement": 35, "duration": 5, "cost": 800, "description": "assigne more developer", "category": ["resign", "recruit"], "id": 1 },
-    { "creationDate": 1600671987000, "commencement": null, "duration": 5, "cost": 800, "description": "what to do", "category": ["resign", "recruit"], "id": 4 },
-    { "creationDate": 1600671987000, "commencement": null, "duration": 5, "cost": null, "description": "priceless", "category": ["resign", "recruit"], "id": 5 },
+    { "creationDate": 1600671987000, "commencement": 45, "duration": 10, "cost": 300, "description": "assigne more developer", "category": ["resign", ], "id": 3 },
+    { "creationDate": 1600669342000, "commencement": 70, "duration": 5, "cost": 0, "description": "extend deadline", "category": ["unexpected error"], "id": 2 },
+    { "creationDate": 1600671987000, "commencement": 35, "duration": 5, "cost": 800, "description": "assigne more developer", "category": [ "recruit"], "id": 1 },
+    { "creationDate": 1600671987000, "commencement": 65, "duration": 5, "cost": 800, "description": "what to do", "category": ["resign", "recruit"], "id": 4 },
+    { "creationDate": 1600671987000, "commencement": 65, "duration": 5, "cost": null, "description": "priceless", "category": ["resign", "recruit"], "id": 5 },
   ]
 
 }

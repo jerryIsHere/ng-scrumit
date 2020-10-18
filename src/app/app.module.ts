@@ -30,6 +30,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatGridListModule } from '@angular/material/grid-list';
 
 import { ChartComponent } from './chart/chart.component';
 import { BoardComponent } from './board/board.component';
@@ -108,6 +109,7 @@ import { SearchPipe } from './search.pipe';
     MatDatepickerModule,
     MatNativeDateModule,
     MatChipsModule,
+    MatGridListModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

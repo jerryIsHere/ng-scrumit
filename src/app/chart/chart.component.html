@@ -1,31 +1,57 @@
 <mat-tab-group dynamicHeight>
-    <mat-tab label="Summary"></mat-tab>
+    <mat-tab label="Summary">
+        <div style="display: flex; flex-direction:column">
+            <div style="display: flex; flex-wrap: wrap">
+                <mat-card style="flex: 1 1 auto;">
+                    <mat-card-content>
+                        <div echarts [options]="initial_forcast_bar_options"> </div>
+                    </mat-card-content>
+                </mat-card>
+                <mat-card style="flex: 1 1 auto;">
+                    <mat-card-content>
+                        <div echarts [options]="issue_cat_pie_options"> </div>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+            <div style="display: flex; flex-wrap: wrap">
+                <mat-card style="flex: 1 1 auto;">
+                    <mat-card-content>
+                        <div echarts [options]="burndown_line_options"> </div>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+            <div style="display: flex; flex-wrap: wrap">
+                <mat-card style="flex: 1 2 auto;">
+                    <mat-card-content>
+                        <div echarts [options]="issue_sprint_bar_options"> </div>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </div>
+
+    </mat-tab>
     <mat-tab label="Cost vs. Time Plot">
         <mat-tab-group dynamicHeight>
             <mat-tab label="day and weekday">
-                <div class="toolbar">
-                    <mat-slider min="1" max="24" step="1" [(ngModel)]="bar_window" (ngModelChange)="generate_bar()"
-                        thumbLabel tickInterval="1">
-                    </mat-slider>
-                    <mat-checkbox [checked]="false" (change)="weekdayToogle(0,$event.checked)">Sun</mat-checkbox>
-                    <mat-checkbox [checked]="true" (change)="weekdayToogle(1,$event.checked)">Mon</mat-checkbox>
-                    <mat-checkbox [checked]="true" (change)="weekdayToogle(2,$event.checked)">Tue</mat-checkbox>
-                    <mat-checkbox [checked]="true" (change)="weekdayToogle(3,$event.checked)">Wed</mat-checkbox>
-                    <mat-checkbox [checked]="true" (change)="weekdayToogle(4,$event.checked)">Thu</mat-checkbox>
-                    <mat-checkbox [checked]="true" (change)="weekdayToogle(5,$event.checked)">Fri</mat-checkbox>
-                    <mat-checkbox [checked]="false" (change)="weekdayToogle(6,$event.checked)">Sat</mat-checkbox>
-                </div>
-
                 <div echarts [options]="issue_bar_options"> </div>
                 <div echarts [options]="task_bar_options"> </div>
-
             </mat-tab>
             <mat-tab label="tasks with issues details">
-                <div echarts [options]="line_options" (chartInit)="lineChartInit($event)"></div>
-                <div echarts [options]="pie_options"></div>
+                <div echarts [options]="task_issue_line_options" (chartInit)="lineChartInit($event)"></div>
+                <div echarts [options]="task_issue_pie_options"></div>
             </mat-tab>
         </mat-tab-group>
     </mat-tab>
-
-
 </mat-tab-group>
+<div class="toolbar">
+    <mat-slider min="1" max="24" step="1" [(ngModel)]="bar_window" (ngModelChange)="bar_chart_update()" thumbLabel
+        tickInterval="1">
+    </mat-slider>
+    <mat-checkbox [checked]="false" (change)="weekdayToogle(0,$event.checked)">Sun</mat-checkbox>
+    <mat-checkbox [checked]="true" (change)="weekdayToogle(1,$event.checked)">Mon</mat-checkbox>
+    <mat-checkbox [checked]="true" (change)="weekdayToogle(2,$event.checked)">Tue</mat-checkbox>
+    <mat-checkbox [checked]="true" (change)="weekdayToogle(3,$event.checked)">Wed</mat-checkbox>
+    <mat-checkbox [checked]="true" (change)="weekdayToogle(4,$event.checked)">Thu</mat-checkbox>
+    <mat-checkbox [checked]="true" (change)="weekdayToogle(5,$event.checked)">Fri</mat-checkbox>
+    <mat-checkbox [checked]="false" (change)="weekdayToogle(6,$event.checked)">Sat</mat-checkbox>
+</div>
