@@ -43,9 +43,9 @@ var dummy_relation = {
 var dummy = {
   'projects': [
     {
-      "creationDate": 1600863833000, "description": "trr", "name": "test project 2", "id": 2, "duration": 0, "cost": 400
+      "creationDate": 1600863833000, "startDate": 1600646400000, "description": "trr", "name": "test project 2", "id": 2, "duration": 0, "cost": 400
     }, {
-      "creationDate": 1600662795000, "description": "testing", "name": "test project arrr", "id": 1, "duration": 70, "cost": 400
+      "creationDate": 1600662795000, "startDate": 1600646400000, "description": "testing", "name": "test project arrr", "id": 1, "duration": 70, "cost": 400
     }
   ],
   'persons': [
@@ -60,8 +60,8 @@ var dummy = {
     }
   ],
   'sprints': [
-    { "slogan": "demo1", "startDate": 1600646400000, "endDate": 1600819200000, "id": 1, "endHour": 50 },
-    { "slogan": "demo0", "startDate": 1600819200000, "endDate": 1600992000000, "id": 5, "endHour": null }
+    { "slogan": "demo1", "id": 1, "endHour": 50 },
+    { "slogan": "demo0", "id": 5, "endHour": null }
   ],
   'stories': [
     {

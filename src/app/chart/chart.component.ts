@@ -231,6 +231,17 @@ export class ChartComponent implements OnInit {
       this.issue_sprint_bar_options.yAxis = { type: 'value', max: total.data[total.data.length - 1] }
     })
   }
+// startdate of sprint is moved to project, please ask user to set it on first sprint.
+// remove startdate enddate for sprint creation form
+// sprint order are defined by endHour
+// null or numerics task, all in burndown
+// null issue commencement durration(nullable), not mention in burdown.
+
+// filter on board about null issue 
+// board: hide new issue button on done.
+// board: if task have issue undefined/ null, it is not allowed to ge drag to done.
+// board: prohibit task from done back to in progress. 
+
   generate_burndown_line(project, tasks) {
     let burndown_series = []
 
