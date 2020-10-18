@@ -263,15 +263,15 @@ export class ChartComponent implements OnInit {
       let task_effort_left = task_series.data[task_series.data.length - 1]
       let issue_effort_left = issue_series.data[issue_series.data.length - 1]
       for (let task of tasks) {
-        if (i < task.commencement + task.duration) {
+        if (task.commencement != null && i < task.commencement + task.duration) {
           haveData = true;
-          if (task.commencement != null && task.commencement <= i && i < task.commencement + task.duration) {
+          if (task.commencement <= i && i < task.commencement + task.duration) {
             task_effort_left -= 1
           }
 
         }
         for (let issue of task.issues) {
-          if (i < issue.commencement + issue.duration) {
+          if (issue.commencement != null && i < issue.commencement + issue.duration) {
             haveData = true;
             if (issue.commencement == i) {
               issue_effort_left += issue.duration
