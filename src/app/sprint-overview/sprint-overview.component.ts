@@ -28,13 +28,11 @@ export class SprintOverviewComponent implements OnInit {
         this.api.getSprint(Number(id)).then(data => {
           this.form = new FormGroup({
             slogan: new FormControl({ value: data.slogan, disabled: false }, Validators.required),
+            endHour: new FormControl({ value: data.endHour, disabled: false }, [Validators.required, Validators.pattern("^[0-9]*$")]),
           })
           this.dummyForm = new FormGroup({
-            startDate: new FormControl({ value: new Date(data.startDate), disabled: false }, Validators.required),
-            endDate: new FormControl({ value: new Date(data.endDate), disabled: false }, Validators.required),
             id: new FormControl({ value: data.id, disabled: false }),
           })
-
         });
       } else {
         this.api.currentSprintId = null;
@@ -42,10 +40,9 @@ export class SprintOverviewComponent implements OnInit {
         this.edit = true;
         this.form = new FormGroup({
           slogan: new FormControl({ value: '', disabled: false }, Validators.required),
+          endHour: new FormControl({ value: '', disabled: false }, [Validators.required, Validators.pattern("^[0-9]*$")]),
         })
         this.dummyForm = new FormGroup({
-          startDate: new FormControl({ value: '', disabled: false }, [Validators.required, this.dateVlidation()]),
-          endDate: new FormControl({ value: '', disabled: false }, [Validators.required, this.dateVlidation()]),
           id: new FormControl({ value: '', disabled: false }),
         })
       }

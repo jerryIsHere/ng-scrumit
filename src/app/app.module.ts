@@ -31,6 +31,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { MatRippleModule } from '@angular/material/core';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { ChartComponent } from './chart/chart.component';
 import { BoardComponent } from './board/board.component';
@@ -53,6 +55,8 @@ import { TaskDeveloperFormComponent } from './task-developer-form/task-developer
 import { TaskEditFormComponent } from './task-edit-form/task-edit-form.component';
 import { IssueEditFormComponent } from './issue-edit-form/issue-edit-form.component';
 import { SearchPipe } from './search.pipe';
+import { FlatMapPipe } from './flat-map.pipe';
+import { Zero2nullPipe } from './zero2null.pipe';
 
 
 
@@ -76,6 +80,8 @@ import { SearchPipe } from './search.pipe';
     TaskEditFormComponent,
     IssueEditFormComponent,
     SearchPipe,
+    FlatMapPipe,
+    Zero2nullPipe,
 
   ],
   imports: [
@@ -110,6 +116,8 @@ import { SearchPipe } from './search.pipe';
     MatNativeDateModule,
     MatChipsModule,
     MatGridListModule,
+    MatRippleModule,
+    MatSnackBarModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

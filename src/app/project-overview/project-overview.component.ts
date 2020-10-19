@@ -29,6 +29,7 @@ export class ProjectOverviewComponent implements OnInit {
             name: new FormControl({ value: data.name, disabled: false }, Validators.required),
             description: new FormControl({ value: data.description, disabled: false }, Validators.required),
             cost: new FormControl({ value: data.cost, disabled: false }, Validators.min(0)),
+            startDate: new FormControl({ value: new Date(data.startDate), disabled: false }, Validators.required)
           })
           this.dummyForm = new FormGroup({
             creation: new FormControl({ value: new Date(data.creationDate), disabled: false }),
@@ -44,6 +45,7 @@ export class ProjectOverviewComponent implements OnInit {
           name: new FormControl('', Validators.required),
           description: new FormControl('', Validators.required),
           cost: new FormControl('', Validators.min(0)),
+          startDate: new FormControl({ value: new Date(), disabled: false }, Validators.required)
         })
         this.dummyForm = new FormGroup({
           creation: new FormControl({ disabled: false }),

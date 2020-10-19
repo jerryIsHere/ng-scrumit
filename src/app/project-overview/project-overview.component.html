@@ -17,6 +17,16 @@
                 </mat-error>
             </mat-form-field>
             <br>
+            <mat-form-field mattooltip="if it is empty">
+                <mat-label>Start Date: </mat-label>
+                <input [readonly]='!edit' type="text" matInput formControlName="startDate" [matDatepicker]="picker1">
+                <mat-datepicker-toggle [disabled]="!edit" matSuffix [for]="picker1"></mat-datepicker-toggle>
+                <mat-datepicker #picker1></mat-datepicker>
+                <mat-error *ngIf=" form.get('startDate').invalid">
+                    {{form.get('startDate').hasError('required')?'required':''}}
+                </mat-error>
+            </mat-form-field>
+            <br>
         </form>
         <form [formGroup]="dummyForm" *ngIf="!isNew">
             <mat-form-field>

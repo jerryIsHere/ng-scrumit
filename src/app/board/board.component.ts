@@ -1,13 +1,14 @@
 import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
 import { ApiAgentService } from './../api-agent.service';
 import { CdkDrag, CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { ActivatedRoute, Router }  from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { StoryAddTaskFormComponent } from '../story-add-task-form/story-add-task-form.component';
 import { TaskDeveloperFormComponent } from '../task-developer-form/task-developer-form.component';
 import { TaskAddIssueFormComponent } from '../task-add-issue-form/task-add-issue-form.component';
 import { TaskEditFormComponent } from '../task-edit-form/task-edit-form.component';
 import { IssueEditFormComponent } from '../issue-edit-form/issue-edit-form.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 enum TASK_STATUS {
   open = 0,
@@ -16,6 +17,10 @@ enum TASK_STATUS {
   moveToNext = 3,
   done = 4,
 }
+// filter on board about null issue 
+// board: hide new issue button on done.
+// board: if task have issue undefined/ null, it is not allowed to ge drag to done.
+// board: prohibit task from done back to in progress. 
 
 @Component({
   selector: 'app-board',
@@ -26,7 +31,7 @@ enum TASK_STATUS {
 export class BoardComponent implements OnInit {
   color_generator
   color_map: { [index: number]: Array<number> } = {}
-  constructor(public api: ApiAgentService, public activatedRoute: ActivatedRoute, public router: Router, public dialog: MatDialog) {
+  constructor(public api: ApiAgentService, public activatedRoute: ActivatedRoute, public router: Router, public dialog: MatDialog, public snackBar: MatSnackBar) {
   }
 
   ngOnInit() {
@@ -78,7 +83,48 @@ export class BoardComponent implements OnInit {
       return !not.includes(drag.data.status)
     }
   }
+
+
   dropTask(event: CdkDragDrop<any>, assignStatus) {
+
+
+    if (assignStatus == TASK_STATUS.open) {
+      if (event.previousContainer.data[event.previousIndex].status == TASK_STATUS.moveToNext) {
+        this.snackBar.open('this task is labeled as move to next sprint,\n unset any special status beofor moving it to "open"!', 'ok',);
+        return
+      }
+    }
+    else if (assignStatus == TASK_STATUS.inprogress) {
+
+    }
+    else if (assignStatus == TASK_STATUS.done) {
+      if (event.previousContainer.data[event.previousIndex].status == TASK_STATUS.moveToNext) {
+        this.snackBar.open('this task is labeled as move to next sprint,\n unset any special status beofor moving it to "done"!', 'ok',);
+        return
+      }
+      for (let issue of event.previousContainer.data[event.previousIndex].issues) {
+        if (issue.commencement == null || issue.duration == null || issue.cost == null) {
+          this.snackBar.open('there are unresolved issue in this task, resolve all issue befor moving it to "done"!', 'ok', {
+            duration: 10000,
+          });
+          return
+        }
+      }
+      let snackBarRef = this.snackBar.open('You can NOT undo this action, are you sure about it?', 'the task is done');
+      snackBarRef.onAction().subscribe(() => {
+        if (event.previousContainer === event.container) {
+          moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+        } else {
+          transferArrayItem(event.previousContainer.data,
+            event.container.data,
+            event.previousIndex,
+            event.currentIndex);
+        }
+        event.container.data[event.currentIndex].status = assignStatus
+        this.commitPostTaskList()
+      })
+      return
+    }
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
@@ -87,15 +133,7 @@ export class BoardComponent implements OnInit {
         event.previousIndex,
         event.currentIndex);
     }
-    if (assignStatus == TASK_STATUS.inprogress && (event.container.data[event.currentIndex].status == TASK_STATUS.fromPrevious
-      || event.container.data[event.currentIndex].status == TASK_STATUS.moveToNext)) {
-    }
-    // else if (assignStatus == TASK_STATUS.done && event.container.data[event.currentIndex].status == TASK_STATUS.fromPrevious) {
-
-    // }
-    else {
-      event.container.data[event.currentIndex].status = assignStatus
-    }
+    event.container.data[event.currentIndex].status = assignStatus
     this.commitPostTaskList()
   }
   commitPostTaskList() {

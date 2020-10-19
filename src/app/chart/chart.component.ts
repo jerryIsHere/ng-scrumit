@@ -51,13 +51,15 @@ export class ChartComponent implements OnInit {
     }
     this.bar_chart_update()
   }
+  // task or issue with null commencement durration(nullable), not mention in burdown.
+
   generate_task_issue_line(project, tasks) {
     let line_series = []
     for (let task of tasks) {
       if (task.commencement == null) continue;
       line_series.push({ type: 'line', name: uniqueName(line_series, 'name', task.description, task.id), areaStyle: {}, data: [0], stack: task.id, object: { data: task, type: 'task' } })
       for (let issue of task.issues) {
-        if (issue.commencement == null || issue.cost == null) continue;
+        if (issue.commencement == null || issue.duration == null || issue.cost == null) continue;
         issue.sprints = task.sprints
         line_series.push({ type: 'line', name: uniqueName(line_series, 'name', issue.description, issue.id), areaStyle: {}, data: [0], stack: task.id, object: { data: issue, type: 'issue' } })
       }
@@ -111,7 +113,7 @@ export class ChartComponent implements OnInit {
     let issue_bar_series = []
     let xAxis = []
     let date: Date = new Date(
-      this.task_issue_line_options.series.filter(item => item.object.type && item.object.type == 'project')[0].object.data.creationDate
+      this.api.currentProject.startDate
     );
     for (let issue of this.task_issue_line_options.series.filter(item => item.object.type && item.object.type == 'issue')) {
       let data = []
@@ -231,22 +233,13 @@ export class ChartComponent implements OnInit {
       this.issue_sprint_bar_options.yAxis = { type: 'value', max: total.data[total.data.length - 1] }
     })
   }
-// startdate of sprint is moved to project, please ask user to set it on first sprint.
-// remove startdate enddate for sprint creation form
-// sprint order are defined by endHour
-// null or numerics task, all in burndown
-// null issue commencement durration(nullable), not mention in burdown.
-
-// filter on board about null issue 
-// board: hide new issue button on done.
-// board: if task have issue undefined/ null, it is not allowed to ge drag to done.
-// board: prohibit task from done back to in progress. 
-
+  // task with null or numerics time data, all in burndown
+  // null issue commencement durration(nullable), not mention in burdown.
   generate_burndown_line(project, tasks) {
     let burndown_series = []
 
     let date: Date = new Date(
-      project.creationDate
+      project.startDate
     );
     let task_series = {
       type: 'line', name: 'task actual burndown', areaStyle: {}, data: [

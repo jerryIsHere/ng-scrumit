@@ -8,10 +8,17 @@
                     {{form.get('slogan').hasError('required')?'required':''}}
                 </mat-error>
             </mat-form-field>
-
+            <br>
+            <mat-form-field>
+                <mat-label>End Hour: </mat-label>
+                <input [readonly]="!edit" matInput formControlName="endHour">
+                <mat-error *ngIf="form.get('endHour').invalid">
+                    {{form.get('endHour').hasError('required')?'required':''}}
+                </mat-error>
+            </mat-form-field>
         </form>
         <form [formGroup]="dummyForm">
-            <mat-form-field>
+            <!-- <mat-form-field>
                 <mat-label>Start Date: </mat-label>
                 <input readonly type="text" matInput formControlName="startDate" [matDatepicker]="picker1">
                 <mat-datepicker-toggle [disabled]="!isNew" matSuffix [for]="picker1"></mat-datepicker-toggle>
@@ -33,7 +40,7 @@
                     {{dummyForm.get('endDate').hasError('startEndDateInvalid')?'End Date must be after Start Date.':''}}
                 </mat-error>
             </mat-form-field>
-            <br>
+            <br> -->
             <mat-form-field *ngIf="!isNew">
                 <mat-label>ID: </mat-label>
                 <input readonly type="text" matInput formControlName="id">
