@@ -18,8 +18,9 @@
             <mat-accordion cdkDropList style="height:90vh; width: 33%; display: inline-block; vertical-align: top;"
                 (cdkDropListDropped)="dropTask($event,0)" [cdkDropListData]="openDragList"
                 [cdkDropListEnterPredicate]="dragListStatusExcludePredicate([4])" multi>
-                <mat-expansion-panel *ngFor="let task of openDragList" [ngStyle]="taskBoardStyle(task)" cdkDrag
-                    [cdkDragData]="task" [style]="taskBoardStyle(task)">
+                <mat-expansion-panel *ngFor="let task of openDragList |filter : filterKey:filterValue:filterMap"
+                    [ngStyle]="taskBoardStyle(task)" cdkDrag [cdkDragData]="task" [style]="taskBoardStyle(task)"
+                    [cdkDragDisabled]="filterKey.length!=0 || filterValue.length!=0">
                     <mat-expansion-panel-header>
                         <mat-panel-title>{{task.description}}</mat-panel-title>
                         <mat-panel-description>
@@ -56,6 +57,7 @@
                             <mat-expansion-panel-header>
                                 <mat-panel-title>Issues
                                     <mat-icon matBadgeColor="warn"
+                                        *ngIf="(task.issues| filter :['commencement','duration','cost'] : [null]).length>0"
                                         style="position: absolute; right:10%; color:OrangeRed;"
                                         [matBadge]="(task.issues| filter :['commencement','duration','cost'] : [null])?.length | zero2null">
                                         live_help</mat-icon>
@@ -82,12 +84,12 @@
             <mat-accordion cdkDropList style="height:90vh; width: 33%; display: inline-block; vertical-align: top;"
                 (cdkDropListDropped)="dropTask($event,1)" [cdkDropListData]="inProgressDragList"
                 [cdkDropListEnterPredicate]="dragListStatusExcludePredicate([4])" multi>
-                <mat-expansion-panel *ngFor="let task of inProgressDragList" [ngStyle]="taskBoardStyle(task)" cdkDrag
-                    [cdkDragData]="task" [style]="taskBoardStyle(task)" (mouseenter)="selectedTaskId = task.id"
+                <mat-expansion-panel *ngFor="let task of inProgressDragList|filter : filterKey:filterValue:filterMap"
+                    [ngStyle]="taskBoardStyle(task)" cdkDrag [cdkDragData]="task" [style]="taskBoardStyle(task)"
+                    (mouseenter)="selectedTaskId = task.id"
+                    [cdkDragDisabled]="filterKey.length!=0 || filterValue.length!=0"
                     (mouseleave)="selectedTaskId = null">
-                    <mat-expansion-panel-header matRipple [matRippleCentered]="true" matRippleColor='OrangeRed'
-                        [matRippleDisabled]="(task.issues | filter : ['commencement','duration','cost'] : [null])?.length==0"
-                        [matRippleTrigger]="trigger">
+                    <mat-expansion-panel-header>
                         <mat-panel-title>{{task.description}}</mat-panel-title>
                         <mat-panel-description>
                             <mat-icon [matBadge]="task.persons.length | zero2null" matBadgeSize="small"
@@ -124,6 +126,7 @@
                                 <mat-panel-title>
                                     Issues
                                     <mat-icon matBadgeColor="warn"
+                                        *ngIf="(task.issues| filter :['commencement','duration','cost'] : [null]).length>0"
                                         style="position: absolute; right:10%; color:OrangeRed;"
                                         [matBadge]="(task.issues| filter :['commencement','duration','cost'] : [null])?.length | zero2null">
                                         live_help</mat-icon>
@@ -149,8 +152,9 @@
             </mat-accordion>
             <mat-accordion cdkDropList style="height:90vh; width: 33%; display: inline-block; vertical-align: top;"
                 (cdkDropListDropped)="dropTask($event,4)" [cdkDropListData]="doneDragList" multi>
-                <mat-expansion-panel *ngFor="let task of doneDragList" [ngStyle]="taskBoardStyle(task)" cdkDrag
-                    [cdkDragData]="task" [style]="taskBoardStyle(task)">
+                <mat-expansion-panel *ngFor="let task of doneDragList|filter : filterKey:filterValue:filterMap"
+                    [ngStyle]="taskBoardStyle(task)" cdkDrag [cdkDragData]="task" [style]="taskBoardStyle(task)"
+                    [cdkDragDisabled]="filterKey.length!=0 || filterValue.length!=0">
                     <mat-expansion-panel-header>
                         <mat-panel-title>{{task.description}}</mat-panel-title>
                         <mat-panel-description>
@@ -201,23 +205,23 @@
         </div>
         <div cdkDropList>
             <button mat-fab color="white" style="left:38%; bottom: 2%; top: auto; position: fixed;"
-                class="dragDropButton" matTooltip="from previous sprint" (cdkDragReleased)="release($event,2)">
+                (click)="toggleFilter(null,['status'],[2])" class="dragDropButton" matTooltip="from previous sprint"
+                (cdkDragReleased)="release($event,2)">
                 <mat-icon style="color:lightcoral;"
                     [matBadge]="(inProgressDragList | filter : 'status': 2)?.length | zero2null" matBadgeColor="warn">
                     assignment_late</mat-icon>
             </button>
             <button mat-fab color="white" style="right:10%; bottom: auto; top: 1%; position: fixed;"
-                class="dragDropButton" (cdkDragReleased)="release($event,2)">
+                (click)="toggleFilter('issues',['commencement','duration','cost'],[null])" class="dragDropButton"
+                (cdkDragReleased)="release($event,2)" matTooltip="unsolved issue (click for hightlight)">
                 <mat-icon style="color:OrangeRed;"
                     [matBadge]="(api.tasks | flatMap : 'issues' | filter :['commencement','duration','cost'] : [null])?.length | zero2null"
                     matBadgeColor="warn">
                     live_help</mat-icon>
             </button>
-            <div matTooltip="unsolved issue (click for hightlight)"
-                style="right:10%; bottom: auto; top: 1%; position: fixed; height: 56px; width: 56px;" #trigger></div>
             <button mat-fab color="white" style="left:38%; bottom: 20%; top: auto; position: fixed;" cdkDrag
-                class="dragDropButton" matTooltip="move to next sprint (drag and drop to assign)"
-                (cdkDragReleased)="release($event,3)">
+                (click)="toggleFilter(null,['status'],[3])" class="dragDropButton"
+                matTooltip="move to next sprint (drag and drop to assign)" (cdkDragReleased)="release($event,3)">
                 <mat-icon style="color:gold;"
                     [matBadge]="(inProgressDragList | filter : 'status' : 3)?.length | zero2null" matBadgeColor="warn">
                     assignment_returned

@@ -9,6 +9,7 @@ import { TaskAddIssueFormComponent } from '../task-add-issue-form/task-add-issue
 import { TaskEditFormComponent } from '../task-edit-form/task-edit-form.component';
 import { IssueEditFormComponent } from '../issue-edit-form/issue-edit-form.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { FilterPipe } from '../filter.pipe';
 
 enum TASK_STATUS {
   open = 0,
@@ -83,13 +84,25 @@ export class BoardComponent implements OnInit {
       return !not.includes(drag.data.status)
     }
   }
-
-
+  filterMap = null;
+  filterKey = []
+  filterValue = []
+  toggleFilter(map, key, value) {
+    if (key.every(k => this.filterKey.includes(k)) && value.every(v => this.filterValue.includes(v))) {
+      this.filterMap = null
+      this.filterKey = []
+      this.filterValue = []
+    }
+    else {
+      this.filterMap = map;
+      this.filterKey = key
+      this.filterValue = value
+    }
+  }
   dropTask(event: CdkDragDrop<any>, assignStatus) {
-
-
+    let task = event.previousContainer.data[event.previousIndex];
     if (assignStatus == TASK_STATUS.open) {
-      if (event.previousContainer.data[event.previousIndex].status == TASK_STATUS.moveToNext) {
+      if (task.status == TASK_STATUS.moveToNext) {
         this.snackBar.open('this task is labeled as move to next sprint,\n unset any special status beofor moving it to "open"!', 'ok',);
         return
       }
@@ -98,11 +111,11 @@ export class BoardComponent implements OnInit {
 
     }
     else if (assignStatus == TASK_STATUS.done) {
-      if (event.previousContainer.data[event.previousIndex].status == TASK_STATUS.moveToNext) {
+      if (task.status == TASK_STATUS.moveToNext) {
         this.snackBar.open('this task is labeled as move to next sprint,\n unset any special status beofor moving it to "done"!', 'ok',);
         return
       }
-      for (let issue of event.previousContainer.data[event.previousIndex].issues) {
+      for (let issue of task.issues) {
         if (issue.commencement == null || issue.duration == null || issue.cost == null) {
           this.snackBar.open('there are unresolved issue in this task, resolve all issue befor moving it to "done"!', 'ok', {
             duration: 10000,
@@ -120,7 +133,7 @@ export class BoardComponent implements OnInit {
             event.previousIndex,
             event.currentIndex);
         }
-        event.container.data[event.currentIndex].status = assignStatus
+        this.assignTaskStatus(task.status, assignStatus)
         this.commitPostTaskList()
       })
       return
@@ -133,9 +146,18 @@ export class BoardComponent implements OnInit {
         event.previousIndex,
         event.currentIndex);
     }
-    event.container.data[event.currentIndex].status = assignStatus
+    this.assignTaskStatus(task.status, assignStatus)
     this.commitPostTaskList()
   }
+  assignTaskStatus(task, status) {
+    if (status == TASK_STATUS.inprogress && (task.status == TASK_STATUS.fromPrevious || task.status == TASK_STATUS.moveToNext)) {
+
+    }
+    else {
+      task.status = status
+    }
+  }
+
   commitPostTaskList() {
     let postBody = []
     for (let list of [this.openDragList, this.inProgressDragList, this.doneDragList]) {

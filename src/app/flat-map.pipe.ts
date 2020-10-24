@@ -7,6 +7,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class FlatMapPipe implements PipeTransform {
 
   transform(objs: Array<unknown>, key): unknown {
+    if (key == null) return objs;
     let result = []
     objs.map(o => o[key]).forEach(e => result.push(...e))
     return result;
