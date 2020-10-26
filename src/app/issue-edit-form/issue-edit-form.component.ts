@@ -19,10 +19,10 @@ export class IssueEditFormComponent implements OnInit {
     let issue = this.api.issues.filter(issue => issue.id == this.data.id)[0]
     this.form = new FormGroup({
       description: new FormControl({ value: issue.description, disabled: false }, Validators.required),
-      commencement: new FormControl({ value: issue.commencement, disabled: false }, Validators.min(0)),
-      cost: new FormControl({ value: issue.cost, disabled: false }, Validators.min(0)),
+      commencement: new FormControl({ value: issue.commencement, disabled: false }, Validators.pattern("^[0-9]*$")),
+      cost: new FormControl({ value: issue.cost, disabled: false }, Validators.pattern("^[0-9]*$")),
       category: new FormControl({ value: issue.category, disabled: false }),
-      duration: new FormControl({ value: issue.duration, disabled: false }, Validators.min(0))
+      duration: new FormControl({ value: issue.duration, disabled: false }, Validators.pattern("^[0-9]*$"))
     })
     this.dummyForm = new FormGroup({
       creation: new FormControl({ value: new Date(issue.creationDate), disabled: false }),

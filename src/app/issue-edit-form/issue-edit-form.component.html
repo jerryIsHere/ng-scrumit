@@ -16,20 +16,23 @@
             <mat-label>Issue commencement</mat-label>
             <input type='number' matInput formControlName="commencement" [readonly]="!edit">
             <mat-error *ngIf="form.get('commencement').invalid">
-                {{form.get('commencement').hasError('min')?'The commencement hour must be non-negative':''}}
+                {{form.get('commencement').hasError('pattern')?'Please input a non-negative number':''}}
             </mat-error>
         </mat-form-field>
         <br>
         <mat-form-field>
             <mat-label>Duration: </mat-label>
-            <input type="text" matInput formControlName="duration" [readonly]="!edit">
+            <input type="number" matInput formControlName="duration" [readonly]="!edit">
+            <mat-error *ngIf="form.get('duration').invalid">
+                {{form.get('duration').hasError('pattern')?'Please input a non-negative number':''}}
+            </mat-error>
         </mat-form-field>
         <br>
         <mat-form-field>
             <mat-label>Issue cost</mat-label>
             <input type='number' matInput formControlName="cost" [readonly]="!edit">
             <mat-error *ngIf="form.get('cost').invalid">
-                {{form.get('cost').hasError('min')?'The cost must be non-negative':''}}
+                {{form.get('cost').hasError('pattern')?'Please input a non-negative number':''}}
             </mat-error>
         </mat-form-field>
         <br>
