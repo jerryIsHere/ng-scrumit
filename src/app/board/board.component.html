@@ -20,7 +20,7 @@
                 [cdkDropListEnterPredicate]="dragListStatusExcludePredicate([4])" multi>
                 <mat-expansion-panel *ngFor="let task of openDragList |filter : filterKey:filterValue:filterMap"
                     [ngStyle]="taskBoardStyle(task)" cdkDrag [cdkDragData]="task" [style]="taskBoardStyle(task)"
-                    [cdkDragDisabled]="filterKey.length!=0 || filterValue.length!=0">
+                    (cdkDragStarted)="dragTask($event)">
                     <mat-expansion-panel-header>
                         <mat-panel-title>{{task.description}}</mat-panel-title>
                         <mat-panel-description>
@@ -86,8 +86,7 @@
                 [cdkDropListEnterPredicate]="dragListStatusExcludePredicate([4])" multi>
                 <mat-expansion-panel *ngFor="let task of inProgressDragList|filter : filterKey:filterValue:filterMap"
                     [ngStyle]="taskBoardStyle(task)" cdkDrag [cdkDragData]="task" [style]="taskBoardStyle(task)"
-                    (mouseenter)="selectedTaskId = task.id"
-                    [cdkDragDisabled]="filterKey.length!=0 || filterValue.length!=0"
+                    (cdkDragStarted)="dragTask($event)" (mouseenter)="selectedTaskId = task.id"
                     (mouseleave)="selectedTaskId = null">
                     <mat-expansion-panel-header>
                         <mat-panel-title>{{task.description}}</mat-panel-title>
@@ -154,7 +153,7 @@
                 (cdkDropListDropped)="dropTask($event,4)" [cdkDropListData]="doneDragList" multi>
                 <mat-expansion-panel *ngFor="let task of doneDragList|filter : filterKey:filterValue:filterMap"
                     [ngStyle]="taskBoardStyle(task)" cdkDrag [cdkDragData]="task" [style]="taskBoardStyle(task)"
-                    [cdkDragDisabled]="filterKey.length!=0 || filterValue.length!=0">
+                    (cdkDragStarted)="dragTask($event)">
                     <mat-expansion-panel-header>
                         <mat-panel-title>{{task.description}}</mat-panel-title>
                         <mat-panel-description>

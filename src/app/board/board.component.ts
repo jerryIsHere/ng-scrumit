@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
 import { ApiAgentService } from './../api-agent.service';
-import { CdkDrag, CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { CdkDrag, CdkDragDrop, CdkDragStart, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { StoryAddTaskFormComponent } from '../story-add-task-form/story-add-task-form.component';
@@ -84,7 +84,7 @@ export class BoardComponent implements OnInit {
       return !not.includes(drag.data.status)
     }
   }
-  filterMap = null;
+  filterMap: String = null;
   filterKey = []
   filterValue = []
   toggleFilter(map, key, value) {
@@ -97,6 +97,20 @@ export class BoardComponent implements OnInit {
       this.filterMap = map;
       this.filterKey = key
       this.filterValue = value
+    }
+  }
+  dragTask(event: CdkDragStart) {
+    console.log(this.filterKey.length)
+    console.log(this.filterValue.length)
+    console.log(this.filterMap)
+    if (this.filterKey.length != 0 || this.filterValue.length != 0 || this.filterMap != null) {
+      let snackBarRef = this.snackBar.open('Unset filter before you drag and drop!', 'unset', { duration: 5000 });
+      snackBarRef.onAction().subscribe(() => {
+        this.filterKey = []
+        this.filterValue = []
+        this.filterMap = null
+      })
+      document.dispatchEvent(new Event('mouseup'));
     }
   }
   dropTask(event: CdkDragDrop<any>, assignStatus) {
@@ -123,20 +137,22 @@ export class BoardComponent implements OnInit {
           return
         }
       }
-      let snackBarRef = this.snackBar.open('You can NOT undo this action, are you sure about it?', 'the task is done');
-      snackBarRef.onAction().subscribe(() => {
-        if (event.previousContainer === event.container) {
-          moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-        } else {
-          transferArrayItem(event.previousContainer.data,
-            event.container.data,
-            event.previousIndex,
-            event.currentIndex);
-        }
-        this.assignTaskStatus(task.status, assignStatus)
-        this.commitPostTaskList()
-      })
-      return
+      if (task.status != TASK_STATUS.done) {
+        let snackBarRef = this.snackBar.open('You can NOT undo this action, are you sure about that?', 'the task is done');
+        snackBarRef.onAction().subscribe(() => {
+          if (event.previousContainer === event.container) {
+            moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+          } else {
+            transferArrayItem(event.previousContainer.data,
+              event.container.data,
+              event.previousIndex,
+              event.currentIndex);
+          }
+          this.assignTaskStatus(task, assignStatus)
+          this.commitPostTaskList()
+        })
+        return
+      }
     }
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
@@ -146,7 +162,7 @@ export class BoardComponent implements OnInit {
         event.previousIndex,
         event.currentIndex);
     }
-    this.assignTaskStatus(task.status, assignStatus)
+    this.assignTaskStatus(task, assignStatus)
     this.commitPostTaskList()
   }
   assignTaskStatus(task, status) {

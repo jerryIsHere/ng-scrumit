@@ -21,12 +21,12 @@ export class IssueEditFormComponent implements OnInit {
       description: new FormControl({ value: issue.description, disabled: false }, Validators.required),
       commencement: new FormControl({ value: issue.commencement, disabled: false }, Validators.min(0)),
       cost: new FormControl({ value: issue.cost, disabled: false }, Validators.min(0)),
-      category: new FormControl({ value: issue.category, disabled: false })
+      category: new FormControl({ value: issue.category, disabled: false }),
+      duration: new FormControl({ value: issue.duration, disabled: false }, Validators.min(0))
     })
     this.dummyForm = new FormGroup({
       creation: new FormControl({ value: new Date(issue.creationDate), disabled: false }),
       id: new FormControl({ value: issue.id, disabled: false }),
-      duration: new FormControl({ value: issue.duration, disabled: false })
     })
   }
   form: FormGroup

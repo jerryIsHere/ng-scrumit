@@ -21,6 +21,11 @@
         </mat-form-field>
         <br>
         <mat-form-field>
+            <mat-label>Duration: </mat-label>
+            <input type="text" matInput formControlName="duration" [readonly]="!edit">
+        </mat-form-field>
+        <br>
+        <mat-form-field>
             <mat-label>Issue cost</mat-label>
             <input type='number' matInput formControlName="cost" [readonly]="!edit">
             <mat-error *ngIf="form.get('cost').invalid">
@@ -50,11 +55,6 @@
         <mat-form-field>
             <mat-label>ID: </mat-label>
             <input type="text" matInput formControlName="id" readonly>
-        </mat-form-field>
-        <br>
-        <mat-form-field>
-            <mat-label>Duration: </mat-label>
-            <input type="text" matInput formControlName="duration" readonly>
         </mat-form-field>
     </form>
 
