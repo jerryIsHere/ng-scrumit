@@ -20,7 +20,9 @@ export class StoryAddTaskFormComponent implements OnInit {
   })
   submitForm() {
     if (this.form.valid) {
-      this.api.postStoryTask(this.data.id, this.form.value).then(result => {
+      let body = { ...this.form.value }
+      Object.keys(body).forEach((key) => (body[key] == null || body[key] == '') && delete body[key]);
+      this.api.postStoryTask(this.data.id, body).then(result => {
         if (result) {
           this.dialogRef.close()
         }

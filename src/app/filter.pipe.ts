@@ -7,7 +7,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class FilterPipe implements PipeTransform {
 
   transform(objs: Array<unknown>, key, values?, targetNestedArray?): unknown {
-
+    if (objs == null) return null;
     if (!values) return objs;
     if (typeof key == 'string') {
       if (Array.isArray(values)) {

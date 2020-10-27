@@ -34,7 +34,9 @@ export class IssueEditFormComponent implements OnInit {
   edit = false
   submitForm() {
     if (this.form.valid) {
-      this.api.patchIssue(this.data.id, this.form.value).then(result => {
+      let body = { ...this.form.value }
+      Object.keys(body).forEach((key) => (body[key] == null || body[key] == '') && delete body[key]);
+      this.api.patchIssue(this.data.id, body).then(result => {
         if (result) {
           this.dialogRef.close()
         }

@@ -52,13 +52,15 @@ export class UserstoryFormComponent implements OnInit {
   isNew = false
   submitForm() {
     if (this.form.valid) {
+      let body = { ...this.form.value, ...this.dummyForm.value }
+      Object.keys(body).forEach((key) => (body[key] == null || body[key] == '') && delete body[key]);
       if (this.isNew) {
-        this.api.createStory(this.api.currentSprintId, { ...this.form.value, ...this.dummyForm.value }).then(result => {
+        this.api.createStory(this.api.currentSprintId, body).then(result => {
           this.dialogRef.close()
         })
       }
       else {
-        this.api.updateStory({ ...this.form.value, ...this.dummyForm.value }).then(result => {
+        this.api.updateStory(body).then(result => {
           this.dialogRef.close()
         })
       }

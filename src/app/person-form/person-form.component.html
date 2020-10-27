@@ -23,7 +23,7 @@
                 {{form.get('email').hasError('required')?'required':''}}
             </mat-error>
             <mat-error *ngIf="form.get('email').invalid">
-                {{form.get('email').hasError('email')?'not a valid email format':''}}
+                {{form.get('email').hasError('pattern')?'not a valid email format':''}}
             </mat-error>
         </mat-form-field>
     </form>

@@ -50,14 +50,17 @@ export class SprintOverviewComponent implements OnInit {
   }
 
   create(): void {
-    this.api.createSprint(this.pjid, this.form.value).then(response => {
+    let body = { ...this.form.value }
+    Object.keys(body).forEach((key) => (body[key] == null || body[key] == '') && delete body[key]);
+    this.api.createSprint(this.pjid, body).then(response => {
       this.location.back()
     });
   }
 
   update(): void {
-    console.log({ ...this.form.value, ...this.dummyForm.value })
-    this.api.updateSprintRequest({ ...this.form.value, ...this.dummyForm.value }).then(response => {
+    let body = { ...this.dummyForm.value, ...this.form.value }
+    Object.keys(body).forEach((key) => (body[key] == null || body[key] == '') && delete body[key]);
+    this.api.updateSprintRequest(body).then(response => {
 
       window.location.reload();
     });

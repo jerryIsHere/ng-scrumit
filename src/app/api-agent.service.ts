@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from './../environments/environment';
 import { promise } from 'protractor';
-const apiURL = (environment as any).apiURL;
+const apiURL = "http://34.92.198.0:8080/scrumit"//(environment as any).apiURL;
 var dummy_relation = {
   'project': {
     "person": {
@@ -98,7 +98,7 @@ var dummy = {
   providedIn: 'root'
 })
 export class ApiAgentService {
-  public testing = true;
+  public testing = false;
   projects: Array<any> = null;
   persons: Array<any> = null;
   sprints: Array<any> = null;
@@ -121,7 +121,7 @@ export class ApiAgentService {
       console.log(result)
       return Promise.resolve(result)
     }
-    return this.http.get("http://34.92.198.0:8080/scrumit/project/allprojects/").toPromise()
+    return this.http.get(apiURL + "/project/allprojects/").toPromise()
   }
   getAllProject = (): Promise<any> => {
     return this.getAllProjectRequest().then(projects => {
@@ -136,7 +136,7 @@ export class ApiAgentService {
       console.log(result)
       return Promise.resolve(result)
     }
-    return this.http.get("http://34.92.198.0:8080/scrumit/project/" + pjid + "/").toPromise()
+    return this.http.get(apiURL + "/project/" + pjid + "/").toPromise()
   }
   getProject = (pjid = this._currentProjectId): Promise<any> => {
     this.currentProjectId = pjid;
@@ -151,7 +151,7 @@ export class ApiAgentService {
       console.log(JSON.stringify(newProject))
       return Promise.resolve(true)
     }
-    return this.http.post(`${apiURL}/project/update/`, newProject).toPromise();
+    return this.http.post(apiURL + '/project/update/', newProject).toPromise();
 
   }
   updateProject = (newProject): Promise<any> => {
@@ -193,7 +193,7 @@ export class ApiAgentService {
       return Promise.resolve(result)
     }
 
-    return this.http.get("http://34.92.198.0:8080/scrumit/project/allpersons/" + pjid + "/").toPromise()
+    return this.http.get(apiURL + "/project/allpersons/" + pjid + "/").toPromise()
   }
   getProjectPerson = (pjid: number = this._currentProjectId): Promise<any> => {
     this.currentProjectId = pjid;
@@ -210,7 +210,7 @@ export class ApiAgentService {
       console.log(result)
       return Promise.resolve(result)
     }
-    return this.http.get("http://34.92.198.0:8080/scrumit/project/person/" + id + "/").toPromise()
+    return this.http.get(apiURL + "/project/person/" + id + "/").toPromise()
   }
   getPerson = (id: number = this._currentPersonId): Promise<any> => {
     this.currentPersonId = id;
@@ -241,8 +241,6 @@ export class ApiAgentService {
       console.log(JSON.stringify(newPerson))
       return Promise.resolve(true);
     }
-
-
     return this.http.post(`${apiURL}/project/person/update/`, newPerson).toPromise();
   }
   updatePerson = (newPerson) => {
@@ -255,7 +253,6 @@ export class ApiAgentService {
       console.log('deletePersonRequest/' + pid)
       return Promise.resolve(true);
     }
-
     return this.http.get(`${apiURL}/project/person/remove/${pid}/`).toPromise();
   }
   deletePerson = (pid): Promise<any> => {
@@ -270,7 +267,7 @@ export class ApiAgentService {
       console.log(result)
       return Promise.resolve(result);
     }
-    return this.http.get("http://34.92.198.0:8080/scrumit/sprint/all/" + pjid + "/").toPromise()
+    return this.http.get(apiURL + "/sprint/all/" + pjid + "/").toPromise()
   }
   getProjectSprint = (pjid: number = this._currentProjectId): Promise<any> => {
     this.currentProjectId = pjid;
@@ -287,7 +284,7 @@ export class ApiAgentService {
       return Promise.resolve(result);
     }
 
-    return this.http.get("http://34.92.198.0:8080/scrumit/sprint/sprint/" + id + "/").toPromise()
+    return this.http.get(apiURL + "/sprint/sprint/" + id + "/").toPromise()
   }
   getSprint = (id = this._currentSprintId): Promise<any> => {
     this.currentSprintId = id;
@@ -348,7 +345,7 @@ export class ApiAgentService {
       console.log(result)
       return Promise.resolve(result);
     }
-    return this.http.get("http://34.92.198.0:8080/scrumit/board/alluserstories/" + spid + " / ").toPromise()
+    return this.http.get(apiURL + "/board/alluserstories/" + spid + " / ").toPromise()
   }
   getSprintStory = (spid: number = this._currentSprintId): Promise<any> => {
     this.currentSprintId = spid;
@@ -364,7 +361,7 @@ export class ApiAgentService {
       console.log(result)
       return Promise.resolve(result);
     }
-    return this.http.get("http://34.92.198.0:8080/scrumit/sprint/userstory/" + id + " / ").toPromise()
+    return this.http.get(apiURL + "/sprint/userstory/" + id + " / ").toPromise()
   }
   getStory = (id: number = this._currentStoryId): Promise<any> => {
     this.currentStoryId = id;
@@ -418,7 +415,7 @@ export class ApiAgentService {
       console.log(result)
       return Promise.resolve(result)
     }
-    return this.http.get("http://34.92.198.0:8080/scrumit/board/alltasks/" + stid + "/").toPromise()
+    return this.http.get(apiURL + "/board/alltasks/" + stid + "/").toPromise()
   }
   getTaskIssueRequest = (tkid) => {
     if (this.testing) {

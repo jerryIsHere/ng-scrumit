@@ -32,7 +32,9 @@ export class TaskEditFormComponent implements OnInit {
   edit = false
   submitForm() {
     if (this.form.valid) {
-      this.api.patchTask(this.data.id, this.form.value).then(result => {
+      let body = { ...this.form.value }
+      Object.keys(body).forEach((key) => (body[key] == null || body[key] == '') && delete body[key]);
+      this.api.patchTask(this.data.id, body).then(result => {
         if (result) {
           this.dialogRef.close()
         }

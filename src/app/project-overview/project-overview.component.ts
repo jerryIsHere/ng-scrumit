@@ -59,7 +59,9 @@ export class ProjectOverviewComponent implements OnInit {
 
   create(): void {
     if (this.form.valid) {
-      this.api.createProject(this.form.value).then(response => {
+      let body = { ...this.form.value }
+      Object.keys(body).forEach((key) => (body[key] == null || body[key] == '') && delete body[key]);
+      this.api.createProject(body).then(response => {
         this.api.getAllProject();
         this.location.back();
       });
@@ -68,7 +70,9 @@ export class ProjectOverviewComponent implements OnInit {
   }
 
   update(): void {
-    this.api.updateProject({ ...this.dummyForm.value, ...this.form.value }).then(response => {
+    let body = { ...this.dummyForm.value, ...this.form.value }
+    Object.keys(body).forEach((key) => (body[key] == null || body[key] == '') && delete body[key]);
+    this.api.updateProject(body).then(response => {
       window.location.reload();
     });
   }
