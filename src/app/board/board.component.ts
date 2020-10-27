@@ -32,7 +32,8 @@ enum TASK_STATUS {
 export class BoardComponent implements OnInit {
   color_generator
   color_map: { [index: number]: Array<number> } = {}
-  constructor(public api: ApiAgentService, public activatedRoute: ActivatedRoute, public router: Router, public dialog: MatDialog, public snackBar: MatSnackBar) {
+  constructor(public api: ApiAgentService, public activatedRoute: ActivatedRoute, public router: Router,
+    public dialog: MatDialog, public snackBar: MatSnackBar) {
   }
 
   ngOnInit() {

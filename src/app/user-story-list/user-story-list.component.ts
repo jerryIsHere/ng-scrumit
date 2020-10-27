@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { ApiAgentService } from '../api-agent.service';
 import { UserstoryFormComponent } from '../userstory-form/userstory-form.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-user-story-list',
@@ -10,7 +11,8 @@ import { UserstoryFormComponent } from '../userstory-form/userstory-form.compone
   styleUrls: ['./user-story-list.component.css']
 })
 export class UserStoryListComponent implements OnInit {
-  constructor(public api: ApiAgentService, public activatedRoute: ActivatedRoute, public router: Router, public dialog: MatDialog) { }
+  constructor(public api: ApiAgentService, public activatedRoute: ActivatedRoute,
+    public router: Router, public dialog: MatDialog, public snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.activatedRoute.queryParamMap.subscribe(params => {
@@ -29,9 +31,13 @@ export class UserStoryListComponent implements OnInit {
 
 
   deleteUserStory(sid): void {
-    this.api.deleteStory(sid).then(response => {
-      this.api.getSprintStory(this.api.currentSprint.id);
-    });
+    let story = this.api.stories.filter(s => s.id == sid)[0]
+    let snackBarRef = this.snackBar.open('Are you sure to delete "' + story.name + '"?', 'sure', { duration: 5000 });
+    snackBarRef.onAction().subscribe(() => {
+      this.api.deleteStory(sid).then(response => {
+        this.api.getSprintStory(this.api.currentSprint.id);
+      });
+    })
   }
 
   showUserStory(uid): void {

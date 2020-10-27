@@ -1,6 +1,7 @@
 import { Location } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiAgentService } from './../api-agent.service';
 
@@ -14,7 +15,8 @@ export class ProjectOverviewComponent implements OnInit {
 
   form: FormGroup
   dummyForm: FormGroup
-  constructor(public api: ApiAgentService, public activatedRoute: ActivatedRoute, public router: Router, public location: Location) {
+  constructor(public api: ApiAgentService, public activatedRoute: ActivatedRoute,
+    public router: Router, public location: Location, public snackBar: MatSnackBar) {
   }
   isNew
   edit
@@ -82,7 +84,11 @@ export class ProjectOverviewComponent implements OnInit {
 
 
   removeProject(pjid) {
-    this.api.deleteProject(pjid);
-    this.router.navigate(['/'])
+    let project = this.api.projects.filter(s => s.id == pjid)[0]
+    let snackBarRef = this.snackBar.open('Are you sure to delete "' + project.name + '"?', 'sure', { duration: 5000 });
+    snackBarRef.onAction().subscribe(() => {
+      this.api.deleteProject(pjid);
+      this.router.navigate(['/'])
+    })
   }
 }

@@ -98,7 +98,7 @@ var dummy = {
   providedIn: 'root'
 })
 export class ApiAgentService {
-  public testing = false;
+  public testing = true;
   projects: Array<any> = null;
   persons: Array<any> = null;
   sprints: Array<any> = null;
@@ -126,6 +126,7 @@ export class ApiAgentService {
   getAllProject = (): Promise<any> => {
     return this.getAllProjectRequest().then(projects => {
       this.projects = projects as Array<any>;
+      this.projects.sort((a, b) => a.name.localeCompare(b.name))
       return projects;
     })
   }
@@ -199,6 +200,7 @@ export class ApiAgentService {
     this.currentProjectId = pjid;
     return this.getProjectPersonRequest(pjid).then(persons => {
       this.persons = persons as Array<any>;
+      this.persons.sort((a, b) => a.firstName.localeCompare(b.firstName))
       return persons
     })
   }
@@ -273,6 +275,7 @@ export class ApiAgentService {
     this.currentProjectId = pjid;
     return this.getProjectSprintRequest(pjid).then(sprints => {
       this.sprints = sprints as Array<any>;
+      this.sprints.sort((a, b) => a.slogan.localeCompare(b.slogan))
       return sprints
     })
   }
@@ -351,6 +354,7 @@ export class ApiAgentService {
     this.currentSprintId = spid;
     return this.getSprintStoryRequest(spid).then(stories => {
       this.stories = stories as Array<any>;
+      this.stories.sort((a, b) => a.name.localeCompare(b.name))
       return stories
     })
   }
@@ -430,6 +434,7 @@ export class ApiAgentService {
     return new Promise((res, rej) => {
       this.getSprintStoryRequest(spid).then(stories => {
         this.stories = stories as Array<any>;
+        this.stories.sort((a, b) => a.name.localeCompare(b.name))
         let tasks_promises: Promise<any>[] = [];
         for (let story of this.stories) {
           tasks_promises.push(this.getStoryTaskRequest(story.id).then((data: Array<any>) => {

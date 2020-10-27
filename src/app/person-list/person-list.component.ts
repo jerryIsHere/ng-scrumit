@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiAgentService } from '../api-agent.service';
 import { PersonFormComponent } from '../person-form/person-form.component';
@@ -15,7 +16,8 @@ export class PersonListComponent implements OnInit {
 
 
 
-  constructor(public api: ApiAgentService, public activatedRoute: ActivatedRoute, public router: Router, public dialog: MatDialog) { }
+  constructor(public api: ApiAgentService, public activatedRoute: ActivatedRoute, public router: Router,
+    public dialog: MatDialog, public snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.activatedRoute.queryParamMap.subscribe(params => {
@@ -26,9 +28,13 @@ export class PersonListComponent implements OnInit {
   }
 
   deleteDeveloper(pid): void {
-    this.api.deletePerson(pid).then(response => {
-      this.api.getProjectPerson(this.api.currentProjectId);
-    });
+    let person = this.api.persons.filter(p => p.id == pid)[0]
+    let snackBarRef = this.snackBar.open('Are you sure to delete "' + person.firstName + " " + person.lastName + '"?', 'sure', { duration: 5000 });
+    snackBarRef.onAction().subscribe(() => {
+      this.api.deletePerson(pid).then(response => {
+        this.api.getProjectPerson(this.api.currentProjectId);
+      });
+    })
   }
 
   showDeveloper(pid): void {

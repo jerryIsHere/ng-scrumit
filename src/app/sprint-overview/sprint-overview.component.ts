@@ -1,6 +1,7 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiAgentService } from './../api-agent.service';
 
@@ -13,7 +14,8 @@ export class SprintOverviewComponent implements OnInit {
 
   form: FormGroup
   dummyForm: FormGroup
-  constructor(public api: ApiAgentService, public activatedRoute: ActivatedRoute, public router: Router, public location: Location) {
+  constructor(public api: ApiAgentService, public activatedRoute: ActivatedRoute,
+    public router: Router, public location: Location, public snackBar: MatSnackBar) {
   }
   isNew
   edit
@@ -81,8 +83,12 @@ export class SprintOverviewComponent implements OnInit {
     })
   }
   removeSprint(spid) {
-    this.api.deleteSprint(spid);
-    this.router.navigate(['/sprint-home'], { queryParams: { id: this.api.currentProjectId } })
+    let sprint = this.api.sprints.filter(s => s.id == spid)[0]
+    let snackBarRef = this.snackBar.open('Are you sure to delete "' + sprint.slogan + '"?', 'sure', { duration: 5000 });
+    snackBarRef.onAction().subscribe(() => {
+      this.api.deleteSprint(spid);
+      this.router.navigate(['/sprint-home'], { queryParams: { id: this.api.currentProjectId } })
+    })
   }
 
 }
