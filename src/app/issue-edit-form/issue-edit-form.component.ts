@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { ChangeDetectorRef, Component, Inject, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatChipEvent } from '@angular/material/chips';
@@ -25,7 +26,7 @@ export class IssueEditFormComponent implements OnInit {
       duration: new FormControl({ value: issue.duration, disabled: false }, Validators.pattern("^[0-9]*$"))
     })
     this.dummyForm = new FormGroup({
-      creation: new FormControl({ value: new Date(issue.creationDate), disabled: false }),
+      creationDate: new FormControl({ value: new Date(issue.creationDate), disabled: false }),
       id: new FormControl({ value: issue.id, disabled: false }),
     })
   }
@@ -35,7 +36,11 @@ export class IssueEditFormComponent implements OnInit {
   submitForm() {
     if (this.form.valid) {
       let body = { ...this.form.value }
-      Object.keys(body).forEach((key) => (body[key] == null || body[key] == '') && delete body[key]);
+      let dp = new DatePipe('en-US')
+      Object.keys(body).forEach((key) => {
+        if ((body[key] == null || body[key] == '')) { delete body[key] }
+        if (body[key] instanceof Date) body[key] = dp.transform(body[key], 'dd.MM.yyyy')
+      });
       this.api.patchIssue(this.data.id, body).then(result => {
         if (result) {
           this.dialogRef.close()

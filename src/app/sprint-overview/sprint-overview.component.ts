@@ -1,4 +1,4 @@
-import { Location } from '@angular/common';
+import { DatePipe, Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -53,7 +53,11 @@ export class SprintOverviewComponent implements OnInit {
 
   create(): void {
     let body = { ...this.form.value }
-    Object.keys(body).forEach((key) => (body[key] == null || body[key] == '') && delete body[key]);
+    let dp = new DatePipe('en-US')
+    Object.keys(body).forEach((key) => {
+      if ((body[key] == null || body[key] == '')) { delete body[key] }
+      if (body[key] instanceof Date) body[key] = dp.transform(body[key], 'dd.MM.yyyy')
+    });
     this.api.createSprint(this.pjid, body).then(response => {
       this.location.back()
     });
@@ -61,7 +65,11 @@ export class SprintOverviewComponent implements OnInit {
 
   update(): void {
     let body = { ...this.dummyForm.value, ...this.form.value }
-    Object.keys(body).forEach((key) => (body[key] == null || body[key] == '') && delete body[key]);
+    let dp = new DatePipe('en-US')
+    Object.keys(body).forEach((key) => {
+      if ((body[key] == null || body[key] == '')) { delete body[key] }
+      if (body[key] instanceof Date) body[key] = dp.transform(body[key], 'dd.MM.yyyy')
+    });
     this.api.updateSprintRequest(body).then(response => {
 
       window.location.reload();

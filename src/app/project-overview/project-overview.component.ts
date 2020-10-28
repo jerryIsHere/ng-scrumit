@@ -1,4 +1,4 @@
-import { Location } from '@angular/common';
+import { DatePipe, Location } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -34,7 +34,7 @@ export class ProjectOverviewComponent implements OnInit {
             startDate: new FormControl({ value: new Date(data.startDate), disabled: false }, Validators.required)
           })
           this.dummyForm = new FormGroup({
-            creation: new FormControl({ value: new Date(data.creationDate), disabled: false }),
+            creationDate: new FormControl({ value: new Date(data.creationDate), disabled: false }),
             id: new FormControl({ value: data.id, disabled: false }),
           })
 
@@ -50,7 +50,7 @@ export class ProjectOverviewComponent implements OnInit {
           startDate: new FormControl({ value: new Date(), disabled: false }, Validators.required)
         })
         this.dummyForm = new FormGroup({
-          creation: new FormControl({ disabled: false }),
+          creationDate: new FormControl({ disabled: false }),
           id: new FormControl({ disabled: false }),
         })
       }
@@ -62,7 +62,11 @@ export class ProjectOverviewComponent implements OnInit {
   create(): void {
     if (this.form.valid) {
       let body = { ...this.form.value }
-      Object.keys(body).forEach((key) => (body[key] == null || body[key] == '') && delete body[key]);
+      let dp = new DatePipe('en-US')
+      Object.keys(body).forEach((key) => {
+        if ((body[key] == null || body[key] == '')) { delete body[key] }
+        if (body[key] instanceof Date) body[key] = dp.transform(body[key], 'dd.MM.yyyy HH:mm:ss')
+      });
       this.api.createProject(body).then(response => {
         this.api.getAllProject();
         this.location.back();
@@ -73,7 +77,12 @@ export class ProjectOverviewComponent implements OnInit {
 
   update(): void {
     let body = { ...this.dummyForm.value, ...this.form.value }
-    Object.keys(body).forEach((key) => (body[key] == null || body[key] == '') && delete body[key]);
+    let dp = new DatePipe('en-US')
+    Object.keys(body).forEach((key) => {
+      if ((body[key] == null || body[key] == '')) { delete body[key] }
+      if (body[key] instanceof Date) body[key] = dp.transform(body[key], 'dd.MM.yyyy HH:mm:ss')
+    });
+    console.log(body)
     this.api.updateProject(body).then(response => {
       window.location.reload();
     });

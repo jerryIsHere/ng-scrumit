@@ -21,7 +21,7 @@
     <form [formGroup]="dummyForm">
         <mat-form-field>
             <mat-label>Creation Date: </mat-label>
-            <input type="text" matInput formControlName="creation" [matDatepicker]="picker" readonly>
+            <input type="text" matInput formControlName="creationDate" [matDatepicker]="picker" readonly>
             <mat-datepicker-toggle matSuffix [for]="picker" disabled></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>

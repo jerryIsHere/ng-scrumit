@@ -98,7 +98,7 @@ var dummy = {
   providedIn: 'root'
 })
 export class ApiAgentService {
-  public testing = true;
+  public testing = false;
   projects: Array<any> = null;
   persons: Array<any> = null;
   sprints: Array<any> = null;
@@ -348,7 +348,7 @@ export class ApiAgentService {
       console.log(result)
       return Promise.resolve(result);
     }
-    return this.http.get(apiURL + "/board/alluserstories/" + spid + " / ").toPromise()
+    return this.http.get(apiURL + "/board/alluserstories/" + spid + "/ ").toPromise()
   }
   getSprintStory = (spid: number = this._currentSprintId): Promise<any> => {
     this.currentSprintId = spid;

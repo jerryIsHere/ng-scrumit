@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { ChangeDetectorRef, Component, Input, OnInit, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -27,7 +28,7 @@ export class UserstoryFormComponent implements OnInit {
         })
         this.dummyForm = new FormGroup({
           id: new FormControl({ value: story.id, disabled: false }),
-          creation: new FormControl({ value: new Date(story.creationDate), disabled: false }),
+          creationDate: new FormControl({ value: new Date(story.creationDate), disabled: false }),
         })
       })
     }
@@ -53,7 +54,11 @@ export class UserstoryFormComponent implements OnInit {
   submitForm() {
     if (this.form.valid) {
       let body = { ...this.form.value, ...this.dummyForm.value }
-      Object.keys(body).forEach((key) => (body[key] == null || body[key] == '') && delete body[key]);
+      let dp = new DatePipe('en-US')
+      Object.keys(body).forEach((key) => {
+        if ((body[key] == null || body[key] == '')) { delete body[key] }
+        if (body[key] instanceof Date) body[key] = dp.transform(body[key], 'dd.MM.yyyy HH:mm:ss')
+      });
       if (this.isNew) {
         this.api.createStory(this.api.currentSprintId, body).then(result => {
           this.dialogRef.close()

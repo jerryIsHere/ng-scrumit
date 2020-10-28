@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -22,7 +23,7 @@ export class TaskEditFormComponent implements OnInit {
       commencement: new FormControl({ value: task.commencement, disabled: false }, Validators.min(0))
     })
     this.dummyForm = new FormGroup({
-      creation: new FormControl({ value: new Date(task.creationDate), disabled: false }),
+      creationDate: new FormControl({ value: new Date(task.creationDate), disabled: false }),
       id: new FormControl({ value: task.id, disabled: false }),
       duration: new FormControl({ value: task.duration, disabled: false })
     })
@@ -33,7 +34,11 @@ export class TaskEditFormComponent implements OnInit {
   submitForm() {
     if (this.form.valid) {
       let body = { ...this.form.value }
-      Object.keys(body).forEach((key) => (body[key] == null || body[key] == '') && delete body[key]);
+      let dp = new DatePipe('en-US')
+      Object.keys(body).forEach((key) => {
+        if ((body[key] == null || body[key] == '')) { delete body[key] }
+        if (body[key] instanceof Date) body[key] = dp.transform(body[key], 'dd.MM.yyyy')
+      });
       this.api.patchTask(this.data.id, body).then(result => {
         if (result) {
           this.dialogRef.close()
