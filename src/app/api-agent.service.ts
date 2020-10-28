@@ -494,7 +494,7 @@ export class ApiAgentService {
 
   postStoryTaskRequest = (stid: number, requestBody: any) => {
     if (this.testing) {
-      console.log('postStoryTaskRequest/' + this.currentSprint.id + '/' + stid)
+      console.log('postStoryTaskRequest/' + stid + '/' + this.currentSprint.id)
       console.log(JSON.stringify(requestBody))
       let id = 0
       while (dummy.tasks.filter(i => i.id == id).length > 0) id++;
@@ -507,6 +507,7 @@ export class ApiAgentService {
       console.log('not adding dummy relation for issue - project as this demo is for board only')
       return Promise.resolve(true)
     }
+    return this.http.post(apiURL + '/board/add/task/' + stid + '/' + this.currentSprint.id + '/', requestBody).toPromise()
   }
   postStoryTask = (stid: number, requestBody: any): Promise<any> => {
     return this.postStoryTaskRequest(stid, requestBody).then(result => {

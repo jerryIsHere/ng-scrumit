@@ -44,8 +44,10 @@ export class BoardComponent implements OnInit {
 
   storyBoardStyle(story) {
     let style = {}
-    style['background-color'] =
-      'rgb(' + this.color_map[story.id][0] + ',' + this.color_map[story.id][1] + ',' + this.color_map[story.id][2] + ')'
+    if (this.color_map[story.id]) {
+      style['background-color'] =
+        'rgb(' + this.color_map[story.id][0] + ',' + this.color_map[story.id][1] + ',' + this.color_map[story.id][2] + ')'
+    }
     return style
   }
   taskBoardStyle(task) {
@@ -64,8 +66,11 @@ export class BoardComponent implements OnInit {
       }
       return false;
     })[0].id
-    style['background-color'] =
-      'rgb(' + this.color_map[storyid][0] + ',' + this.color_map[storyid][1] + ',' + this.color_map[storyid][2] + ')'
+    if (this.color_map[storyid]) {
+      style['background-color'] =
+        'rgb(' + this.color_map[storyid][0] + ',' + this.color_map[storyid][1] + ',' + this.color_map[storyid][2] + ')'
+    }
+
 
     return style;
 
