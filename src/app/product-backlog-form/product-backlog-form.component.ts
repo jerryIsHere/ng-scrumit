@@ -18,7 +18,7 @@ export class ProductBacklogFormComponent implements OnInit {
       this.api.getPerson(this.data.id).then(backlog => {
         this.form = new FormGroup({
           name: new FormControl({ value: backlog.name, disabled: false }, Validators.required),
-          description: new FormControl({ value: backlog.description, disabled: false }, [Validators.required, Validators.email]),
+          description: new FormControl({ value: backlog.description, disabled: false }, [Validators.required]),
           priority: new FormControl({ value: backlog.priority, disabled: false }, [Validators.required, Validators.pattern("^[0-9]*$")]),
           estimatedDuration: new FormControl({ value: backlog.estimatedDuration, disabled: false }, [Validators.required, Validators.pattern("^[0-9]*$")]),
         })
@@ -33,7 +33,7 @@ export class ProductBacklogFormComponent implements OnInit {
       this.edit = true;
       this.form = new FormGroup({
         name: new FormControl({ value: '', disabled: false }, Validators.required),
-        description: new FormControl({ value: '', disabled: false }, [Validators.required, Validators.email]),
+        description: new FormControl({ value: '', disabled: false }, [Validators.required]),
         priority: new FormControl({ value: '', disabled: false }, [Validators.required, Validators.pattern("^[0-9]*$")]),
         estimatedDuration: new FormControl({ value: '', disabled: false }, [Validators.required, Validators.pattern("^[0-9]*$")]),
       })

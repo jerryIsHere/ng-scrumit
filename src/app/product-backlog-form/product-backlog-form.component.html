@@ -37,14 +37,6 @@
                 {{form.get('estimatedDuration').hasError('pattern')?'Please input a non-negative number':''}}
             </mat-error>
         </mat-form-field>
-        <br>
-        <mat-form-field>
-            <mat-label>Acc. test:</mat-label>
-            <input type="text" matInput formControlName="acceptanceTest" [readonly]="!edit">
-            <mat-error *ngIf="form.get('acceptanceTest').invalid">
-                {{form.get('acceptanceTest').hasError('required')?'required':''}}
-            </mat-error>
-        </mat-form-field>
     </form>
     <form [formGroup]="dummyForm">
         <mat-form-field *ngIf="!isNew">
