@@ -1,0 +1,21 @@
+<mat-nav-list>
+    <mat-list-item>
+        list of product backlogs
+    </mat-list-item>
+    <mat-list-item *ngFor="let backlog of api.backlogs">
+        <button mat-raised-button (click)="showBacklog(backlog.id)">{{backlog.name}}
+            <mat-icon>open_in_new</mat-icon>
+        </button>
+        <button mat-icon-button style="margin-left:auto; margin-right:0;" matTooltip="remove developer"
+            (click)="deleteBacklog(backlog.id)">
+            <mat-icon>remove_circle</mat-icon>
+        </button>
+    </mat-list-item>
+    <mat-divider></mat-divider>
+</mat-nav-list>
+
+
+<button mat-fab color="accent" style="right:10%; bottom: 10%; top: auto; position: fixed" matTooltip="add developer"
+    (click)="showBacklog('create')">
+    <mat-icon>person_add</mat-icon>
+</button>

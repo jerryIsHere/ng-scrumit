@@ -9,6 +9,14 @@
         </mat-form-field>
         <br>
         <mat-form-field>
+            <mat-label>Description: </mat-label>
+            <input type="text" matInput formControlName="description" [readonly]="!edit">
+            <mat-error *ngIf="form.get('description').invalid">
+                {{form.get('description').hasError('required')?'required':''}}
+            </mat-error>
+        </mat-form-field>
+        <br>
+        <mat-form-field>
             <mat-label>Priority: </mat-label>
             <input type="text" matInput formControlName="priority" [readonly]="!edit">
             <mat-error *ngIf="form.get('priority').invalid">
@@ -20,13 +28,13 @@
         </mat-form-field>
         <br>
         <mat-form-field>
-            <mat-label>Est. size:</mat-label>
-            <input type="text" matInput formControlName="estimatedSize" [readonly]="!edit">
-            <mat-error *ngIf="form.get('estimatedSize').invalid">
-                {{form.get('estimatedSize').hasError('required')?'required':''}}
+            <mat-label>Est. duration:</mat-label>
+            <input type="text" matInput formControlName="estimatedDuration" [readonly]="!edit">
+            <mat-error *ngIf="form.get('estimatedDuration').invalid">
+                {{form.get('estimatedDuration').hasError('required')?'required':''}}
             </mat-error>
-            <mat-error *ngIf="form.get('estimatedSize').invalid">
-                {{form.get('estimatedSize').hasError('pattern')?'Please input a non-negative number':''}}
+            <mat-error *ngIf="form.get('estimatedDuration').invalid">
+                {{form.get('estimatedDuration').hasError('pattern')?'Please input a non-negative number':''}}
             </mat-error>
         </mat-form-field>
         <br>

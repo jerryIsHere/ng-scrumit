@@ -57,6 +57,8 @@ import { IssueEditFormComponent } from './issue-edit-form/issue-edit-form.compon
 import { SearchPipe } from './search.pipe';
 import { FlatMapPipe } from './flat-map.pipe';
 import { Zero2nullPipe } from './zero2null.pipe';
+import { ProductBacklogListComponent } from './product-backlog-list/product-backlog-list.component';
+import { ProductBacklogFormComponent } from './product-backlog-form/product-backlog-form.component';
 
 
 
@@ -82,6 +84,8 @@ import { Zero2nullPipe } from './zero2null.pipe';
     SearchPipe,
     FlatMapPipe,
     Zero2nullPipe,
+    ProductBacklogListComponent,
+    ProductBacklogFormComponent,
 
   ],
   imports: [

@@ -30,8 +30,12 @@
             [queryParams]="{id: project.id}">{{project.name}}
             <mat-icon>login</mat-icon>
           </button>
+          <button mat-icon-button [routerLink]="['/product-backlog-list']" [queryParams]="{id: project.id}"
+            style="margin-left:auto; margin-right:0;" matTooltip="product backlogs">
+            <mat-icon>developer_board</mat-icon>
+          </button>
           <button mat-icon-button [routerLink]="['/person-list']" [queryParams]="{id: project.id}"
-            style="margin-left:auto; margin-right:0;" matTooltip="developers">
+            style="margin-left:0; margin-right:0;" matTooltip="developers">
             <mat-icon>person_search</mat-icon>
           </button>
           <button mat-icon-button [routerLink]="['/chart']" [queryParams]="{id: project.id}"
@@ -67,9 +71,9 @@
             mat-raised-button>{{sprint.slogan}}
             <mat-icon>login</mat-icon>
           </button>
-          <button mat-icon-button [routerLink]="['/userstory-list/']"
+          <button mat-icon-button [routerLink]="['/sprint-backlog/']"
             [queryParams]="{ id: sprint.id , pjid: api.currentProject.id}" style="margin-left:auto; margin-right:0;"
-            matTooltip="user stories">
+            matTooltip="sprint backlog">
             <mat-icon>view_list</mat-icon>
           </button>
           <button mat-icon-button [routerLink]="['/board/']"

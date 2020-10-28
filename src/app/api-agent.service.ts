@@ -105,6 +105,7 @@ export class ApiAgentService {
   stories: Array<any> = null;
   tasks: Array<any> = null;
   issues: Array<any> = null;
+  backlogs: Array<any> = null;
   constructor(private http: HttpClient,) {
     console.log("(()=>{let x = new XMLHttpRequest();x.open('GET','http://34.92.198.0:8080/scrumit/project/allprojects/'); return x})().send();")
     try {
@@ -261,6 +262,51 @@ export class ApiAgentService {
     return this.deletePersonRequest(pid).then(response => {
     })
   }
+  getProjectBacklogRequest = (pjid) => {
+    return Promise.resolve({})
+  }
+  getProjectBacklog = (pjid: number = this._currentSprintId): Promise<any> => {
+    this.currentProjectId = pjid;
+    return this.getProjectBacklogRequest(pjid).then(backlogs => {
+      this.backlogs = backlogs as Array<any>;
+      this.backlogs.sort((a, b) => a.name.localeCompare(b.name))
+      return backlogs
+    })
+  }
+  getBacklogRequest = (id) => {
+    return Promise.resolve({})
+  }
+  getBacklog = (id: number): Promise<any> => {
+    this.currentBacklogId = id;
+    return this.getBacklogRequest(id).then(backlog => {
+      this.backlogs.filter(s => s.id == id)[0] = backlog;
+      return backlog
+    })
+  }
+
+  createBacklogRequest = (pjid, newBacklog) => {
+    return Promise.resolve({})
+  }
+  createBacklog = (pjid, newBacklog): Promise<any> => {
+    return this.createBacklogRequest(pjid, newBacklog).then(response => {
+      return response;
+    });
+  }
+  updateBacklogRequest = (newBacklog) => {
+    return Promise.resolve({})
+  }
+  updateBacklog = (newBacklog): Promise<any> => {
+    return this.updateBacklogRequest(newBacklog).then(res => {
+      return res;
+    });
+  }
+  deleteBacklogReqtest = (bid) => {
+    return Promise.resolve({})
+  }
+  deleteBacklog = (bid): Promise<any> => {
+    return this.deleteBacklogReqtest(bid).then(response => { });
+  }
+
 
   getProjectSprintRequest = (pjid) => {
     if (this.testing) {
@@ -365,7 +411,7 @@ export class ApiAgentService {
       console.log(result)
       return Promise.resolve(result);
     }
-    return this.http.get(apiURL + "/sprint/userstory/" + id + " / ").toPromise()
+    return this.http.get(apiURL + "/sprint/sprintbacklog/" + id + " / ").toPromise()
   }
   getStory = (id: number = this._currentStoryId): Promise<any> => {
     this.currentStoryId = id;
@@ -382,7 +428,7 @@ export class ApiAgentService {
       return Promise.resolve(true)
     }
 
-    return this.http.post(`${apiURL}/sprint/add/userstory/${spid}/`, newStory).toPromise();
+    return this.http.post(`${apiURL}/sprint/add/sprintbacklog/${spid}/`, newStory).toPromise();
   }
   createStory = (spid, newStory): Promise<any> => {
     return this.createStoryRequest(spid, newStory).then(response => {
@@ -396,7 +442,7 @@ export class ApiAgentService {
       return Promise.resolve(true);
     }
 
-    return this.http.post(`${apiURL}/sprint/userstory/update`, newStory).toPromise();
+    return this.http.post(`${apiURL}/sprint/sprintbacklog/update`, newStory).toPromise();
   }
   updateStory = (newStory): Promise<any> => {
     return this.updateStoryRequest(newStory).then(res => {
@@ -407,7 +453,7 @@ export class ApiAgentService {
     if (this.testing) {
       console.log('deleteStoryReqtest/' + sid)
     }
-    return this.http.get(`${apiURL}/sprint/userstory/remove/${sid}/`).toPromise();
+    return this.http.get(`${apiURL}/sprint/sprintbacklog/remove/${sid}/`).toPromise();
   }
   deleteStory = (sid): Promise<any> => {
     return this.deleteStoryReqtest(sid).then(response => { });
@@ -629,6 +675,13 @@ export class ApiAgentService {
     catch (err) {
       return null;
     }
+  }
+  _currenBacklogId = null;
+  public get currentBacklogId(): number {
+    return this._currenBacklogId;
+  }
+  public set currentBacklogId(id: number) {
+    this._currenBacklogId = id;
   }
   _currentPersonId = null;
   public get currentPersonId(): number {

@@ -91,7 +91,7 @@ export class AppComponent {
     "person": "person-list",
     "chart": "chart",
     "sprint": "sprint-overview",
-    "story": "userstory-list",
+    "story": "sprint-backlog",
     "board": "board",
     "branch2sprint": "sprint-home"
   }

@@ -1,6 +1,6 @@
 <mat-nav-list>
   <mat-list-item>
-    list of user stories
+    list of sprint backlogs
   </mat-list-item>
   <mat-list-item *ngFor="let story of api.stories" [ngStyle]="storyStyle(story)">
     <button mat-raised-button (click)="showUserStory(story.id)">{{story.name}}
