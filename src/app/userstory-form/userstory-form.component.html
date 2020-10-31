@@ -8,6 +8,12 @@
             </mat-error>
         </mat-form-field>
         <br>
+        <mat-select>
+            <mat-option *ngFor="let backlog of unassignedBacklogs" [value]="backlog.id">
+                {{backlog.name}}
+            </mat-option>
+        </mat-select>
+        <br>
         <mat-form-field>
             <mat-label>Priority: </mat-label>
             <input type="text" matInput formControlName="priority" [readonly]="!edit">
@@ -52,7 +58,8 @@
         </mat-form-field>
     </form>
 </div>
-<div mat-dialog-actions [matTooltip]="(!form.valid || !dummyForm.valid)?'the form is not valid':''">
+<div mat-dialog-actions *ngIf="form && dummyForm"
+    [matTooltip]="(!form.valid || !dummyForm.valid)?'the form is not valid':''">
     <button [disabled]="!form.valid" *ngIf="edit" mat-button cdkFocusInitial (click)="submitForm()">submit</button>
     <button mat-button cdkFocusInitial *ngIf="!edit"
         (click)="edit = true; form.enable({ onlySelf: true })">edit</button>

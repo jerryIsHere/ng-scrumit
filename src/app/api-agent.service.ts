@@ -262,10 +262,20 @@ export class ApiAgentService {
     return this.deletePersonRequest(pid).then(response => {
     })
   }
-  getProjectBacklogRequest = (pjid) => {
-    return Promise.resolve({})
+  getProjectUnassignedBacklogRequest = (pjid) => {
+    return this.http.get(apiURL + "/project/allproductbacklog/" + pjid + "/").toPromise()
   }
-  getProjectBacklog = (pjid: number = this._currentSprintId): Promise<any> => {
+  getProjectUnassignedBacklog = (pjid: number = this.currentProjectId): Promise<any> => {
+    this.currentProjectId = pjid;
+    return this.getProjectUnassignedBacklogRequest(pjid).then(backlogs => {
+      this.backlogs.sort((a, b) => a.name.localeCompare(b.name))
+      return backlogs
+    })
+  }
+  getProjectBacklogRequest = (pjid) => {
+    return this.http.get(apiURL + "/project/allproductbacklog/" + pjid + "/").toPromise()
+  }
+  getProjectBacklog = (pjid: number = this.currentProjectId): Promise<any> => {
     this.currentProjectId = pjid;
     return this.getProjectBacklogRequest(pjid).then(backlogs => {
       this.backlogs = backlogs as Array<any>;
@@ -274,7 +284,7 @@ export class ApiAgentService {
     })
   }
   getBacklogRequest = (id) => {
-    return Promise.resolve({})
+    return this.http.get(apiURL + "/project/productbacklog/" + id + "/").toPromise()
   }
   getBacklog = (id: number): Promise<any> => {
     this.currentBacklogId = id;
@@ -285,7 +295,7 @@ export class ApiAgentService {
   }
 
   createBacklogRequest = (pjid, newBacklog) => {
-    return Promise.resolve({})
+    return this.http.post(apiURL + "/project/productbacklog/add/" + pjid + "/", newBacklog).toPromise()
   }
   createBacklog = (pjid, newBacklog): Promise<any> => {
     return this.createBacklogRequest(pjid, newBacklog).then(response => {
@@ -293,7 +303,7 @@ export class ApiAgentService {
     });
   }
   updateBacklogRequest = (newBacklog) => {
-    return Promise.resolve({})
+    return this.http.post(apiURL + "/project/productbacklog/update/", newBacklog).toPromise()
   }
   updateBacklog = (newBacklog): Promise<any> => {
     return this.updateBacklogRequest(newBacklog).then(res => {
@@ -301,7 +311,7 @@ export class ApiAgentService {
     });
   }
   deleteBacklogReqtest = (bid) => {
-    return Promise.resolve({})
+    return this.http.get(apiURL + "/project/productbacklog/remove/" + bid + '/').toPromise()
   }
   deleteBacklog = (bid): Promise<any> => {
     return this.deleteBacklogReqtest(bid).then(response => { });
@@ -394,7 +404,7 @@ export class ApiAgentService {
       console.log(result)
       return Promise.resolve(result);
     }
-    return this.http.get(apiURL + "/board/alluserstories/" + spid + "/ ").toPromise()
+    return this.http.get(apiURL + "/sprint/allsprintbacklogs/" + spid + "/ ").toPromise()
   }
   getSprintStory = (spid: number = this._currentSprintId): Promise<any> => {
     this.currentSprintId = spid;

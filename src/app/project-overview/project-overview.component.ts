@@ -65,8 +65,9 @@ export class ProjectOverviewComponent implements OnInit {
       let dp = new DatePipe('en-US')
       Object.keys(body).forEach((key) => {
         if ((body[key] == null || body[key] == '')) { delete body[key] }
-        if (body[key] instanceof Date) body[key] = dp.transform(body[key], 'dd.MM.yyyy HH:mm:ss')
       });
+      body.creationDate = dp.transform(body.creationDate, 'dd.MM.yyyy HH:mm:ss')
+      body.startDate = dp.transform(body.startDate, 'dd.MM.yyyy')
       this.api.createProject(body).then(response => {
         this.api.getAllProject();
         this.location.back();
@@ -80,9 +81,9 @@ export class ProjectOverviewComponent implements OnInit {
     let dp = new DatePipe('en-US')
     Object.keys(body).forEach((key) => {
       if ((body[key] == null || body[key] == '')) { delete body[key] }
-      if (body[key] instanceof Date) body[key] = dp.transform(body[key], 'dd.MM.yyyy HH:mm:ss')
     });
-    console.log(body)
+    body.creationDate = dp.transform(body.creationDate, 'dd.MM.yyyy HH:mm:ss')
+    body.startDate = dp.transform(body.startDate, 'dd.MM.yyyy')
     this.api.updateProject(body).then(response => {
       window.location.reload();
     });

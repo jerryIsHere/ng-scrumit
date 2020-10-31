@@ -26,7 +26,7 @@
 
         <mat-list-item *ngFor="let project of api.projects | search : 'name' : searchingString"
           [ngStyle]="projectStyle(project)">
-          <button mat-raised-button [routerLink]="['/project-overview']"
+          <button mat-raised-button [routerLink]="['/project-overview']" style="overflow:hidden"
             [queryParams]="{id: project.id}">{{project.name}}
             <mat-icon>login</mat-icon>
           </button>

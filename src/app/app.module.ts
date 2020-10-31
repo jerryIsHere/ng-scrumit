@@ -33,6 +33,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatRippleModule } from '@angular/material/core';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSelectModule } from '@angular/material/select';
 
 import { ChartComponent } from './chart/chart.component';
 import { BoardComponent } from './board/board.component';
@@ -122,6 +123,7 @@ import { ProductBacklogFormComponent } from './product-backlog-form/product-back
     MatGridListModule,
     MatRippleModule,
     MatSnackBarModule,
+    MatSelectModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
