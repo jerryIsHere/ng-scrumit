@@ -15,7 +15,7 @@ export class ProductBacklogFormComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.data.id != 'create') {
-      this.api.getPerson(this.data.id).then(backlog => {
+      this.api.getBacklog(this.data.id).then(backlog => {
         this.form = new FormGroup({
           name: new FormControl({ value: backlog.name, disabled: false }, Validators.required),
           description: new FormControl({ value: backlog.description, disabled: false }, [Validators.required]),
