@@ -58,8 +58,6 @@ export class SprintOverviewComponent implements OnInit {
       if ((body[key] == null || body[key] == '')) { delete body[key] }
       if (body[key] instanceof Date) body[key] = dp.transform(body[key], 'dd.MM.yyyy')
     });
-    body.startDate = '01.01.2020'
-    body.endDate = '02.01.2020'
     this.api.createSprint(this.pjid, body).then(response => {
       this.location.back()
     });
@@ -72,8 +70,6 @@ export class SprintOverviewComponent implements OnInit {
       if ((body[key] == null || body[key] == '')) { delete body[key] }
       if (body[key] instanceof Date) body[key] = dp.transform(body[key], 'dd.MM.yyyy')
     });
-    body.startDate = '01.01.2020'
-    body.endDate = '02.01.2020'
     this.api.updateSprintRequest(body).then(response => {
 
       window.location.reload();

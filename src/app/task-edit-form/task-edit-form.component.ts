@@ -39,7 +39,7 @@ export class TaskEditFormComponent implements OnInit {
         if ((body[key] == null || body[key] == '')) { delete body[key] }
         if (body[key] instanceof Date) body[key] = dp.transform(body[key], 'dd.MM.yyyy')
       });
-      this.api.patchTask(this.data.id, body).then(result => {
+      this.api.patchTaskDescription(body).then(result => {
         if (result) {
           this.dialogRef.close()
         }

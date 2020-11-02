@@ -24,14 +24,12 @@ export class ChartComponent implements OnInit {
   getChart(pjid) {
 
     this.api.getProject(pjid).then(project => {
-      this.api.getProjectTask().then(tasks => {
-        this.generate_task_issue_line(project, tasks)
-        this.generate_task_issue_bar();
-        this.generate_initial_forcast_bar();
-        this.generate_issue_sprint_bar(project.id);
-        this.generate_burndown_line(project, tasks)
-        this.generate_issue_cat_pie()
-      })
+      this.generate_task_issue_line(project, this.api.tasks)
+      this.generate_task_issue_bar();
+      this.generate_initial_forcast_bar();
+      this.generate_issue_sprint_bar(project.id);
+      this.generate_burndown_line(project, this.api.tasks)
+      this.generate_issue_cat_pie()
     })
   }
   datePipe = new DatePipe('en-US')
@@ -122,7 +120,7 @@ export class ChartComponent implements OnInit {
       }
       issue_bar_series.push({ type: 'bar', name: issue.name, areaStyle: {}, stack: true, data: data, object: issue.object })
     }
-
+    if (issue_bar_series.length == 0) return;
     while (this.bar_except_weekday.includes(date.getDay())) { date.setDate(date.getDate() + 1) }
     for (let dummy of issue_bar_series[0].data) {
       xAxis.push(this.datePipe.transform(date, 'MMM d EE'))
@@ -344,7 +342,6 @@ export class ChartComponent implements OnInit {
         })
       }
     }
-    console.log(multiple_issue_line_data)
     for (let line of multiple_issue_line_data) {
       issue_markLine.data = issue_markLine.data.filter(d => d.xAxis != line.xAxis)
       issue_markLine.data.push(line)

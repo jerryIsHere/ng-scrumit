@@ -2,7 +2,7 @@
 <div mat-dialog-content>
   <form [formGroup]="form">
     <mat-form-field>
-      <mat-label>Name of the new issue</mat-label>
+      <mat-label>Description of the new issue</mat-label>
       <input matInput formControlName="description">
       <mat-error *ngIf="form.get('description').invalid">{{form.get('description').hasError('required')?'required':''}}
       </mat-error>

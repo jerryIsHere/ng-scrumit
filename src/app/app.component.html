@@ -84,7 +84,7 @@
         </mat-list-item>
         <mat-divider></mat-divider>
 
-        <button *ngIf="view!='board'" mat-fab color="accent" style="left:5%; bottom: 10%; top: auto; position: fixed;"
+        <button *ngIf="view!='board' && api.currentProject != null" mat-fab color="accent" style="left:5%; bottom: 10%; top: auto; position: fixed;"
           matTooltip="new sprint" [routerLink]="['/sprint-overview']"
           [queryParams]="{id: 'create', pjid: api.currentProject.id}">
           <mat-icon>library_add_check</mat-icon>

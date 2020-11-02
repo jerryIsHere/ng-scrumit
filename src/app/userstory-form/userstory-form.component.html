@@ -1,38 +1,17 @@
-<div mat-dialog-content *ngIf="form && dummyForm">
+<mat-error *ngIf="unassignedBacklogs?.length == 0">
+    There are no unassigned product backlog, please create a new one then creating new sprint back log for it.
+</mat-error>
+<div mat-dialog-content *ngIf="form && dummyForm && unassignedBacklogs.length > 0">
     <form [formGroup]="form">
         <mat-form-field>
-            <mat-label>Name: </mat-label>
-            <input type="text" matInput formControlName="name" [readonly]="!edit">
-            <mat-error *ngIf="form.get('name').invalid">
-                {{form.get('name').hasError('required')?'required':''}}
-            </mat-error>
-        </mat-form-field>
-        <br>
-        <mat-select>
-            <mat-option *ngFor="let backlog of unassignedBacklogs" [value]="backlog.id">
-                {{backlog.name}}
-            </mat-option>
-        </mat-select>
-        <br>
-        <mat-form-field>
-            <mat-label>Priority: </mat-label>
-            <input type="text" matInput formControlName="priority" [readonly]="!edit">
-            <mat-error *ngIf="form.get('priority').invalid">
-                {{form.get('priority').hasError('required')?'required':''}}
-            </mat-error>
-            <mat-error *ngIf="form.get('priority').invalid">
-                {{form.get('priority').hasError('pattern')?'Please input a non-negative number':''}}
-            </mat-error>
-        </mat-form-field>
-        <br>
-        <mat-form-field>
-            <mat-label>Est. size:</mat-label>
-            <input type="text" matInput formControlName="estimatedSize" [readonly]="!edit">
-            <mat-error *ngIf="form.get('estimatedSize').invalid">
-                {{form.get('estimatedSize').hasError('required')?'required':''}}
-            </mat-error>
-            <mat-error *ngIf="form.get('estimatedSize').invalid">
-                {{form.get('estimatedSize').hasError('pattern')?'Please input a non-negative number':''}}
+            <mat-label>Product Backlog: </mat-label>
+            <mat-select formControlName="productBacklogId">
+                <mat-option *ngFor="let backlog of unassignedBacklogs" [value]="backlog.id">
+                    {{backlog.name}}
+                </mat-option>
+            </mat-select>
+            <mat-error *ngIf="form.get('productBacklogId').invalid">
+                {{form.get('productBacklogId').hasError('required')?'required':''}}
             </mat-error>
         </mat-form-field>
         <br>
@@ -58,7 +37,7 @@
         </mat-form-field>
     </form>
 </div>
-<div mat-dialog-actions *ngIf="form && dummyForm"
+<div mat-dialog-actions *ngIf="form && dummyForm && unassignedBacklogs.length > 0"
     [matTooltip]="(!form.valid || !dummyForm.valid)?'the form is not valid':''">
     <button [disabled]="!form.valid" *ngIf="edit" mat-button cdkFocusInitial (click)="submitForm()">submit</button>
     <button mat-button cdkFocusInitial *ngIf="!edit"

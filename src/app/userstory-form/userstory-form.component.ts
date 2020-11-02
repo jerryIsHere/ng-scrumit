@@ -22,10 +22,7 @@ export class UserstoryFormComponent implements OnInit {
       if (this.data.id != 'create') {
         this.api.getStory(this.data.id).then(story => {
           console.log(story)
-          this.form = new FormGroup({
-            name: new FormControl({ value: story.name, disabled: false }, Validators.required),
-            priority: new FormControl({ value: story.priority, disabled: false }, [Validators.required, Validators.pattern("^[0-9]*$")]),
-            estimatedSize: new FormControl({ value: story.estimatedSize, disabled: false }, [Validators.required, Validators.pattern("^[0-9]*$")]),
+          this.form = new FormGroup({       
             acceptanceTest: new FormControl({ value: story.acceptanceTest, disabled: false }, Validators.required),
             productBacklogId: new FormControl({ value: story.productBacklogId, disabled: false }, Validators.required),
           })
@@ -39,9 +36,6 @@ export class UserstoryFormComponent implements OnInit {
         this.isNew = true;
         this.edit = true;
         this.form = new FormGroup({
-          name: new FormControl({ value: '', disabled: false }, Validators.required),
-          priority: new FormControl({ value: '', disabled: false }, [Validators.required, Validators.pattern("^[0-9]*$")]),
-          estimatedSize: new FormControl({ value: '', disabled: false }, [Validators.required, Validators.pattern("^[0-9]*$")]),
           acceptanceTest: new FormControl({ value: '', disabled: false }, Validators.required),
           productBacklogId: new FormControl({ value: '', disabled: false }, Validators.required),
         })

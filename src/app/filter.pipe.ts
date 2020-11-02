@@ -11,7 +11,7 @@ export class FilterPipe implements PipeTransform {
     if (!values) return objs;
     if (typeof key == 'string') {
       if (Array.isArray(values)) {
-        if (values.length == 0) return objs
+        if (values.length == 0) return []
         return objs.filter(o => {
           if (targetNestedArray) return o[targetNestedArray].filter(e => values.includes(e[key as string])).length > 0
           return values.includes(o[key as string])

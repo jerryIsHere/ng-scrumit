@@ -16,9 +16,12 @@ export class UserStoryListComponent implements OnInit {
 
   ngOnInit() {
     this.activatedRoute.queryParamMap.subscribe(params => {
-      this.api.getSprintStory(Number(params.get('id'))).then(data => {
+      this.api.getProjectBacklog().then(b => {
+        this.api.getSprintStory(Number(params.get('id'))).then(data => {
 
+        })
       })
+
     })
   }
   storyStyle(story) {

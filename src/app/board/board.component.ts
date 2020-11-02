@@ -56,7 +56,7 @@ export class BoardComponent implements OnInit {
       style["border-color"] = "gold"
       style["border-style"] = "solid";
     }
-    else if (task.status == TASK_STATUS.fromPrevious || task.sprints.length > 1) {
+    else if (task.status == TASK_STATUS.fromPrevious || task.sprints?.length > 1) {
       style["border-color"] = "lightcoral"
       style["border-style"] = "solid";
     }
@@ -76,15 +76,6 @@ export class BoardComponent implements OnInit {
 
   }
 
-  dropStory(event: CdkDragDrop<any>) {
-    if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-      event.container.data.forEach((task, index) => {
-        task.priority = index;
-      });
-    }
-
-  }
   dragListStatusExcludePredicate(not: Array<number>) {
     return (drag: CdkDrag) => {
       return !not.includes(drag.data.status)
@@ -181,15 +172,18 @@ export class BoardComponent implements OnInit {
   }
 
   commitPostTaskList() {
-    let postBody = []
+    let tasks = []
     for (let list of [this.openDragList, this.inProgressDragList, this.doneDragList]) {
       let index = list.length
       for (let task of list) {
         task.priority = index;
-        postBody.push(task)
+        tasks.push(task)
         index--;
       }
     }
+    tasks.forEach(t=>{
+      this.api.patchTaskStatus(tasks);
+    })
   }
   release(event: CdkDragDrop<string[]>, assignStatus) {
     if (this.selectedTaskId == null) return;
@@ -207,16 +201,20 @@ export class BoardComponent implements OnInit {
   doneDragList = []
   getSprintTask(pjid, spid) {
     this.api.getProjectPerson(pjid).then(data => {
-      this.color_generator = matplotlib_set3_color()
-      this.openDragList = []
-      this.inProgressDragList = []
-      this.doneDragList = []
-      this.commitGetTask(spid);
+      this.api.getProjectBacklog(pjid).then(b => {
+        this.color_generator = matplotlib_set3_color()
+        this.openDragList = []
+        this.inProgressDragList = []
+        this.doneDragList = []
+        this.commitGetTask(spid);
+      })
     })
   }
 
   commitGetTask(spid) {
     this.api.getSprintTask(spid).then(data => {
+      console.log(this.api.backlogs)
+      console.log(this.api.stories)
       for (let tasks of data) {
         for (let task of tasks) {
           if (task.status == TASK_STATUS.open) {

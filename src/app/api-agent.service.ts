@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from './../environments/environment';
 import { promise } from 'protractor';
+import { resolve } from 'dns';
 const apiURL = "http://34.92.198.0:8080/scrumit"//(environment as any).apiURL;
 var dummy_relation = {
   'project': {
@@ -142,8 +143,17 @@ export class ApiAgentService {
   }
   getProject = (pjid = this._currentProjectId): Promise<any> => {
     this.currentProjectId = pjid;
-    return this.getProjectRequest(pjid).then(project => {
+    return this.getProjectRequest(pjid).then((project: any) => {
       this.projects.filter(pj => pj.id == pjid)[0] = project
+      let result = []
+      project.sprints.forEach(s => {
+        s.sprintBacklog.forEach(sb => {
+          sb.tasks.forEach(t => {
+            result.push(t)
+          })
+        })
+      });
+      this.tasks = result
       return project;
     })
   }
@@ -263,11 +273,12 @@ export class ApiAgentService {
     })
   }
   getProjectUnassignedBacklogRequest = (pjid) => {
-    return this.http.get(apiURL + "/project/allproductbacklog/" + pjid + "/").toPromise()
+    return this.http.get(apiURL + "/project/allproductbacklog/unassigned/" + pjid + "/").toPromise()
   }
   getProjectUnassignedBacklog = (pjid: number = this.currentProjectId): Promise<any> => {
     this.currentProjectId = pjid;
     return this.getProjectUnassignedBacklogRequest(pjid).then(backlogs => {
+      this.backlogs = backlogs as Array<any>;
       this.backlogs.sort((a, b) => a.name.localeCompare(b.name))
       return backlogs
     })
@@ -408,11 +419,24 @@ export class ApiAgentService {
   }
   getSprintStory = (spid: number = this._currentSprintId): Promise<any> => {
     this.currentSprintId = spid;
-    return this.getSprintStoryRequest(spid).then(stories => {
-      this.stories = stories as Array<any>;
-      this.stories.sort((a, b) => a.name.localeCompare(b.name))
-      return stories
-    })
+    return new Promise((res, rej) => {
+      this.getSprintStoryRequest(spid).then((s: Array<any>) => {
+        this.stories = s
+        let promises = []
+        s.forEach(s => {
+          promises.push(this.getStory(s.id))
+        })
+        Promise.all(promises).then(stories => {
+          this.stories = stories as Array<any>;
+          this.stories.sort((a, b) =>
+            this.backlogs.filter(back => back.id == b.productBacklogId)[0].priority
+            - this.backlogs.filter(back => back.id == a.productBacklogId)[0].priority)
+          res(stories)
+        })
+
+      })
+    });
+
   }
   getStoryRequest = (id) => {
     if (this.testing) {
@@ -475,22 +499,14 @@ export class ApiAgentService {
       console.log(result)
       return Promise.resolve(result)
     }
-    return this.http.get(apiURL + "/board/alltasks/" + stid + "/").toPromise()
+    return this.http.get(apiURL + "/board/alltasks/sprintbacklog/" + stid + "/").toPromise()
   }
-  getTaskIssueRequest = (tkid) => {
-    if (this.testing) {
-      console.log('getTaskIssueRequest/' + tkid)
-      let result = dummy["issues"].filter(data => (dummy_relation["task"]["issue"][tkid] as Array<number>).includes(data.id))
-      console.log(result)
-      return Promise.resolve(result)
-    }
-  }
+
   getSprintTask = (spid: number = this._currentSprintId): Promise<any> => {
     this.currentSprintId = spid;
     return new Promise((res, rej) => {
-      this.getSprintStoryRequest(spid).then(stories => {
+      this.getSprintStory(spid).then(stories => {
         this.stories = stories as Array<any>;
-        this.stories.sort((a, b) => a.name.localeCompare(b.name))
         let tasks_promises: Promise<any>[] = [];
         for (let story of this.stories) {
           tasks_promises.push(this.getStoryTaskRequest(story.id).then((data: Array<any>) => {
@@ -499,21 +515,28 @@ export class ApiAgentService {
           }))
         }
         Promise.all(tasks_promises).then(taskOfStories => {
-          let issues_promises: Promise<any>[] = [];
-          for (let taskInstory of taskOfStories) {
-            for (let task of taskInstory) {
-              issues_promises.push(
-                this.getTaskIssueRequest(task.id).then(issues => {
-                  task.issues = issues
-                  return issues
-                }))
+          this.tasks = [].concat(...taskOfStories)
+          this.tasks.forEach(t => {
+            if (t.personId == null) {
+              t.personId = []
             }
-          }
-          Promise.all(issues_promises).then(issuesOfTasks => {
-            this.issues = [].concat(...issuesOfTasks)
-            this.tasks = [].concat(...taskOfStories)
-            res(taskOfStories)
           })
+          res(taskOfStories)
+          // let issues_promises: Promise<any>[] = [];
+          // for (let taskInstory of taskOfStories) {
+          //   for (let task of taskInstory) {
+          //     issues_promises.push(
+          //       this.getTaskIssueRequest(task.id).then(issues => {
+          //         task.issues = issues
+          //         return issues
+          //       }))
+          //   }
+          // }
+          // Promise.all(issues_promises).then(issuesOfTasks => {
+          //   this.issues = [].concat(...issuesOfTasks)
+          //   this.tasks = [].concat(...taskOfStories)
+          //   res(taskOfStories)
+          // })
 
         })
       })
@@ -521,32 +544,32 @@ export class ApiAgentService {
 
   }
 
-  getProjectTaskRequest = (pjid) => {
-    if (this.testing) {
-      console.log('getProjectTaskRequest/' + pjid)
-      let tasks = []
-      for (let spid of dummy_relation.project.sprint[pjid]) {
-        for (let stid of dummy_relation.sprint.story[spid]) {
-          for (let tkid of dummy_relation.story.task[stid]) {
-            let task = Object.assign(dummy.tasks.filter(task => task.id == tkid)[0])
-            task["issues"] = []
-            for (let isid of dummy_relation.task.issue[tkid])
-              task["issues"].push(dummy.issues.filter(issue => issue.id == isid)[0])
-            tasks.push(task)
-          }
-        }
-      }
-      console.log(tasks)
-      return Promise.resolve(tasks)
-    }
-  }
-  getProjectTask = (pjid: number = this._currentProjectId): Promise<any> => {
-    this.currentProjectId = pjid;
-    return this.getProjectTaskRequest(pjid).then(tasks => {
-      this.tasks = tasks as Array<any>;
-      return tasks
-    })
-  }
+  // getProjectTaskRequest = (pjid) => {
+  //   if (this.testing) {
+  //     console.log('getProjectTaskRequest/' + pjid)
+  //     let tasks = []
+  //     for (let spid of dummy_relation.project.sprint[pjid]) {
+  //       for (let stid of dummy_relation.sprint.story[spid]) {
+  //         for (let tkid of dummy_relation.story.task[stid]) {
+  //           let task = Object.assign(dummy.tasks.filter(task => task.id == tkid)[0])
+  //           task["issues"] = []
+  //           for (let isid of dummy_relation.task.issue[tkid])
+  //             task["issues"].push(dummy.issues.filter(issue => issue.id == isid)[0])
+  //           tasks.push(task)
+  //         }
+  //       }
+  //     }
+  //     console.log(tasks)
+  //     return Promise.resolve(tasks)
+  //   }
+  // }
+  // getProjectTask = (pjid: number = this._currentProjectId): Promise<any> => {
+  //   this.currentProjectId = pjid;
+  //   return this.getProjectTaskRequest(pjid).then(tasks => {
+  //     this.tasks = tasks as Array<any>;
+  //     return tasks
+  //   })
+  // }
 
   postStoryTaskRequest = (stid: number, requestBody: any) => {
     if (this.testing) {
@@ -571,16 +594,17 @@ export class ApiAgentService {
     })
   }
 
-  postTaskPersonRequest = (tkid: number, requestBody: any) => {
-    if (this.testing) {
-      console.log('postTaskPersonRequest/' + tkid)
-      console.log(JSON.stringify(requestBody))
-      dummy.tasks.filter(task => task.id == tkid)[0].persons = requestBody;
-      return Promise.resolve(true)
-    }
+  postTaskPersonRequest = (requestBody: any) => {
+    // if (this.testing) {
+    //   console.log('postTaskPersonRequest/' + tkid)
+    //   console.log(JSON.stringify(requestBody))
+    //   dummy.tasks.filter(task => task.id == tkid)[0].persons = requestBody;
+    //   return Promise.resolve(true)
+    // }
+    return this.http.post(apiURL + '/board/task/updateperson/', requestBody).toPromise()
   }
-  postTaskPerson = (tkid: number, requestBody: any): Promise<any> => {
-    return this.postTaskPersonRequest(tkid, requestBody).then(result => {
+  postTaskPerson = (requestBody: any): Promise<any> => {
+    return this.postTaskPersonRequest(requestBody).then(result => {
       return result
     })
   }
@@ -599,6 +623,7 @@ export class ApiAgentService {
       console.log('not adding dummy relation for issue - project as this demo is for board only')
       return Promise.resolve(true)
     }
+    return this.http.post(apiURL + '/board/add/issue/' + tkid + '/', requestBody).toPromise()
   }
   postTaskIssue = (tkid: number, requestBody: any): Promise<any> => {
     return this.postTaskIssueRequest(tkid, requestBody).then(result => {
@@ -606,18 +631,35 @@ export class ApiAgentService {
     })
   }
 
-  patchTaskRequest = (tkid: number, requestBody: any) => {
-    if (this.testing) {
-      console.log('patchTaskRequest/' + tkid)
-      console.log(JSON.stringify(requestBody))
-      for (let [key, value] of Object.entries(requestBody)) {
-        dummy.tasks.filter(task => task.id == tkid)[0][key] = value
-      }
-      return Promise.resolve(true)
-    }
+  patchTaskDescriptionRequest = (requestBody: any) => {
+    // if (this.testing) {
+    //   console.log('patchTaskRequest/' + tkid)
+    //   console.log(JSON.stringify(requestBody))
+    //   for (let [key, value] of Object.entries(requestBody)) {
+    //     dummy.tasks.filter(task => task.id == tkid)[0][key] = value
+    //   }
+    //   return Promise.resolve(true)
+    // }
+    return this.http.post(apiURL + '/board/task/updatedescription/', requestBody).toPromise()
   }
-  patchTask = (tkid: number, requestBody: any): Promise<any> => {
-    return this.patchTaskRequest(tkid, requestBody).then(result => {
+  patchTaskDescription = (requestBody: any): Promise<any> => {
+    return this.patchTaskDescriptionRequest(requestBody).then(result => {
+      return result
+    })
+  }
+  patchTaskPersonRequest = (requestBody: any) => {
+    return this.http.post(apiURL + '/board/task/updateperson/', requestBody).toPromise()
+  }
+  patchTaskPerson = (requestBody: any): Promise<any> => {
+    return this.patchTaskPersonRequest(requestBody).then(result => {
+      return result
+    })
+  }
+  patchTaskStatusRequest = (requestBody: any) => {
+    return this.http.post(apiURL + '/board/task/updatestatus/', requestBody).toPromise()
+  }
+  patchTaskStatus = (requestBody: any): Promise<any> => {
+    return this.patchTaskStatusRequest(requestBody).then(result => {
       return result
     })
   }
@@ -630,6 +672,7 @@ export class ApiAgentService {
       }
       return Promise.resolve(true)
     }
+    return this.http.post(apiURL + '/board/issue/update/', requestBody).toPromise()
   }
   patchIssue = (isid: number, requestBody: any): Promise<any> => {
     return this.patchIssueRequest(isid, requestBody).then(result => {

@@ -1,9 +1,9 @@
 <div *ngIf="api.stories">
-    <div cdkDropListGroup style="height:90vh; width: 10%; display: inline-block; vertical-align: top;">
-        <mat-accordion cdkDropList (cdkDropListDropped)="dropStory($event)" [cdkDropListData]="api.stories">
-            <mat-expansion-panel *ngFor="let story of api.stories" [ngStyle]="storyBoardStyle(story)" cdkDrag>
+    <div style="height:90vh; width: 10%; display: inline-block; vertical-align: top;">
+        <mat-accordion>
+            <mat-expansion-panel *ngFor="let story of api.stories" [ngStyle]="storyBoardStyle(story)">
                 <mat-expansion-panel-header>
-                    <mat-panel-title>{{story.name}}</mat-panel-title>
+                    <mat-panel-title>{{(api.backlogs | filter : 'id' : story.productBacklogId)[0].name}}</mat-panel-title>
                 </mat-expansion-panel-header>
                 <mat-action-row>
                     <button mat-button (click)="createTaskDialogue(story.id)" matTooltip="creat a task for this story">
@@ -24,7 +24,7 @@
                     <mat-expansion-panel-header>
                         <mat-panel-title>{{task.description}}</mat-panel-title>
                         <mat-panel-description>
-                            <mat-icon [matBadge]="task.persons.length | zero2null" matBadgeSize="small"
+                            <mat-icon [matBadge]="task.personId.length | zero2null" matBadgeSize="small"
                                 matBadgeColor="primary" style="position: absolute; right:20%;">
                                 person
                             </mat-icon>
@@ -48,7 +48,7 @@
                         </button>
                     </mat-action-row>
                     <mat-list>
-                        <mat-list-item *ngFor="let person of api.persons | filter: 'id' : task.persons">
+                        <mat-list-item *ngFor="let person of api.persons | filter: 'id' : task.personId">
                             <mat-icon>person_outline</mat-icon>{{person.firstName+ " " +person.lastName}}
                         </mat-list-item>
                     </mat-list>
@@ -91,7 +91,7 @@
                     <mat-expansion-panel-header>
                         <mat-panel-title>{{task.description}}</mat-panel-title>
                         <mat-panel-description>
-                            <mat-icon [matBadge]="task.persons.length | zero2null" matBadgeSize="small"
+                            <mat-icon [matBadge]="task.personId.length | zero2null" matBadgeSize="small"
                                 matBadgeColor="primary" style="position: absolute; right:20%;">
                                 person
                             </mat-icon>
@@ -115,7 +115,7 @@
                         </button>
                     </mat-action-row>
                     <mat-list>
-                        <mat-list-item *ngFor="let person of api.persons | filter: 'id' : task.persons">
+                        <mat-list-item *ngFor="let person of api.persons | filter: 'id' : task.personId">
                             <mat-icon>person_outline</mat-icon>{{person.firstName+ " " +person.lastName}}
                         </mat-list-item>
                     </mat-list>
@@ -157,7 +157,7 @@
                     <mat-expansion-panel-header>
                         <mat-panel-title>{{task.description}}</mat-panel-title>
                         <mat-panel-description>
-                            <mat-icon [matBadge]="task.persons.length | zero2null" matBadgeSize="small"
+                            <mat-icon [matBadge]="task.personId.length | zero2null" matBadgeSize="small"
                                 matBadgeColor="primary" style="position: absolute; right:20%;">
                                 person
                             </mat-icon>
@@ -177,7 +177,7 @@
                         </button>
                     </mat-action-row>
                     <mat-list>
-                        <mat-list-item *ngFor="let person of api.persons | filter: 'id' : task.persons">
+                        <mat-list-item *ngFor="let person of api.persons | filter: 'id' : task.personId">
                             <mat-icon>person_outline</mat-icon>{{person.firstName+ " " +person.lastName}}
                         </mat-list-item>
                     </mat-list>

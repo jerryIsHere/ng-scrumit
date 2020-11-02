@@ -3,7 +3,7 @@
     list of sprint backlogs
   </mat-list-item>
   <mat-list-item *ngFor="let story of api.stories" [ngStyle]="storyStyle(story)">
-    <button mat-raised-button (click)="showUserStory(story.id)">{{story.name}}
+    <button mat-raised-button (click)="showUserStory(story.id)">{{(api.backlogs | filter : 'id' : story.productBacklogId)[0].name}}
       <mat-icon>open_in_new</mat-icon>
     </button>
     <button mat-icon-button style="margin-left:auto; margin-right:0;" (click)="deleteUserStory(story.id)">

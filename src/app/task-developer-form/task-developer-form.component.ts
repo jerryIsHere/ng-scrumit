@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ApiAgentService } from '../api-agent.service';
+import { FilterPipe } from '../filter.pipe';
 
 @Component({
   selector: 'app-task-developer-form',
@@ -13,11 +14,13 @@ export class TaskDeveloperFormComponent implements OnInit {
     public dialogRef: MatDialogRef<TaskDeveloperFormComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) { }
   ngOnInit(): void {
+    console.log(this.api.tasks.filter(
+      task => task.id == this.data.id)[0].personId)
     this.api.getProjectPerson(this.api.currentProject.id).then(persons => {
       this.assingedPerson = persons.filter(person => this.api.tasks.filter(
-        task => task.id == this.data.id)[0].persons.includes(person.id)).map(person => person.id)
+        task => task.id == this.data.id)[0].personId.includes(person.id)).map(person => person.id)
       this.sparedPerson = persons.filter(person => !this.api.tasks.filter(
-        task => task.id == this.data.id)[0].persons.includes(person.id)).map(person => person.id)
+        task => task.id == this.data.id)[0].personId.includes(person.id)).map(person => person.id)
     })
   }
   removePerson(id) {
@@ -28,10 +31,13 @@ export class TaskDeveloperFormComponent implements OnInit {
     this.sparedPerson = this.sparedPerson.filter(person => person != id)
     this.assingedPerson.push(id)
   }
-  assingedPerson:Array<number> = []
-  sparedPerson:Array<number> = []
+  assingedPerson: Array<number> = []
+  sparedPerson: Array<number> = []
   submitForm() {
-    this.api.postTaskPerson(this.data.id, this.assingedPerson).then(result => {
+    let task = this.api.tasks.filter(t => t.id == this.data.id)[0]
+    task.personId = [1]
+    delete task.personName
+    this.api.postTaskPerson(task).then(result => {
       if (result) {
         this.dialogRef.close()
       }
